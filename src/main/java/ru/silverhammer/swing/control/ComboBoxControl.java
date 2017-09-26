@@ -46,7 +46,7 @@ public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object
 			protected void search(String search) {
 				for (int i = 0; i < getComponent().getItemCount(); i++) {
 					Object item = getComponent().getItemAt(i);
-					if (item != null && item.toString().trim().startsWith(search)) {
+					if (item != null && item.toString().contains(search)) {
 						getComponent().setSelectedIndex(i);
 						break;
 					}

@@ -29,33 +29,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import ru.silverhammer.common.injection.Injector;
-import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.converter.IConverter;
-import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.validator.IValidator;
 
 public class FieldProcessor {
 
 	private final Injector injector;
-	private final IControlResolver controlResolver;
 	
-	public FieldProcessor(Injector injector, IControlResolver controlResolver) {
+	public FieldProcessor(Injector injector) {
 		this.injector = injector;
-		this.controlResolver = controlResolver;
-	}
-
-	public boolean hasControlAnnotation(Field field) {
-		return getControlClass(field) != null;
-	}
-	
-	public Class<? extends IControl<?>> getControlClass(Field field) {
-		for (Annotation a : field.getAnnotations()) {
-			Class<? extends IControl<?>> controlClass = controlResolver.getControlClass(a.annotationType());
-			if (controlClass != null) {
-				return controlClass;
-			}
-		}
-		return null;
 	}
 
 	public Object getControlValue(Object value, Field field) {

@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.processor.IStringProcessor;
+import ru.silverhammer.core.string.IStringProcessor;
 
 public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?>, StringItems> {
 

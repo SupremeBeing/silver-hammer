@@ -23,29 +23,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core;
+package ru.silverhammer.core.processor.annotation;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.GeneratableFieldProcessor;
+
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Groups {
-
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.RUNTIME)
-	@Repeatable(Groups.class)
-	public @interface Group {
-
-		int id();
-		
-		String caption() default "";
-		
-	}
-
-	Group[] value();
-	
-}
+@ProcessorReference(GeneratableFieldProcessor.class)
+public @interface GeneratableMarker {}

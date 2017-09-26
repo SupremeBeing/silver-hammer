@@ -23,37 +23,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core;
+package ru.silverhammer.core.processor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
-import ru.silverhammer.core.Groups.Group;
+import ru.silverhammer.core.metadata.MethodAttributes;
+import ru.silverhammer.core.metadata.UiMetadata;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Categories {
+public class ValidatorMethodProcessor implements IProcessor {
 
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.RUNTIME)
-	@Repeatable(Categories.class)
-	public @interface Category {
-
-		String caption();
-
-		String description() default "";
-
-		String icon() default "";
-		
-		char mnemonic() default 0;
-		
-		Group[] groups() default {};
-		
+	@Override
+	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation annotation) {
+		if (member instanceof Method) {
+			metadata.addValidator(new MethodAttributes(data, (Method) member));
+		}
 	}
-
-	Category[] value();
-	
 }

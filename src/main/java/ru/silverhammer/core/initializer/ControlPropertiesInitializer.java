@@ -36,7 +36,7 @@ import ru.silverhammer.core.control.IRowsControl;
 import ru.silverhammer.core.control.ISelectionTypeControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
-import ru.silverhammer.core.processor.IStringProcessor;
+import ru.silverhammer.core.string.IStringProcessor;
 
 public class ControlPropertiesInitializer implements IInitializer<IControl<?>, ControlProperties> {
 

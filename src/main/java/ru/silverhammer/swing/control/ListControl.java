@@ -61,7 +61,7 @@ public class ListControl extends ValidatableControl<Object, JList<Object>> imple
 			protected void search(String search) {
 				for (int i = 0; i < getModel().getSize(); i++) {
 					Object item = getModel().getElementAt(i);
-					if (item != null && item.toString().trim().startsWith(search)) {
+					if (item != null && item.toString().contains(search)) {
 						getComponent().setSelectedIndex(i);
 						break;
 					}

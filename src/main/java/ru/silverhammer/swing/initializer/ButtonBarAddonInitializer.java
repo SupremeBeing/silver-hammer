@@ -42,7 +42,7 @@ import ru.silverhammer.common.Reflector;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.initializer.IInitializer;
-import ru.silverhammer.core.processor.IStringProcessor;
+import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;

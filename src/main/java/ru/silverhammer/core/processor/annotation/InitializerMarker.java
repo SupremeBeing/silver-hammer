@@ -23,13 +23,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core;
+package ru.silverhammer.core.processor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.InitializerMethodProcessor;
+
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GeneratableType {}
+@ProcessorReference(InitializerMethodProcessor.class)
+public @interface InitializerMarker {}

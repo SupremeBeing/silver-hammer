@@ -23,13 +23,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core;
+package ru.silverhammer.core.processor.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.StructureClassProcessor;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
+
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InitializerMarker {}
+@ProcessorReference(StructureClassProcessor.class)
+public @interface Categories {
+
+	@Target(ElementType.TYPE)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Repeatable(Categories.class)
+	@ProcessorReference(StructureClassProcessor.class)
+	public @interface Category {
+
+		String caption();
+
+		String description() default "";
+
+		String icon() default "";
+		
+		char mnemonic() default 0;
+		
+		Group[] groups() default {};
+		
+	}
+
+	Category[] value();
+	
+}

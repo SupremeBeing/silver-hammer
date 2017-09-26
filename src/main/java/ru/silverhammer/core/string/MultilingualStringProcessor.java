@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.processor;
+package ru.silverhammer.core.string;
 
 import java.io.IOException;
 import java.io.InputStream;

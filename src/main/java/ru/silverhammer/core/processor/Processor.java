@@ -23,18 +23,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.resolver;
+package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.common.Reflector;
+import ru.silverhammer.common.injection.Inject;
+import ru.silverhammer.common.injection.Injector;
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.metadata.UiMetadata;
 
-public interface IControlResolver {
+public class Processor implements IProcessor {
 
-	public Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
+	private final Injector injector;
 	
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+	public Processor(@Inject Injector injector) {
+		this.injector = injector;
+	}
 
-	public boolean hasControlAnnotation(Field field);
+	@Override
+	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation unused) {
+		for (Class<?> cl : Reflector.getClassHierarchy(data.getClass())) {
+			processAnnotations(metadata, data, cl);
+			for (Method method : cl.getDeclaredMethods()) {
+				processAnnotations(metadata, data, method);
+			}
+			for (Field field : cl.getDeclaredFields()) {
+				processAnnotations(metadata, data, field);
+			}
+		}
+	}
+	
+	private void processAnnotations(UiMetadata metadata, Object data, AnnotatedElement element) {
+		for (Annotation annotation : element.getAnnotations()) {
+			ProcessorReference pr = annotation.annotationType().getAnnotation(ProcessorReference.class);
+			if (pr != null) {
+				IProcessor processor = injector.instantiate(pr.value());
+				processor.process(metadata, data, element, annotation);
+			}
+		}
+	}
 }

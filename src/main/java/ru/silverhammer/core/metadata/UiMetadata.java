@@ -41,8 +41,6 @@ public class UiMetadata {
 	private final List<MethodAttributes> initializers = new ArrayList<>();
 	private final List<MethodAttributes> validators = new ArrayList<>();
 
-	private int generatedGroupId = -2;
-	
 	public void addInitializer(MethodAttributes attributes) {
 		if (attributes != null) {
 			initializers.add(attributes);
@@ -136,10 +134,6 @@ public class UiMetadata {
 			}
 		}
 		return null;
-	}
-	
-	public int getNextGroupId() {
-		return generatedGroupId--;
 	}
 	
 	public void visitControlAttributes(Consumer<ControlAttributes> consumer) {

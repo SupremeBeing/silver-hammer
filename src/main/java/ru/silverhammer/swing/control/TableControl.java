@@ -102,7 +102,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 					if (item != null) {
 						for (int j = 0; j < captions.size(); j++) {
 							Object val = getModel().getValueAt(i, j);
-							if (val != null && val.toString().trim().startsWith(search)) {
+							if (val != null && val.toString().contains(search)) {
 								getComponent().setRowSelectionInterval(i, i);
 								break;
 							}

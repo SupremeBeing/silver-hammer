@@ -83,7 +83,7 @@ public class TreeControl extends ValidatableControl<Object, JTree> implements IH
 		for (int i = 0; i < count; i++) {
 			DefaultMutableTreeNode child = (DefaultMutableTreeNode) getModel().getChild(root, i);
 			Object data = child.getUserObject();
-			if (data != null && data.toString().trim().startsWith(search)) {
+			if (data != null && data.toString().contains(search)) {
 				return child;
 			}
 		}

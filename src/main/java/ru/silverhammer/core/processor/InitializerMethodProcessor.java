@@ -23,18 +23,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.resolver;
+package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
-import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.metadata.MethodAttributes;
+import ru.silverhammer.core.metadata.UiMetadata;
 
-public interface IControlResolver {
+public class InitializerMethodProcessor implements IProcessor {
 
-	public Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
-	
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
-
-	public boolean hasControlAnnotation(Field field);
+	@Override
+	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation annotation) {
+		if (member instanceof Method) {
+			metadata.addInitializer(new MethodAttributes(data, (Method) member));
+		}
+	}
 }

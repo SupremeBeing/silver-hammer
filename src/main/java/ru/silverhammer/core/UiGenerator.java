@@ -38,15 +38,15 @@ import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.metadata.MethodAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.core.processor.IStringProcessor;
-import ru.silverhammer.core.processor.SimpleStringProcessor;
+import ru.silverhammer.core.processor.Processor;
 import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.core.string.SimpleStringProcessor;
 
 public class UiGenerator<Container> {
 	
 	private final Injector injector;
 	private final IStringProcessor stringProcessor;
-	private final UiMetadataCollector collector;
 	private final IUiBuilder<Container> builder;
 	private final FieldProcessor fieldProcessor;
 	private final IControlResolver controlResolver;
@@ -54,19 +54,19 @@ public class UiGenerator<Container> {
 	public UiGenerator(IControlResolver controlResolver, IUiBuilder<Container> builder) {
 		this(controlResolver, builder, new SimpleStringProcessor());
 	}
-
+	
 	public UiGenerator(IControlResolver controlResolver, IUiBuilder<Container> builder, IStringProcessor stringProcessor) {
-		this.controlResolver = controlResolver;
 		this.builder = builder;
 		this.injector = new Injector();
 		
 		this.stringProcessor = stringProcessor;
 		injector.bind(IStringProcessor.class, stringProcessor);
 
-		this.fieldProcessor = new FieldProcessor(injector, controlResolver);
-		injector.bind(FieldProcessor.class, fieldProcessor);
+		this.controlResolver = controlResolver;
+		injector.bind(IControlResolver.class, controlResolver);
 
-		this.collector = new UiMetadataCollector(stringProcessor, fieldProcessor, injector);
+		this.fieldProcessor = new FieldProcessor(injector);
+		injector.bind(FieldProcessor.class, fieldProcessor);
 	}
 
 	public IControlResolver getControlResolver() {
@@ -86,7 +86,12 @@ public class UiGenerator<Container> {
 	}
 
 	public Container generate(UiMetadata metadata, Object... data) {
-		collector.collect(metadata, data);
+		Processor processor = new Processor(injector);
+		for (Object o : data) {
+			if (o != null) {
+				processor.process(metadata, o, null, null);
+			}
+		}
 		metadata.visitControlAttributes((ca) -> {
 			for (Annotation annotation : ca.getField().getAnnotations()) {
 				InitializerReference ir = annotation.annotationType().getAnnotation(InitializerReference.class);
@@ -110,42 +115,13 @@ public class UiGenerator<Container> {
 			validateControl(ca.getControl(), ca.getField());	
 			ca.getControl().addControlListener((c) -> {
 				validateControl(ca.getControl(), ca.getField());	
-				validateMethods(metadata.getValidators());
+				validateMethods(metadata);
 			});
 		});
-		validateMethods(metadata.getValidators());
+		validateMethods(metadata);
 		return builder.buildUi(metadata);
 	}
 	
-	public void commit(UiMetadata metadata) {
-		metadata.visitControlAttributes((c) -> {
-			Object value = fieldProcessor.getFieldValue(c.getControl().getValue(), c.getField());
-			Reflector.setFieldValue(c.getData(), c.getField(), value);
-		});
-	}
-
-	public boolean isValid(UiMetadata metadata) {
-		return null == metadata.findControlAttributes((ca) -> {
-			if (ca.getControl() instanceof IValidatableControl) {
-				if (!((IValidatableControl<?>) ca.getControl()).isControlValid()) {
-					return true;
-				}
-			}
-			return false;
-		}) && validateMethods(metadata.getValidators());		
-	}
-
-	private boolean validateMethods(Iterable<MethodAttributes> methods) {
-		boolean result = true;
-		for (MethodAttributes ma : methods) {
-			Object valid = injector.invoke(ma.getData(), ma.getMethod());
-			if (valid instanceof Boolean) {
-				result &= (Boolean) valid;
-			}
-		}
-		return result;
-	}
-
 	private void validateControl(IControl<?> control, Field field) {
 		Object value = control.getValue();
 		Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
@@ -172,5 +148,24 @@ public class UiGenerator<Container> {
 			}
 		}
 		return null;
+	}
+	
+	public boolean validateMethods(UiMetadata metadata) {
+		boolean result = true;
+		for (MethodAttributes ma : metadata.getValidators()) {
+			Object valid = injector.invoke(ma.getData(), ma.getMethod());
+			if (valid instanceof Boolean) {
+				result &= (Boolean) valid;
+			}
+		}
+		return result;
+	}
+	
+	public void commit(UiMetadata metadata) {
+		metadata.visitControlAttributes((c) -> Reflector.setFieldValue(c.getData(), c.getField(), fieldProcessor.getFieldValue(c.getControl().getValue(), c.getField())));
+	}
+
+	public boolean isValid(UiMetadata metadata) {
+		return metadata.findControlAttributes((ca) -> ca.getControl() instanceof IValidatableControl && !((IValidatableControl<?>) ca.getControl()).isControlValid()) == null && validateMethods(metadata);		
 	}
 }

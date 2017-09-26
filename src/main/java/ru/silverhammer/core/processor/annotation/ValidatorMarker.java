@@ -23,13 +23,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core;
+package ru.silverhammer.core.processor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.ValidatorMethodProcessor;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@ProcessorReference(ValidatorMethodProcessor.class)
 public @interface ValidatorMarker {}

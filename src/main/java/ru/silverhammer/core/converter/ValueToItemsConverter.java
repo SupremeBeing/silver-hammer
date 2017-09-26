@@ -34,13 +34,16 @@ import ru.silverhammer.common.Reflector;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
+import ru.silverhammer.core.resolver.IControlResolver;
 
 public class ValueToItemsConverter implements IConverter<Object, Object, ValueToItems> {
 
 	private final FieldProcessor fieldProcessor;
+	private final IControlResolver controlResolver;
 
-	public ValueToItemsConverter(@Inject FieldProcessor fieldProcessor) {
+	public ValueToItemsConverter(@Inject FieldProcessor fieldProcessor, @Inject IControlResolver controlResolver) {
 		this.fieldProcessor = fieldProcessor;
+		this.controlResolver = controlResolver;
 	}
 
 	@Override
@@ -111,7 +114,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		List<Field> result = new ArrayList<>();
 		for (Class<?> cl : Reflector.getClassHierarchy(cls)) {
 			for (Field field : cl.getDeclaredFields()) {
-				if (!annotation.annotated() || fieldProcessor.hasControlAnnotation(field)) {
+				if (!annotation.annotated() || controlResolver.hasControlAnnotation(field)) {
 					result.add(field);
 				}
 			}

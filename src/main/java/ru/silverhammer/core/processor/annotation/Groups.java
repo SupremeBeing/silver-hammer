@@ -23,18 +23,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.resolver;
+package ru.silverhammer.core.processor.annotation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.StructureClassProcessor;
 
-public interface IControlResolver {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@ProcessorReference(StructureClassProcessor.class)
+public @interface Groups {
 
-	public Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
+	@Target(ElementType.TYPE)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Repeatable(Groups.class)
+	@ProcessorReference(StructureClassProcessor.class)
+	public @interface Group {
+
+		int id();
+		
+		String caption() default "";
+		
+	}
+
+	Group[] value();
 	
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
-
-	public boolean hasControlAnnotation(Field field);
 }

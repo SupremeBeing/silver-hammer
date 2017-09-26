@@ -30,26 +30,26 @@ import java.lang.reflect.Field;
 import ru.silverhammer.common.Reflector;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IMultiCaptionControl;
 import ru.silverhammer.core.initializer.annotation.AnnotatedCaptions;
-import ru.silverhammer.core.processor.IStringProcessor;
+import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.core.string.IStringProcessor;
 
 public class AnnotatedCaptionsInitializer implements IInitializer<IMultiCaptionControl<?>, AnnotatedCaptions> {
 
 	private final IStringProcessor processor;
-	private final FieldProcessor fieldProcessor;
+	private final IControlResolver controlResolver;
 
-	public AnnotatedCaptionsInitializer(@Inject IStringProcessor processor, @Inject FieldProcessor fieldProcessor) {
+	public AnnotatedCaptionsInitializer(@Inject IStringProcessor processor, @Inject IControlResolver controlResolver) {
 		this.processor = processor;
-		this.fieldProcessor = fieldProcessor;
+		this.controlResolver = controlResolver;
 	}
 
 	@Override
 	public void init(IMultiCaptionControl<?> control, AnnotatedCaptions annotation, Object data, Field field) {
 		for (Class<?> cl : Reflector.getClassHierarchy(annotation.value())) {
 			for (Field f : cl.getDeclaredFields()) {
-				if (fieldProcessor.hasControlAnnotation(f)) {
+				if (controlResolver.hasControlAnnotation(f)) {
 					Caption c = f.getAnnotation(Caption.class);
 					control.addCaption(c == null ? "" : processor.getString(c.value()));
 				}

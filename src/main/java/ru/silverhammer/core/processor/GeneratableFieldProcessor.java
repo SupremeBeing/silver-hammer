@@ -23,18 +23,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.resolver;
+package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
-import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.common.Reflector;
+import ru.silverhammer.common.injection.Inject;
+import ru.silverhammer.common.injection.Injector;
+import ru.silverhammer.core.metadata.UiMetadata;
 
-public interface IControlResolver {
+public class GeneratableFieldProcessor extends Processor {
 
-	public Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
-	
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+	public GeneratableFieldProcessor(@Inject Injector injector) {
+		super(injector);
+	}
 
-	public boolean hasControlAnnotation(Field field);
+	@Override
+	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation annotation) {
+		if (member instanceof Field) {
+			Field field = (Field) member;
+			Object val = Reflector.getFieldValue(data, field);
+			if (field.getType().isArray()) {
+				int length = Array.getLength(val);
+				for (int i = 0; i < length; i++) {
+					super.process(metadata, Array.get(val, i), field, annotation);
+				}
+			} else if (Collection.class.isAssignableFrom(field.getType())) {
+				for (Object o : (Collection<?>) val) {
+					super.process(metadata, o, field, annotation);
+				}
+			} else {
+				super.process(metadata, val, field, annotation);
+			}
+		}
+	}
 }

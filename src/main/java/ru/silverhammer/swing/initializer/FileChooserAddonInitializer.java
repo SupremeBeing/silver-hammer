@@ -26,6 +26,7 @@
 package ru.silverhammer.swing.initializer;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.lang.reflect.Field;
 
@@ -36,7 +37,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.initializer.IInitializer;
-import ru.silverhammer.core.processor.IStringProcessor;
+import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
 
@@ -51,6 +52,7 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 	@Override
 	public void init(Control<String, JTextField> control, FileChooserAddon annotation, Object data, Field field) {
 		JButton button = new JButton(processor.getString(annotation.buttonCaption()));
+		button.setMargin(new Insets(0, 5, 0, 5));
 		control.add(button, BorderLayout.EAST);
 		button.addActionListener((e) -> showDialog(annotation, control));
 	}
@@ -77,10 +79,10 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 			dlg.setAcceptAllFileFilterUsed(true);
 		}
 		
-		if (annotation.initialDirectory().length() > 0) {
+		if (control.getValue() != null) {
+			dlg.setCurrentDirectory(new File(control.getValue()).getParentFile());
+		} else if (annotation.initialDirectory().length() > 0) {
 			dlg.setCurrentDirectory(new File(annotation.initialDirectory()));
-		} else if (control.getValue() != null) {
-			dlg.setCurrentDirectory(new File(control.getValue()));
 		}
 
 		String approveCaption = processor.getString(annotation.approveCaption());
