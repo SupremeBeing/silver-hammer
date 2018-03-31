@@ -29,12 +29,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
+import ru.silverhammer.common.Reflector;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
+import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.metadata.ControlAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
@@ -46,11 +50,13 @@ public class ControlFieldProcessor implements IProcessor {
 	private final IStringProcessor stringProcessor;
 	private final Injector injector;
 	private final IControlResolver controlResolver;
+	private final FieldProcessor fieldProcessor;
 	
-	public ControlFieldProcessor(@Inject Injector injector, @Inject IStringProcessor stringProcessor, @Inject IControlResolver controlResolver) {
+	public ControlFieldProcessor(@Inject Injector injector, @Inject IStringProcessor stringProcessor, @Inject IControlResolver controlResolver, @Inject FieldProcessor fieldProcessor) {
 		this.injector = injector;
 		this.stringProcessor = stringProcessor;
 		this.controlResolver = controlResolver;
+		this.fieldProcessor = fieldProcessor;
 	}
 
 	@Override
@@ -61,8 +67,23 @@ public class ControlFieldProcessor implements IProcessor {
 			if (member instanceof Field) {
 				Field field = (Field) member;
 				addControlAttributes(metadata, field.getAnnotation(GroupId.class), createControlAttributes(control, data, field));
+				initializeControl(control, data, field);
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initializeControl(IControl<?> control, Object data, Field field) {
+		for (Annotation annotation : field.getAnnotations()) {
+			InitializerReference ir = annotation.annotationType().getAnnotation(InitializerReference.class);
+			if (ir != null) {
+				IInitializer<IControl<?>, Annotation> initializer = (IInitializer<IControl<?>, Annotation>) injector.instantiate(ir.value());
+				initializer.init(control, annotation, data, field);
+			}
+		}
+		Object value = Reflector.getFieldValue(data, field);
+		value = fieldProcessor.getControlValue(value, field);
+		((IControl<Object>) control).setValue(value);
 	}
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {

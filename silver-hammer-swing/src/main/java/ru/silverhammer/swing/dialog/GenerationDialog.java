@@ -28,9 +28,9 @@ package ru.silverhammer.swing.dialog;
 import java.awt.Container;
 import java.awt.Window;
 
-import ru.silverhammer.core.UiGenerator;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IControlListener;
+import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.SimpleStringProcessor;
@@ -42,8 +42,8 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 
 	private static final long serialVersionUID = 414732643695055693L;
 
-	private final UiGenerator<Container> generator;
-	private final UiMetadata metadata = new UiMetadata();
+	private final MetadataCollector collector;
+	private final UiMetadata metadata;
 
 	public GenerationDialog(Window owner, Object... data) {
 		this(owner, new SimpleStringProcessor(), data);
@@ -51,9 +51,11 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 
 	public GenerationDialog(Window owner, IStringProcessor stringProcessor, Object... data) {
 		super(owner);
-		generator = new UiGenerator<>(new SwingControlResolver(), new SwingUiBuilder(), stringProcessor);
-		Container container = generator.generate(metadata, data);
-		setCanAccept(generator.isValid(metadata));
+		collector = new MetadataCollector(new SwingControlResolver(), stringProcessor);
+		metadata = collector.collect(data);
+		SwingUiBuilder builder = new SwingUiBuilder();
+		Container container = builder.buildUi(metadata);
+		setCanAccept(collector.isValid(metadata));
 		metadata.visitControlAttributes((ca) -> ca.getControl().addControlListener(this));
 		setContent(container);
 		setLocationRelativeTo(owner);
@@ -61,11 +63,11 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 	
 	@Override
 	public void valueChanged(IControl<?> control) {
-		setCanAccept(generator.isValid(metadata));
+		setCanAccept(collector.isValid(metadata));
 	}
 	
 	@Override
 	protected void accepted() {
-		generator.commit(metadata);
+		collector.commit(metadata);
 	}
 }
