@@ -12,13 +12,13 @@ Currently only Swing implementation is present. JavaFX and web implementations a
 ```java
 public class Person {
 		
-	@Caption("Name")
 	@Text
+	@Caption("Name")
 	@MinSize(value = 1, message = "Name must be specified")
 	private String name;
 		
-	@Caption("E-mail")
 	@Text
+	@Caption("E-mail")
 	@StringFormat(format = "\\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\\b", message = "Invalid e-mail")
 	@MinSize(value = 1, message = "E-mail must be specified")
 	private String email;
