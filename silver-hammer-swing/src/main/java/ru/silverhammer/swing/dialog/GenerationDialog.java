@@ -33,6 +33,7 @@ import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IControlListener;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.core.string.SimpleStringProcessor;
 import ru.silverhammer.swing.SwingControlResolver;
 import ru.silverhammer.swing.SwingUiBuilder;
 import ru.silverhammer.swing.dialog.StandardDialog;
@@ -43,7 +44,11 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 
 	private final UiGenerator<Container> generator;
 	private final UiMetadata metadata = new UiMetadata();
-	
+
+	public GenerationDialog(Window owner, Object... data) {
+		this(owner, new SimpleStringProcessor(), data);
+	}
+
 	public GenerationDialog(Window owner, IStringProcessor stringProcessor, Object... data) {
 		super(owner);
 		generator = new UiGenerator<>(new SwingControlResolver(), new SwingUiBuilder(), stringProcessor);
@@ -51,6 +56,7 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 		setCanAccept(generator.isValid(metadata));
 		metadata.visitControlAttributes((ca) -> ca.getControl().addControlListener(this));
 		setContent(container);
+		setLocationRelativeTo(owner);
 	}
 	
 	@Override
