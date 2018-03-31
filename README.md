@@ -9,7 +9,7 @@ Currently only Swing implementation is present. JavaFX and web implementations a
 ## Example
 
 ### Sample data
-```
+```java
 public class Person {
 		
 	@Caption("Name")
@@ -27,7 +27,7 @@ public class Person {
 ```
 
 ### Execution
-```
+```java
 Person person = new Person();
 GenerationDialog dialog = new GenerationDialog(null, person);
 dialog.setTitle("Person");
