@@ -1,6 +1,6 @@
 TODO.txt
 */target/*
-*/bin/*
+/bin/*
 .classpath
 .project
 /.settings
