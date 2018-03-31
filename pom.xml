@@ -3,14 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
      
 	<groupId>ru.silverhammer</groupId>
-	<artifactId>silverhammer</artifactId>
+	<artifactId>silver-hammer</artifactId>
 	<version>1.0.4-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
      
 	<name>Silver Hammer</name>
 	<description>Extensible annotation-based user interface generation framework</description>
 	<url>https://github.com/SupremeBeing/Silver-Hammer</url>
  
+	<modules>
+		<module>silver-hammer-core</module>
+		<module>silver-hammer-swing</module>
+	</modules>
+	
 	<build>
 		<plugins>
 			<plugin>
