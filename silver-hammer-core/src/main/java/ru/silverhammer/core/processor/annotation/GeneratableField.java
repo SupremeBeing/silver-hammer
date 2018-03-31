@@ -31,9 +31,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ValidatorMethodProcessor;
+import ru.silverhammer.core.processor.GeneratableFieldProcessor;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ValidatorMethodProcessor.class)
-public @interface ValidatorMarker {}
+@ProcessorReference(GeneratableFieldProcessor.class)
+public @interface GeneratableField {}

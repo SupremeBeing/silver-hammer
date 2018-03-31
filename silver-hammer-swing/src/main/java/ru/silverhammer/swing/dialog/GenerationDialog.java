@@ -42,7 +42,6 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 
 	private static final long serialVersionUID = 414732643695055693L;
 
-	private final MetadataCollector collector;
 	private final UiMetadata metadata;
 
 	public GenerationDialog(Window owner, Object... data) {
@@ -51,11 +50,11 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 
 	public GenerationDialog(Window owner, IStringProcessor stringProcessor, Object... data) {
 		super(owner);
-		collector = new MetadataCollector(new SwingControlResolver(), stringProcessor);
+		MetadataCollector collector = new MetadataCollector(new SwingControlResolver(), stringProcessor);
 		metadata = collector.collect(data);
 		SwingUiBuilder builder = new SwingUiBuilder();
 		Container container = builder.buildUi(metadata);
-		setCanAccept(collector.isValid(metadata));
+		setCanAccept(metadata.isValid());
 		metadata.visitControlAttributes((ca) -> ca.getControl().addControlListener(this));
 		setContent(container);
 		setLocationRelativeTo(owner);
@@ -63,11 +62,11 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 	
 	@Override
 	public void valueChanged(IControl<?> control) {
-		setCanAccept(collector.isValid(metadata));
+		setCanAccept(metadata.isValid());
 	}
 	
 	@Override
 	protected void accepted() {
-		collector.commit(metadata);
+		metadata.commit();
 	}
 }

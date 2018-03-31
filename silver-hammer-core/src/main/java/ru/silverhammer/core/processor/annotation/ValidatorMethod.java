@@ -31,9 +31,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.InitializerMethodProcessor;
+import ru.silverhammer.core.processor.ValidatorMethodProcessor;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(InitializerMethodProcessor.class)
-public @interface InitializerMarker {}
+@ProcessorReference(ValidatorMethodProcessor.class)
+public @interface ValidatorMethod {}

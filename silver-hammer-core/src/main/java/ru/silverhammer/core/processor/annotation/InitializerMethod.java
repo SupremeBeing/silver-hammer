@@ -31,9 +31,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.GeneratableFieldProcessor;
+import ru.silverhammer.core.processor.InitializerMethodProcessor;
 
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(GeneratableFieldProcessor.class)
-public @interface GeneratableMarker {}
+@ProcessorReference(InitializerMethodProcessor.class)
+public @interface InitializerMethod {}

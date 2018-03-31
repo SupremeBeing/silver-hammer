@@ -25,21 +25,37 @@
  */
 package ru.silverhammer.core.metadata;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import ru.silverhammer.common.Reflector;
+import ru.silverhammer.common.injection.Injector;
+import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.control.IValidatableControl;
+import ru.silverhammer.core.string.IStringProcessor;
 
 public class UiMetadata {
 
+	private final Injector injector;
+	private final FieldProcessor fieldProcessor;
+	private final IStringProcessor stringProcessor;
+	
 	private final List<CategoryAttributes> categories = new ArrayList<>();
 	private final List<GroupAttributes> groups = new ArrayList<>();
 	private final List<MethodAttributes> initializers = new ArrayList<>();
 	private final List<MethodAttributes> validators = new ArrayList<>();
+
+	UiMetadata(Injector injector, FieldProcessor fieldProcessor, IStringProcessor stringProcessor) {
+		this.injector = injector;
+		this.fieldProcessor = fieldProcessor;
+		this.stringProcessor = stringProcessor;
+	}
 
 	public void addInitializer(MethodAttributes attributes) {
 		if (attributes != null) {
@@ -186,4 +202,83 @@ public class UiMetadata {
 	public <T extends IControl<?>> T findControl(Object data, String fieldName) {
 		return findControl(data, data.getClass(), fieldName);
 	}
+	
+	public void commit() {
+		visitControlAttributes((c) -> commit(c.getData(), c.getField(), c.getControl()));
+	}
+
+	private void commit(Object data, Field field, IControl<?> control) {
+		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
+		Reflector.setFieldValue(data, field, value);		
+	}
+
+	public boolean isValid() {
+		return findControlAttributes((ca) -> !isControlValid(ca.getControl())) == null && validateMethods();		
+	}
+	
+	private boolean isControlValid(IControl<?> control) {
+		if (control instanceof IValidatableControl) {
+			return ((IValidatableControl<?>) control).isControlValid();
+		}
+		return true;
+	}
+
+	void initialize() {
+		initializeMethods();
+		visitControlAttributes((ca) -> init(ca.getControl(), ca.getField()));
+		validateMethods();	
+	}
+
+	private void init(IControl<?> control, Field field) {
+		validateControl(control, field);	
+		control.addControlListener((c) -> {
+			validateControl(control, field);	
+			validateMethods();
+		});
+	}
+
+	private void validateControl(IControl<?> control, Field field) {
+		if (control instanceof IValidatableControl) {
+			Object value = control.getValue();
+			Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
+			String msg = getValidationMessage(invalidAnnotation);
+			((IValidatableControl<?>) control).setValidationMessage(msg);
+		}
+	}
+	
+	private boolean validateMethods() {
+		boolean result = true;
+		for (MethodAttributes ma : getValidators()) {
+			Object valid = injector.invoke(ma.getData(), ma.getMethod());
+			if (valid instanceof Boolean) {
+				result &= (Boolean) valid;
+			}
+		}
+		return result;
+	}
+	
+	private void initializeMethods() {
+		for (MethodAttributes ma : getInitializers()) {
+			injector.invoke(ma.getData(), ma.getMethod());
+		}
+	}
+	
+	private String getValidationMessage(Annotation annotation) {
+		if (annotation != null) {
+			List<Object> params = new ArrayList<>();
+			String message = null;
+			for (Method method : annotation.annotationType().getDeclaredMethods()) {
+				Object value = Reflector.invoke(annotation, method);
+				if ("message".equals(method.getName())) {
+					message = value.toString();
+				} else {
+					params.add(value);
+				}
+			}
+			if (message != null) {
+				return String.format(stringProcessor.getString(message), params.toArray(new Object[params.size()]));
+			}
+		}
+		return null;
+	}	
 }
