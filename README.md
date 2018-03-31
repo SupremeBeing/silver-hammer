@@ -11,6 +11,8 @@ Currently only Swing implementation is present. JavaFX and web implementations a
 ### Sample data
 ```java
 public class Person {
+
+	private static final String EMAIL = "\\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\\b";
 		
 	@Text
 	@Caption("Name")
@@ -19,7 +21,7 @@ public class Person {
 		
 	@Text
 	@Caption("E-mail")
-	@StringFormat(format = "\\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\\b", message = "Invalid e-mail")
+	@StringFormat(format = EMAIL, message = "Invalid e-mail")
 	@MinSize(value = 1, message = "E-mail must be specified")
 	private String email;
 
