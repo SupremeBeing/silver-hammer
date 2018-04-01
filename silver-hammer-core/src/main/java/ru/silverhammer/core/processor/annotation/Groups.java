@@ -45,7 +45,7 @@ public @interface Groups {
 	@ProcessorReference(StructureClassProcessor.class)
 	public @interface Group {
 
-		int id();
+		String value();
 		
 		String caption() default "";
 		

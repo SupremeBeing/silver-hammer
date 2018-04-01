@@ -27,6 +27,7 @@ package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Objects;
 
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.metadata.CategoryAttributes;
@@ -51,13 +52,13 @@ public class StructureClassProcessor implements IProcessor {
 		if (annotation instanceof Groups) {
 			Groups groups = (Groups) annotation;
 			for (Group group : groups.value()) {
-				if (metadata.findGroupAttributes((g) -> g.getId() == group.id()) == null) {
+				if (metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), group.value())) == null) {
 					metadata.addGroupAttributes(createGroupAttributes(group));
 				}
 			}
 		} else if (annotation instanceof Group) {
 			Group group = (Group) annotation;
-			if (metadata.findGroupAttributes((g) -> g.getId() == group.id()) == null) {
+			if (metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), group.value())) == null) {
 				metadata.addGroupAttributes(createGroupAttributes(group));
 			}
 		} else if (annotation instanceof Categories) {
@@ -90,7 +91,7 @@ public class StructureClassProcessor implements IProcessor {
 	}
 
 	private GroupAttributes createGroupAttributes(Group group) {
-		GroupAttributes result = new GroupAttributes(group.id());
+		GroupAttributes result = new GroupAttributes(group.value());
 		result.setCaption(group.caption().trim().length() > 0 ? stringProcessor.getString(group.caption()) : null);
 		return result;
 	}

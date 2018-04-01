@@ -28,6 +28,7 @@ package ru.silverhammer.core.processor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import ru.silverhammer.common.Reflector;
 import ru.silverhammer.common.injection.Inject;
@@ -87,8 +88,8 @@ public class ControlFieldProcessor implements IProcessor {
 	}
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {
-		int groupId = gi == null ? -1 : gi.value();
-		GroupAttributes group = metadata.findGroupAttributes((g) -> g.getId() == groupId);
+		String groupId = gi == null ? null : gi.value();
+		GroupAttributes group = metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), groupId));
 		if (group == null) {
 			group = new GroupAttributes(groupId);
 			metadata.addGroupAttributes(group);

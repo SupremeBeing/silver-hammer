@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2018, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,51 +23,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.metadata;
+package ru.silverhammer.swing.demo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-public class GroupAttributes implements Iterable<ControlAttributes> {
-	
-	private final String id;
-	private final List<ControlAttributes> controls = new ArrayList<>();
-
-	private String caption;
-
-	public GroupAttributes(String id) {
-		this.id = id;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public String getCaption() {
-		return caption;
-	}
-	
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
-	@Override
-	public Iterator<ControlAttributes> iterator() {
-		return controls.iterator();
-	}
-
-	public boolean isEmpty() {
-		return controls.size() == 0;
-	}
-	
-	public void addControlAttributes(ControlAttributes attributes) {
-		if (attributes != null) {
-			controls.add(attributes);
-		}
-	}
-	
-	public void removeControlAttributes(ControlAttributes attributes) {
-		controls.remove(attributes);
-	}
+public enum Sex {
+	Male,
+	Female;
 }

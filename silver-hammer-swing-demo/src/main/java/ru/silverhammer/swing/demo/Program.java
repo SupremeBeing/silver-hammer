@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2018, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,51 +23,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.metadata;
+package ru.silverhammer.swing.demo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.core.string.MultilingualStringProcessor;
+import ru.silverhammer.swing.dialog.GenerationDialog;
 
-public class GroupAttributes implements Iterable<ControlAttributes> {
-	
-	private final String id;
-	private final List<ControlAttributes> controls = new ArrayList<>();
+public class Program {
 
-	private String caption;
-
-	public GroupAttributes(String id) {
-		this.id = id;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public String getCaption() {
-		return caption;
-	}
-	
-	public void setCaption(String caption) {
-		this.caption = caption;
+	public static void main(String... args) throws Exception {
+		Settings settings = new Settings();
+		User user = new User();
+		IStringProcessor stringProcessor = new MultilingualStringProcessor("messages");
+		GenerationDialog dialog = new GenerationDialog(null, stringProcessor, settings, user);
+		dialog.setTitle("Silver Hammer Demo");
+		dialog.setVisible(true);
 	}
 
-	@Override
-	public Iterator<ControlAttributes> iterator() {
-		return controls.iterator();
-	}
-
-	public boolean isEmpty() {
-		return controls.size() == 0;
-	}
-	
-	public void addControlAttributes(ControlAttributes attributes) {
-		if (attributes != null) {
-			controls.add(attributes);
-		}
-	}
-	
-	public void removeControlAttributes(ControlAttributes attributes) {
-		controls.remove(attributes);
-	}
 }
