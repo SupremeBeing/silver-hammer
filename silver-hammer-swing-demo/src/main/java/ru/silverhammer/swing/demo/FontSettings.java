@@ -30,10 +30,11 @@ import java.awt.Color;
 import ru.silverhammer.common.VerticalAlignment;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.control.annotation.ColorChooser;
-import ru.silverhammer.core.control.annotation.ComboBox;
 import ru.silverhammer.core.control.annotation.List;
 import ru.silverhammer.core.control.annotation.Slider;
+import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.SliderProperties;
 import ru.silverhammer.swing.converter.annotation.IntegerToColor;
@@ -42,7 +43,6 @@ import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
 public class FontSettings {
 	
 	private enum Style {
-		Regular,
 		Bold {
 			@Override
 			public String toString() {
@@ -75,11 +75,12 @@ public class FontSettings {
 	@SliderProperties(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	private int size = 12;
 
-	@ComboBox
+	@CheckBoxGroup
 	@GroupId("font")
-	@Caption("Style")
-	@EnumerationItems
-	private Style style = Style.Bold;
+	@Caption(value = "Style", verticalAlignment = VerticalAlignment.Top)
+	@EnumerationItems(Style.class)
+	@ArrayToList(Style.class)
+	private Style[] style = {Style.Bold, Style.Strikeout};
 	
 	@ColorChooser
 	@GroupId("font")
