@@ -27,10 +27,12 @@ package ru.silverhammer.swing.demo;
 
 import java.awt.Color;
 
+import ru.silverhammer.common.VerticalAlignment;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.annotation.ColorChooser;
 import ru.silverhammer.core.control.annotation.ComboBox;
+import ru.silverhammer.core.control.annotation.List;
 import ru.silverhammer.core.control.annotation.Slider;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.SliderProperties;
@@ -61,15 +63,15 @@ public class FontSettings {
 		};
 	}
 
-	@ComboBox
+	@List
 	@GroupId("font")
-	@Caption("Family")
+	@Caption(value = "Family", verticalAlignment = VerticalAlignment.Top)
 	@FontFamilyItems
 	private String family = "Tahoma";
 
 	@Slider
 	@GroupId("font")
-	@Caption("Size")
+	@Caption(value = "Size", verticalAlignment = VerticalAlignment.Top)
 	@SliderProperties(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	private int size = 12;
 
@@ -82,5 +84,5 @@ public class FontSettings {
 	@ColorChooser
 	@GroupId("font")
 	@IntegerToColor
-	private int color = Color.RED.getRGB();
+	private int color = Color.GREEN.darker().darker().getRGB();
 }

@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.demo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -74,7 +75,7 @@ public class User {
 	@Text
 	@GroupId("user")
 	@Caption(value = "Date of birth")
-	@DateFormat(format = "dd/MM/yyyy", message = "Date of birth should be in %s format.")
+	@DateFormat(format = "dd/MM/yyyy", message = "Date of birth should be in %s format")
 	@MinDate(format = "dd/MM/yyyy", value = "01/01/1800", message = "Are you a human?")
 	@MaxDate(format = "dd/MM/yyyy", value = "01/01/2019", message = "Are you from the future?")
 	@NotNullable(message = "Date of birth must be specified")
@@ -96,6 +97,12 @@ public class User {
 	@GroupId("user")
 	@Caption(value = "Spoken languages", location = Location.Top)
 	@StringItems({"English", "Russian", "Spanish", "German", "Italian"})
-	private Collection<String> languages;
+	private Collection<String> languages = new ArrayList<String>() {
+		private static final long serialVersionUID = 1988350958145919237L;
+		{
+			add("English");
+			add("Russian");
+		}
+	};
 
 }

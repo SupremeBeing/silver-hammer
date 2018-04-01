@@ -26,10 +26,15 @@
 package ru.silverhammer.swing.demo;
 
 import ru.silverhammer.core.processor.annotation.GeneratableField;
+import ru.silverhammer.core.processor.annotation.InitializerMethod;
+import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
 import ru.silverhammer.core.control.annotation.RadioGroup;
@@ -37,8 +42,10 @@ import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.converter.annotation.MapToList;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.StringItems;
+import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.swing.control.TableControl;
 
 @Category(caption = "Properties", mnemonic = 'p', groups = {
 		@Group(value = "props")
@@ -61,12 +68,33 @@ public class Settings {
 	@GroupId("props")
 	@ControlProperties(value = ValueType.Content, visibleRows = 10, captions = {"Key", "Value"})
 	@MapToList(LinkedHashMap.class)
-	private Map<String, Object> properties = new LinkedHashMap<String, Object>() {
-		private static final long serialVersionUID = 7885610738307123806L;
-		{
-			put("maven.test.skip", true);
-			put("JDK version", "1.8.0");
-			put("timeout.interval", 100);
+	private Map<String, Object> properties;
+	
+	@InitializerMethod
+	private void initializeTable(@Inject UiMetadata metadata) {
+		TableControl table = metadata.findControl(this, "properties");
+		table.addItem(new Object[] {"maven.test.skip", true});
+		table.addItem(new Object[] {"JDK version", "1.8.0"});
+		table.addItem(new Object[] {"timeout.interval", 100});
+		table.addItem(new Object[] {"Current date", new Date()});
+	}
+	
+	@ValidatorMethod
+	private boolean validateTable(@Inject UiMetadata metadata) {
+		TableControl table = metadata.findControl(this, "properties");
+		if (table.isControlValid() && !hasProperty(table, "required.key")) {
+			table.setValidationMessage("Missing required property \"required.property\"");
 		}
-	};
+		return true;
+	}
+	
+	private boolean hasProperty(TableControl table, String key) {
+		for (int i = 0; i < table.getItemCount(); i++) {
+			Object[] row = table.getItem(i);
+			if (row.length > 0 && Objects.equals(row[0], key)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
