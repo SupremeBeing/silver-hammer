@@ -23,25 +23,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.swing.demo;
+package ru.silverhammer.swing.demo.user;
 
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.core.string.MultilingualStringProcessor;
-import ru.silverhammer.swing.demo.settings.Environment;
-import ru.silverhammer.swing.demo.settings.Settings;
-import ru.silverhammer.swing.demo.user.User;
-import ru.silverhammer.swing.dialog.GenerationDialog;
+import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.annotation.Label;
+import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
 
-public class Program {
+@Category(caption = "Achievements", mnemonic = 'a', groups = {
+		@Group("list")
+})
+public class Achievement {
 
-	public static void main(String... args) throws Exception {
-		Environment env = new Environment();
-		Settings settings = new Settings();
-		User user = new User();
-		IStringProcessor stringProcessor = new MultilingualStringProcessor("messages");
-		GenerationDialog dialog = new GenerationDialog(null, stringProcessor, user, env, settings);
-		dialog.setTitle("Silver Hammer Demo");
-		dialog.setVisible(true);
+	@Label
+	@GroupId("list")
+	private String name;
+	
+	public Achievement(String name) {
+		this.name = name;
 	}
-
 }

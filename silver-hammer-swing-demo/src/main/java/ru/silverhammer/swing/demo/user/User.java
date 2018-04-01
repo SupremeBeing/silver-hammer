@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.swing.demo;
+package ru.silverhammer.swing.demo.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,15 +31,24 @@ import java.util.Date;
 
 import ru.silverhammer.common.Location;
 import ru.silverhammer.core.Caption;
+import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.IValueTypeControl.ValueType;
+import ru.silverhammer.core.control.annotation.CheckBox;
 import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.control.annotation.ComboBox;
+import ru.silverhammer.core.control.annotation.Label;
 import ru.silverhammer.core.control.annotation.Password;
+import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.TextArea;
+import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.converter.annotation.ValueToItems;
+import ru.silverhammer.core.initializer.annotation.AnnotatedCaptions;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.StringItems;
+import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.validator.annotation.DateFormat;
@@ -48,61 +57,95 @@ import ru.silverhammer.core.validator.annotation.MinDate;
 import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.validator.annotation.NotNullable;
 import ru.silverhammer.core.validator.annotation.StringFormat;
+import ru.silverhammer.swing.demo.user.UserGroup.Type;
 
-@Category(caption = "User", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {@Group("user")})
+@Category(caption = "user.tab", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {
+		@Group("user"),
+		@Group(value = "langs", caption = "user.langs"),
+		@Group(value = "groups", caption = "user.groups")
+})
 public class User {
 
 	private static final String EMAIL = "\\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\\b";
 		
 	@Text
 	@GroupId("user")
-	@Caption("Name")
+	@Caption("user.name")
 	@MinSize(value = 1, message = "Name must be specified")
 	private String name;
 
 	@Password
 	@GroupId("user")
-	@Caption("Password")
+	@Caption("user.password")
 	private char[] password;
 
 	@Text
 	@GroupId("user")
-	@Caption("E-mail")
+	@Caption("user.email")
 	@StringFormat(format = EMAIL, message = "Invalid e-mail")
 	@MinSize(value = 1, message = "E-mail must be specified")
 	private String email;
 
 	@Text
 	@GroupId("user")
-	@Caption(value = "Date of birth")
+	@Caption(value = "user.birth")
 	@DateFormat(format = "dd/MM/yyyy", message = "Date of birth should be in %s format")
 	@MinDate(format = "dd/MM/yyyy", value = "01/01/1800", message = "Are you a human?")
 	@MaxDate(format = "dd/MM/yyyy", value = "01/01/2019", message = "Are you from the future?")
 	@NotNullable(message = "Date of birth must be specified")
-	private Date date;
+	private Date birthDate;
 
 	@ComboBox
 	@GroupId("user")
-	@Caption("Sex")
+	@Caption("user.sex")
 	@EnumerationItems
 	private Sex sex = Sex.Male;
 
+	@Label
+	@GroupId("user")
+	@Caption("user.creation")
+	@DateFormat(format = "dd/MM/yyyy", message = "Creation date should be in %s format")
+	private Date date = new Date(0);
+
 	@TextArea
 	@GroupId("user")
-	@Caption(value = "Description", location = Location.Top)
+	@Caption(value = "user.description", location = Location.Top)
+	@Description("<html>A free-form description of the user.<br/>Can contain multiple lines.</html>")
 	@ControlProperties(visibleRows = 5)
 	private String description;
 
 	@CheckBoxGroup
-	@GroupId("user")
-	@Caption(value = "Spoken languages", location = Location.Top)
+	@GroupId("langs")
 	@StringItems({"English", "Russian", "Spanish", "German", "Italian"})
+	@MinSize(value = 1, message = "Select at least one language")
 	private Collection<String> languages = new ArrayList<String>() {
 		private static final long serialVersionUID = 1988350958145919237L;
 		{
 			add("English");
 			add("Russian");
 		}
+	};
+
+	@Table
+	@GroupId("groups")
+	@AnnotatedCaptions(UserGroup.class)
+	@ControlProperties(value = ValueType.Content, visibleRows = 3)
+	@ValueToItems(UserGroup.class)
+	@ArrayToList(UserGroup.class)
+	private UserGroup[] groups = {
+			new UserGroup("Administrator", "Administration group", Type.Admin),
+			new UserGroup("Remote access", "Remote access group", Type.RemoteAccess)
+	};
+	
+	@CheckBox
+	@ControlProperties(captions = "user.visibility")
+	private boolean isPublic = true;
+	
+	@GeneratableField
+	private Achievement[] achievements = new Achievement[] {
+			new Achievement("Registered and filled in the profile with deceitful information."),
+			new Achievement("Failed to close the application ten times in a row."),
+			new Achievement("Made a mistake in a word \"pneumonoultramicroscopicsilicovolcanoconiosis\".")
 	};
 
 }

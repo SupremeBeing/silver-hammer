@@ -23,25 +23,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.swing.demo;
+package ru.silverhammer.swing.demo.user;
 
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.core.string.MultilingualStringProcessor;
-import ru.silverhammer.swing.demo.settings.Environment;
-import ru.silverhammer.swing.demo.settings.Settings;
-import ru.silverhammer.swing.demo.user.User;
-import ru.silverhammer.swing.dialog.GenerationDialog;
+import ru.silverhammer.core.Caption;
+import ru.silverhammer.core.control.annotation.Text;
 
-public class Program {
-
-	public static void main(String... args) throws Exception {
-		Environment env = new Environment();
-		Settings settings = new Settings();
-		User user = new User();
-		IStringProcessor stringProcessor = new MultilingualStringProcessor("messages");
-		GenerationDialog dialog = new GenerationDialog(null, stringProcessor, user, env, settings);
-		dialog.setTitle("Silver Hammer Demo");
-		dialog.setVisible(true);
+public class UserGroup {
+	
+	public enum Type {
+		Admin,
+		Guest,
+		User,
+		Operator,
+		RemoteAccess;
 	}
 
+	@Text
+	@Caption("Name")
+	private String name;
+	
+	@Text
+	@Caption("Description")
+	private String description;
+
+	@Text
+	@Caption("Type")
+	private Type type;
+	
+	public UserGroup() {}
+	
+	public UserGroup(String name, String description, Type type) {
+		this.name = name;
+		this.description = description;
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Type getType() {
+		return type;
+	}
 }

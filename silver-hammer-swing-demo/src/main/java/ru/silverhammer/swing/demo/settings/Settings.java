@@ -23,9 +23,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.swing.demo;
+package ru.silverhammer.swing.demo.settings;
 
-public enum Sex {
-	Male,
-	Female;
+import ru.silverhammer.core.processor.annotation.GeneratableField;
+
+import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.annotation.RadioGroup;
+import ru.silverhammer.core.initializer.annotation.StringItems;
+import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
+
+@Category(caption = "Settings", mnemonic = 's', groups = {
+		@Group(value = "lang", caption = "Programming language"),
+		@Group(value = "font", caption = "Font")
+})
+public class Settings {
+
+	@RadioGroup
+	@GroupId("lang")
+	@StringItems({"Java", "C#", "C++", "Python", "JavaScript", "PHP"})
+	private String language = "Java";
+
+	@GeneratableField
+	private FontSettings fontSettings = new FontSettings();
+	
 }

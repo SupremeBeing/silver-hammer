@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.swing.demo;
+package ru.silverhammer.swing.demo.settings;
 
 import java.awt.Color;
 
@@ -65,19 +65,19 @@ public class FontSettings {
 
 	@List
 	@GroupId("font")
-	@Caption(value = "Family", verticalAlignment = VerticalAlignment.Top)
+	@Caption(value = "Family:", verticalAlignment = VerticalAlignment.Top)
 	@FontFamilyItems
 	private String family = "Tahoma";
 
 	@Slider
 	@GroupId("font")
-	@Caption(value = "Size", verticalAlignment = VerticalAlignment.Top)
+	@Caption(value = "Size:", verticalAlignment = VerticalAlignment.Top)
 	@SliderProperties(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	private int size = 12;
 
 	@CheckBoxGroup
 	@GroupId("font")
-	@Caption(value = "Style", verticalAlignment = VerticalAlignment.Top)
+	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
 	@EnumerationItems(Style.class)
 	@ArrayToList(Style.class)
 	private Style[] style = {Style.Bold, Style.Strikeout};
