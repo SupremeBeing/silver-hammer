@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.demo.user;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -43,6 +44,7 @@ import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.TextArea;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.initializer.annotation.AnnotatedCaptions;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
@@ -52,12 +54,14 @@ import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.validator.annotation.DateFormat;
+import ru.silverhammer.core.validator.annotation.FileExists;
 import ru.silverhammer.core.validator.annotation.MaxDate;
 import ru.silverhammer.core.validator.annotation.MinDate;
 import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.validator.annotation.NotNullable;
 import ru.silverhammer.core.validator.annotation.StringFormat;
 import ru.silverhammer.swing.demo.user.UserGroup.Type;
+import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
 
 @Category(caption = "user.tab", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {
 		@Group("user"),
@@ -101,6 +105,15 @@ public class User {
 	@EnumerationItems
 	private Sex sex = Sex.Male;
 
+	@Text
+	@GroupId("user")
+	@Caption("user.avatar")
+	@FileChooserAddon(approveCaption = "Select image", filters = {"JPG | jpg, jpeg", "PNG | png"})
+	@ControlProperties(readOnly = true)
+	@FileExists(message = "File doesn't exist")
+	@FileToString
+	private File file;
+
 	@Label
 	@GroupId("user")
 	@Caption("user.creation")
@@ -133,8 +146,8 @@ public class User {
 	@ValueToItems(UserGroup.class)
 	@ArrayToList(UserGroup.class)
 	private UserGroup[] groups = {
-			new UserGroup("Administrator", "Administration group", Type.Admin),
-			new UserGroup("Remote access", "Remote access group", Type.RemoteAccess)
+			new UserGroup("Administrator", "Group of system administrators", Type.Admin),
+			new UserGroup("Remote user", "Remote access is granted for this group", Type.RemoteAccess)
 	};
 	
 	@CheckBox
@@ -147,5 +160,4 @@ public class User {
 			new Achievement("Failed to close the application ten times in a row."),
 			new Achievement("Made a mistake in a word \"pneumonoultramicroscopicsilicovolcanoconiosis\".")
 	};
-
 }

@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import ru.silverhammer.common.Location;
 import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.ICollectionControl;
@@ -43,6 +44,8 @@ import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
+import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
 
 @Category(caption = "Environment", mnemonic = 'e', groups = {
 		@Group(value = "env")
@@ -53,6 +56,10 @@ public class Environment {
 	@GroupId("env")
 	@ControlProperties(value = ValueType.Content, visibleRows = 10, captions = {"Key", "Value"})
 	@MapToList(LinkedHashMap.class)
+	@ButtonBarAddon(value = {
+			@Button(caption = "Add", icon = "/add.png", methodName = "addPressed"), 
+			@Button(caption = "Delete", icon = "/delete.png", methodName = "deletePressed") 
+	}, location = Location.Right)
 	private Map<String, Object> properties;
 	
 	@InitializerMethod
@@ -70,7 +77,7 @@ public class Environment {
 		if (table instanceof IValidatableControl) {
 			IValidatableControl<?> control = (IValidatableControl<?>) table;
 			if (control.isControlValid() && !hasProperty(table, "required.key")) {
-				control.setValidationMessage("Missing required property \"required.property\"");
+				control.setValidationMessage("Missing required property \"required.key\"");
 			}
 		}
 		return true;
@@ -86,4 +93,15 @@ public class Environment {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
+	private void addPressed(@Inject UiMetadata metadata) {
+		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
+		table.addItem(new Object[] {"required.key", "unused"});
+	}
+
+	@SuppressWarnings("unused")
+	private void deletePressed(@Inject UiMetadata metadata) {
+		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
+		table.removeItem(table.getItemCount() - 1);
+	}
 }

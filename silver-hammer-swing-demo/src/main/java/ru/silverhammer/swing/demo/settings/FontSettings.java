@@ -27,6 +27,7 @@ package ru.silverhammer.swing.demo.settings;
 
 import java.awt.Color;
 
+import ru.silverhammer.common.Location;
 import ru.silverhammer.common.VerticalAlignment;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
@@ -84,6 +85,7 @@ public class FontSettings {
 	
 	@ColorChooser
 	@GroupId("font")
+	@Caption(value = "Color:", location = Location.Top)
 	@IntegerToColor
 	private int color = Color.GREEN.darker().darker().getRGB();
 }
