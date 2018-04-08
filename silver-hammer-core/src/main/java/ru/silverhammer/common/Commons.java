@@ -25,24 +25,33 @@
  */
 package ru.silverhammer.common;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public final class Commons {
 
 	private Commons() {}
 
 	public static Number convertNumber(Number value, Class<?> target) {
 		if (value != null) {
-			if (target == Byte.class || target == byte.class) {
-				return value.byteValue();
-			} else if (target == Short.class || target == short.class) {
-				return value.shortValue();
-			} else if (target == Integer.class || target == int.class) {
-				return value.intValue();
-			} else if (target == Long.class || target == long.class) {
-				return value.longValue();
-			} else if (target == Float.class || target == float.class) {
-				return value.floatValue();
-			} else if (target == Double.class || target == double.class) {
-				return value.doubleValue();
+			if (value.getClass() != target) {
+				if (target == Byte.class || target == byte.class) {
+					return value.byteValue();
+				} else if (target == Short.class || target == short.class) {
+					return value.shortValue();
+				} else if (target == Integer.class || target == int.class) {
+					return value.intValue();
+				} else if (target == Long.class || target == long.class) {
+					return value.longValue();
+				} else if (target == Float.class || target == float.class) {
+					return value.floatValue();
+				} else if (target == Double.class || target == double.class) {
+					return value.doubleValue();
+				} else if (target == BigInteger.class) {
+					return new BigInteger(Long.toString(value.longValue()));
+				} else if (target == BigDecimal.class) {
+					return value instanceof BigInteger ? new BigDecimal((BigInteger) value) : new BigDecimal(value.doubleValue());
+				}
 			}
 		} else if (target.isPrimitive()) {
 			if (target == byte.class) {
