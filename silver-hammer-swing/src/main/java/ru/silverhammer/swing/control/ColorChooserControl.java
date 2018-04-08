@@ -133,7 +133,7 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 		result.setMinimum(0);
 		result.setMaximum(255);
 		result.setMajorTickSpacing(50);
-		result.addChangeListener((l) -> updateColor());
+		result.addChangeListener(l -> updateColor());
 		return result;
 	}
 	

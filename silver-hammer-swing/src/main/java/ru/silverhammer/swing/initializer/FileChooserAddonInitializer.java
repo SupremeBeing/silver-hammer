@@ -54,7 +54,7 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 		JButton button = new JButton(processor.getString(annotation.buttonCaption()));
 		button.setMargin(new Insets(0, 5, 0, 5));
 		control.add(button, BorderLayout.EAST);
-		button.addActionListener((e) -> showDialog(annotation, control));
+		button.addActionListener(e -> showDialog(annotation, control));
 	}
 
 	private void showDialog(FileChooserAddon annotation, Control<String, JTextField> control) {

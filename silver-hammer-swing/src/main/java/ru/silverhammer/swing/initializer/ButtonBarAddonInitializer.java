@@ -79,7 +79,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 			} else {
 				button.setText(caption);
 			}
-			button.addActionListener((e) -> {
+			button.addActionListener(e -> {
 				Method method = Reflector.findMethod(data.getClass(), b.methodName());
 				injector.invoke(data, method);
 			});

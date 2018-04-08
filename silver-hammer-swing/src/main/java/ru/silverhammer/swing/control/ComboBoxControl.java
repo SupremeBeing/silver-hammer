@@ -41,7 +41,7 @@ public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object
 	public ComboBoxControl() {
 		super(false);
 		getComponent().setEditable(false);
-		getComponent().addItemListener((l) -> fireValueChanged());
+		getComponent().addItemListener(l -> fireValueChanged());
 		getComponent().addKeyListener(new SearchAdapter() {
 			@Override
 			protected void search(String search) {

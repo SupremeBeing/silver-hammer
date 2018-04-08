@@ -101,11 +101,11 @@ public class StandardDialog extends JDialog implements WindowListener {
 		acceptButton = new JButton("OK");
 		buttonPanel.add(acceptButton);
         getRootPane().setDefaultButton(acceptButton);
-        acceptButton.addActionListener((e) -> accept());
+        acceptButton.addActionListener(e -> accept());
 
 		cancelButton = new JButton("Cancel");
 		buttonPanel.add(cancelButton);
-        cancelButton.addActionListener((e) -> cancel());
+        cancelButton.addActionListener(e -> cancel());
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "CANCEL");
         getRootPane().getActionMap().put("CANCEL", new AbstractAction() {
 			private static final long serialVersionUID = -127075625119822228L;

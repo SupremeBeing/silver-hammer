@@ -55,7 +55,7 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 		SwingUiBuilder builder = new SwingUiBuilder();
 		Container container = builder.buildUi(metadata);
 		setCanAccept(metadata.isValid());
-		metadata.visitControlAttributes((ca) -> ca.getControl().addControlListener(this));
+		metadata.visitControlAttributes(ca -> ca.getControl().addControlListener(this));
 		setContent(container);
 		setLocationRelativeTo(owner);
 	}

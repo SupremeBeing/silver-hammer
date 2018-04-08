@@ -52,13 +52,13 @@ public class StructureClassProcessor implements IProcessor {
 		if (annotation instanceof Groups) {
 			Groups groups = (Groups) annotation;
 			for (Group group : groups.value()) {
-				if (metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), group.value())) == null) {
+				if (metadata.findGroupAttributes(g -> Objects.equals(g.getId(), group.value())) == null) {
 					metadata.addGroupAttributes(createGroupAttributes(group));
 				}
 			}
 		} else if (annotation instanceof Group) {
 			Group group = (Group) annotation;
-			if (metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), group.value())) == null) {
+			if (metadata.findGroupAttributes(g -> Objects.equals(g.getId(), group.value())) == null) {
 				metadata.addGroupAttributes(createGroupAttributes(group));
 			}
 		} else if (annotation instanceof Categories) {

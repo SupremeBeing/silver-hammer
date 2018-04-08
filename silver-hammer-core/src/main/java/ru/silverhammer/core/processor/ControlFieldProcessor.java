@@ -90,7 +90,7 @@ public class ControlFieldProcessor implements IProcessor {
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {
 		String groupId = gi == null ? null : gi.value();
-		GroupAttributes group = metadata.findGroupAttributes((g) -> Objects.equals(g.getId(), groupId));
+		GroupAttributes group = metadata.findGroupAttributes(g -> Objects.equals(g.getId(), groupId));
 		if (group == null) {
 			group = new GroupAttributes(groupId);
 			metadata.addGroupAttributes(group);

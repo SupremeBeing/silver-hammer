@@ -35,7 +35,7 @@ public class CheckBoxControl extends ValidatableControl<Boolean, JCheckBox> impl
 
 	public CheckBoxControl() {
 		super(false);
-		getComponent().getModel().addItemListener((l) -> fireValueChanged()); 
+		getComponent().getModel().addItemListener(l -> fireValueChanged()); 
 	}
 
 	@Override

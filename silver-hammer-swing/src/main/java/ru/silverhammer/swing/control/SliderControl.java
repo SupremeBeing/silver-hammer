@@ -35,7 +35,7 @@ public class SliderControl extends ValidatableControl<Integer, JSlider> implemen
 
 	public SliderControl() {
 		super(false);
-		getComponent().addChangeListener((l) -> fireValueChanged());
+		getComponent().addChangeListener(l -> fireValueChanged());
 	}
 	
 	@Override

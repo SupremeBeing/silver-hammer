@@ -67,7 +67,7 @@ public abstract class ButtonGroupControl<Value, Button extends AbstractButton>
 	protected Button createButton(Object item) {
 		Button button = createButton();
 		button.setText(item.toString());
-		button.addActionListener((l) -> fireValueChanged());
+		button.addActionListener(l -> fireValueChanged());
 		return button;
 	}
 	

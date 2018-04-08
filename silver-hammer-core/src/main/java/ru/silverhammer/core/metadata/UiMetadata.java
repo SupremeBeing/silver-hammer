@@ -225,7 +225,7 @@ public class UiMetadata {
 
 	void initialize() {
 		initializeMethods();
-		visitControlAttributes((ca) -> init(ca.getControl(), ca.getField()));
+		visitControlAttributes(ca -> init(ca.getControl(), ca.getField()));
 		validateMethods();	
 	}
 
