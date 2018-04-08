@@ -105,6 +105,13 @@ public class User {
 	@EnumerationItems
 	private Sex sex = Sex.Male;
 
+	@ComboBox
+	@GroupId("user")
+	@Caption("user.city")
+	@ControlProperties(editable = true)
+	@StringItems({"Paris", "New York", "Saint Petersburg", "Prague"})
+	private String city = "Saint Petersburg";	
+
 	@Text
 	@GroupId("user")
 	@Caption("user.avatar")

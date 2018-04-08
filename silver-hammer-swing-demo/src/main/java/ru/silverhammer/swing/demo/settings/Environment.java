@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.demo.settings;
 
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,8 +41,10 @@ import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
+import ru.silverhammer.core.control.annotation.Tree;
 import ru.silverhammer.core.converter.annotation.MapToList;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
+import ru.silverhammer.core.initializer.annotation.FileTreeItems;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
@@ -79,6 +82,13 @@ public class Environment {
 			@Button(caption = "Delete", icon = "/delete.png", methodName = "deletePressed") 
 	}, location = Location.Right)
 	private Map<String, Object> properties;
+	
+	@Tree
+	@GroupId("env")
+	@Caption(value = "Current directory:", location = Location.Top)
+	@ControlProperties(visibleRows = 10)
+	@FileTreeItems(".")
+	private File root;
 	
 	@InitializerMethod
 	private void initializeTable(@Inject UiMetadata metadata) {

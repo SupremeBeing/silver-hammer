@@ -35,9 +35,11 @@ import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.control.annotation.ColorChooser;
 import ru.silverhammer.core.control.annotation.List;
 import ru.silverhammer.core.control.annotation.Slider;
+import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.SliderProperties;
+import ru.silverhammer.core.validator.annotation.NumberFormat;
 import ru.silverhammer.swing.converter.annotation.IntegerToColor;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
 
@@ -64,6 +66,12 @@ public class FontSettings {
 		};
 	}
 
+	@Text
+	@GroupId("font")
+	@Caption("Line width:")
+	@NumberFormat(type = double.class, format = "#0.##", message = "Line width should be in %s format")
+	private double lineWidth = 1.2;
+
 	@List
 	@GroupId("font")
 	@Caption(value = "Family:", verticalAlignment = VerticalAlignment.Top)
@@ -82,7 +90,7 @@ public class FontSettings {
 	@EnumerationItems(Style.class)
 	@ArrayToList(Style.class)
 	private Style[] style = {Style.Bold, Style.Strikeout};
-	
+		
 	@ColorChooser
 	@GroupId("font")
 	@Caption(value = "Color:", location = Location.Top)
