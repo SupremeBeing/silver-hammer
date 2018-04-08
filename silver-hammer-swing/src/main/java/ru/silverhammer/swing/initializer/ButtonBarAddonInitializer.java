@@ -72,7 +72,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 			if (b.icon().length() > 0) {
 				URL url = getClass().getResource(b.icon());
 				ImageIcon icon = new ImageIcon(url);
-				Dimension d = new Dimension(icon.getIconWidth() + 10, icon.getIconHeight() + 10);
+				Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
 				button.setPreferredSize(d);
 				button.setIcon(icon);
 				button.setToolTipText(caption);

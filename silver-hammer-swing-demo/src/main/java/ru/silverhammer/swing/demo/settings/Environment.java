@@ -67,7 +67,7 @@ public class Environment {
 		private String value;
 
 	}
-
+	
 	@Table
 	@GroupId("env")
 	@ControlProperties(value = ValueType.Content, visibleRows = 10, captions = {"Key", "Value"})
