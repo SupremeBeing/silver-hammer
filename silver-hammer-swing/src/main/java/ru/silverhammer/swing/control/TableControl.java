@@ -43,7 +43,8 @@ import ru.silverhammer.core.control.IRowsControl;
 import ru.silverhammer.core.control.ISelectionTypeControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 
-public class TableControl extends ValidatableControl<Object, JTable> implements ICollectionControl<Object[], Object>, IMultiCaptionControl<Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+public class TableControl extends ValidatableControl<Object, JTable> implements ICollectionControl<Object[], Object>,
+	IMultiCaptionControl<Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 

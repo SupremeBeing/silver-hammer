@@ -36,7 +36,8 @@ import javax.swing.JPanel;
 
 import ru.silverhammer.core.control.ICollectionControl;
 
-public abstract class ButtonGroupControl<Value, Button extends AbstractButton> extends ValidatableControl<Value, JPanel> implements ICollectionControl<Object, Value> {
+public abstract class ButtonGroupControl<Value, Button extends AbstractButton>
+	extends ValidatableControl<Value, JPanel> implements ICollectionControl<Object, Value> {
 
 	private static final long serialVersionUID = 7058197271259148125L;
 

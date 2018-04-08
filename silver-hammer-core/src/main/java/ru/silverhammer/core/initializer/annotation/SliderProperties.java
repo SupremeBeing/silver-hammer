@@ -49,4 +49,5 @@ public @interface SliderProperties {
 	boolean labels() default true;
 	
 	boolean ticks() default true;
+	
 }

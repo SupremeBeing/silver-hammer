@@ -53,7 +53,8 @@ public class ControlFieldProcessor implements IProcessor {
 	private final IControlResolver controlResolver;
 	private final FieldProcessor fieldProcessor;
 	
-	public ControlFieldProcessor(@Inject Injector injector, @Inject IStringProcessor stringProcessor, @Inject IControlResolver controlResolver, @Inject FieldProcessor fieldProcessor) {
+	public ControlFieldProcessor(@Inject Injector injector, @Inject IStringProcessor stringProcessor,
+			@Inject IControlResolver controlResolver, @Inject FieldProcessor fieldProcessor) {
 		this.injector = injector;
 		this.stringProcessor = stringProcessor;
 		this.controlResolver = controlResolver;

@@ -44,7 +44,8 @@ import ru.silverhammer.core.control.IHierarchyControl;
 import ru.silverhammer.core.control.IRowsControl;
 import ru.silverhammer.core.control.ISelectionTypeControl;
 
-public class TreeControl extends ValidatableControl<Object, JTree> implements IHierarchyControl<Object, Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+public class TreeControl extends ValidatableControl<Object, JTree>
+	implements IHierarchyControl<Object, Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 

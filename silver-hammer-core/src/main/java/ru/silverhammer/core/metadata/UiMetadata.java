@@ -191,7 +191,7 @@ public class UiMetadata {
 	public <T extends IControl<?>> T findControl(Object data, Class<?> type, String fieldName) {
 		Field field = Reflector.findField(type, fieldName);
 		if (field != null) {
-			ControlAttributes attrs = findControlAttributes((ca) -> ca.getField().equals(field) && ca.getData().equals(data));
+			ControlAttributes attrs = findControlAttributes(ca -> ca.getField().equals(field) && ca.getData().equals(data));
 			if (attrs != null) {
 				return (T) attrs.getControl();
 			}
@@ -204,7 +204,7 @@ public class UiMetadata {
 	}
 	
 	public void commit() {
-		visitControlAttributes((c) -> commit(c.getData(), c.getField(), c.getControl()));
+		visitControlAttributes(c -> commit(c.getData(), c.getField(), c.getControl()));
 	}
 
 	private void commit(Object data, Field field, IControl<?> control) {
@@ -213,7 +213,7 @@ public class UiMetadata {
 	}
 
 	public boolean isValid() {
-		return findControlAttributes((ca) -> !isControlValid(ca.getControl())) == null && validateMethods();		
+		return findControlAttributes(ca -> !isControlValid(ca.getControl())) == null && validateMethods();		
 	}
 	
 	private boolean isControlValid(IControl<?> control) {
@@ -231,7 +231,7 @@ public class UiMetadata {
 
 	private void init(IControl<?> control, Field field) {
 		validateControl(control, field);	
-		control.addControlListener((c) -> {
+		control.addControlListener(c -> {
 			validateControl(control, field);	
 			validateMethods();
 		});

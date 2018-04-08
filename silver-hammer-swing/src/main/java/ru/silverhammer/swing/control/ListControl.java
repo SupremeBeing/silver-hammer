@@ -39,7 +39,8 @@ import ru.silverhammer.core.control.IRowsControl;
 import ru.silverhammer.core.control.ISelectionTypeControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 
-public class ListControl extends ValidatableControl<Object, JList<Object>> implements ICollectionControl<Object, Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+public class ListControl extends ValidatableControl<Object, JList<Object>>
+	implements ICollectionControl<Object, Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
 
 	private static final long serialVersionUID = 396462498473332445L;
 

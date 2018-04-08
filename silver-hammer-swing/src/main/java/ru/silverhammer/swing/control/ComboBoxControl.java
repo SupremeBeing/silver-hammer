@@ -33,7 +33,8 @@ import javax.swing.JComboBox;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.IEditableControl;
 
-public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object>> implements ICollectionControl<Object, Object>, IEditableControl<Object> {
+public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object>>
+	implements ICollectionControl<Object, Object>, IEditableControl<Object> {
 
 	private static final long serialVersionUID = 1465641213860936391L;
 
