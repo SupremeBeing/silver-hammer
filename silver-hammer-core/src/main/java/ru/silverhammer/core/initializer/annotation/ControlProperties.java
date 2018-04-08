@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.InitializerReference;
-import ru.silverhammer.core.control.ISelectionTypeControl.SelectionType;
+import ru.silverhammer.core.control.ISelectionControl.SelectionType;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
 import ru.silverhammer.core.initializer.ControlPropertiesInitializer;
 

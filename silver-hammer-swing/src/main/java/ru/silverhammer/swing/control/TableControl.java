@@ -40,11 +40,11 @@ import javax.swing.table.AbstractTableModel;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.IMultiCaptionControl;
 import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionTypeControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 
 public class TableControl extends ValidatableControl<Object, JTable> implements ICollectionControl<Object[], Object>,
-	IMultiCaptionControl<Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+	IMultiCaptionControl<Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionControl<Object[], Object> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 
@@ -215,6 +215,37 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 			getComponent().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		} else if (mode == SelectionType.Multi) {
 			getComponent().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		}
+	}
+
+	@Override
+	public Object[] getSingleSelection() {
+		int i = getComponent().getSelectedRow();
+		return i == -1 ? null : data.get(i);
+	}
+
+	@Override
+	public Object[][] getSelection() {
+		List<Object[]> result = new ArrayList<>();
+		for (int i : getComponent().getSelectedRows()) {
+			result.add(data.get(i));
+		}
+		return result.toArray(new Object[result.size()][]);
+	}
+
+	@Override
+	public void select(Object[] value) {
+		int i = findRow(value);
+		if (i != -1) {
+			getComponent().setRowSelectionInterval(i, i);
+		}
+	}
+
+	@Override
+	public void deselect(Object[] value) {
+		int i = findRow(value);
+		if (i != -1) {
+			getComponent().removeRowSelectionInterval(i, i);
 		}
 	}
 

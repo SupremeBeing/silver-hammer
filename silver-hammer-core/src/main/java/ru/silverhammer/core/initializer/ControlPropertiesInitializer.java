@@ -33,7 +33,7 @@ import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IEditableControl;
 import ru.silverhammer.core.control.IMultiCaptionControl;
 import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionTypeControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.string.IStringProcessor;
@@ -63,8 +63,8 @@ public class ControlPropertiesInitializer implements IInitializer<IControl<?>, C
 		if (control instanceof IRowsControl && annotation.visibleRows() > 0) {
 			((IRowsControl<?>) control).setVisibleRowCount(annotation.visibleRows());
 		}
-		if (control instanceof ISelectionTypeControl) {
-			((ISelectionTypeControl<?>) control).setSelectionType(annotation.selection());
+		if (control instanceof ISelectionControl) {
+			((ISelectionControl<?, ?>) control).setSelectionType(annotation.selection());
 		}
 		if (control instanceof IValueTypeControl) {
 			((IValueTypeControl<?>) control).setValueType(annotation.value());

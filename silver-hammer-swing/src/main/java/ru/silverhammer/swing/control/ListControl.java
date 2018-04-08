@@ -27,6 +27,8 @@ package ru.silverhammer.swing.control;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -36,11 +38,11 @@ import javax.swing.event.ListSelectionListener;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionTypeControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 
 public class ListControl extends ValidatableControl<Object, JList<Object>>
-	implements ICollectionControl<Object, Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+	implements ICollectionControl<Object, Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionControl<Object, Object> {
 
 	private static final long serialVersionUID = 396462498473332445L;
 
@@ -160,6 +162,41 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 			getComponent().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		} else if (mode == SelectionType.Multi) {
 			getComponent().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		}
+	}
+
+	@Override
+	public Object getSingleSelection() {
+		return getComponent().getSelectedValue();
+	}
+
+	@Override
+	public Object[] getSelection() {
+		List<Object> list = getComponent().getSelectedValuesList();
+		return list.toArray(new Object[list.size()]);
+	}
+
+	@Override
+	public void select(Object value) {
+		int count = getModel().getSize();
+		for (int i = 0; i < count; i++) {
+			Object val = getModel().get(i);
+			if (Objects.equals(value, val)) {
+				getComponent().setSelectionInterval(i, i);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void deselect(Object value) {
+		int count = getModel().getSize();
+		for (int i = 0; i < count; i++) {
+			Object val = getModel().get(i);
+			if (Objects.equals(value, val)) {
+				getComponent().removeSelectionInterval(i, i);
+				break;
+			}
 		}
 	}
 

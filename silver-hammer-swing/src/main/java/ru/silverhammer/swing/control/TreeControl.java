@@ -42,10 +42,10 @@ import javax.swing.tree.TreeSelectionModel;
 
 import ru.silverhammer.core.control.IHierarchyControl;
 import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionTypeControl;
+import ru.silverhammer.core.control.ISelectionControl;
 
 public class TreeControl extends ValidatableControl<Object, JTree>
-	implements IHierarchyControl<Object, Object>, IRowsControl<Object>, ISelectionTypeControl<Object> {
+	implements IHierarchyControl<Object, Object>, IRowsControl<Object>, ISelectionControl<Object, Object> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 
@@ -170,6 +170,45 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
 		} else if (mode == SelectionType.Multi) {
 			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+		}
+	}
+
+	@Override
+	public Object getSingleSelection() {
+		TreePath path = getComponent().getSelectionPath();
+		if (path != null) {
+			return ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+		}
+		return null;
+	}
+
+	@Override
+	public Object[] getSelection() {
+		List<Object> result = new ArrayList<>();
+		TreePath[] paths = getComponent().getSelectionPaths();
+		if (paths != null) {
+			for (TreePath path : paths) {
+				result.add(((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+			}
+		}
+		return result.toArray(new Object[result.size()]);
+	}
+
+	@Override
+	public void select(Object value) {
+		DefaultMutableTreeNode node = nodes.get(value);
+		if (node != null) {
+			TreeNode[] path = getModel().getPathToRoot(node);
+			getComponent().setSelectionPath(new TreePath(path));
+		}
+	}
+
+	@Override
+	public void deselect(Object value) {
+		DefaultMutableTreeNode node = nodes.get(value);
+		if (node != null) {
+			TreeNode[] path = getModel().getPathToRoot(node);
+			getComponent().removeSelectionPath(new TreePath(path));
 		}
 	}
 

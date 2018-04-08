@@ -32,11 +32,14 @@ import java.util.Objects;
 
 import ru.silverhammer.common.Location;
 import ru.silverhammer.common.injection.Inject;
+import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
+import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.converter.annotation.MapToList;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.metadata.UiMetadata;
@@ -44,6 +47,7 @@ import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.swing.dialog.GenerationDialog;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
 
@@ -51,6 +55,18 @@ import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
 		@Group(value = "env")
 })
 public class Environment {
+	
+	private static class KeyValue {
+		
+		@Text
+		@Caption("Key:")
+		private String key;
+
+		@Text
+		@Caption("Value:")
+		private String value;
+
+	}
 
 	@Table
 	@GroupId("env")
@@ -96,12 +112,22 @@ public class Environment {
 	@SuppressWarnings("unused")
 	private void addPressed(@Inject UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
-		table.addItem(new Object[] {"required.key", "unused"});
+		KeyValue val = new KeyValue();
+		GenerationDialog dialog = new GenerationDialog(null, val);
+		dialog.setTitle("Add property");
+		dialog.setVisible(true);
+		if (dialog.isAccepted()) {
+			table.addItem(new Object[] {val.key, val.value});
+		}
 	}
 
 	@SuppressWarnings("unused")
 	private void deletePressed(@Inject UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
-		table.removeItem(table.getItemCount() - 1);
+		ISelectionControl<Object[], Object> selection = metadata.findControl(this, "properties");
+		Object[] sel = selection.getSingleSelection();
+		if (sel != null) {
+			table.removeItem(sel);
+		}
 	}
 }
