@@ -45,6 +45,7 @@ import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
+import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.swing.dialog.GenerationDialog;
@@ -60,6 +61,7 @@ public class Environment {
 		
 		@Text
 		@Caption("Key:")
+		@MinSize(value = 1, message = "Key should be specified")
 		private String key;
 
 		@Text
