@@ -21,7 +21,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.common.injection;
 
@@ -37,15 +37,15 @@ import java.util.Map;
 import ru.silverhammer.common.Reflector;
 
 public class Injector {
-	
+
 	private interface IBound<T> {
 		public T getInstance();
 	}
 
 	private static class BoundType<T> implements IBound<T> {
-		
+
 		private Class<T> type;
-		
+
 		public BoundType(Class<T> type) {
 			this.type = type;
 		}
@@ -56,9 +56,9 @@ public class Injector {
 	}
 
 	private static class BoundInstance<T> implements IBound<T> {
-		
+
 		private T instance;
-		
+
 		public BoundInstance(T instance) {
 			this.instance = instance;
 		}
@@ -103,15 +103,15 @@ public class Injector {
 	public <T> void bind(Class<T> type, Class<? extends T> implClass) {
 		bind(type, null, implClass);
 	}
-	
+
 	public <T> void unbind(Class<T> type) {
 		bindings.remove(type);
 	}
-	
+
 	public void unbidAll() {
 		bindings.clear();
 	}
-	
+
 	public <T> T instantiate(Class<T> type) {
 		Constructor<T> constructor = getDefaultConstructor(type);
 		if (constructor != null) {
@@ -124,7 +124,7 @@ public class Injector {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private <T> Constructor<T> getDefaultConstructor(Class<T> type) {
 		Constructor<?>[] cs = type.getConstructors();
@@ -133,12 +133,12 @@ public class Injector {
 		}
 		return null;
 	}
-	
+
 	public Object invoke(Object data, Method method) {
 		Object[] args = createArguments(method);
 		return Reflector.invoke(data, method, args);
 	}
-	
+
 	private Object[] createArguments(Executable excutable) {
 		Parameter[] params = excutable.getParameters();
 		Object[] result = new Object[params.length];
@@ -152,7 +152,7 @@ public class Injector {
 		}
 		return result;
 	}
-	
+
 	private Object getInjectedInstance(AnnotatedElement element, Class<?> type) {
 		Inject ia = element.getAnnotation(Inject.class);
 		if (ia != null) {
@@ -162,9 +162,19 @@ public class Injector {
 		}
 		return null;
 	}
-	
+
 	public Object getInstance(Class<?> type, String name) {
 		Map<String, IBound<?>> namedBindings = bindings.get(type);
+		if (namedBindings == null) {
+			final Map<String, IBound<?>> subTypedNamedBindings = new HashMap<>();
+			bindings.entrySet().stream()
+					.filter(e -> e.getKey().isAssignableFrom(type))
+					.map(Map.Entry::getValue)
+					.forEach(subTypedNamedBindings::putAll);
+			if (subTypedNamedBindings.size() > 0) {
+				namedBindings = subTypedNamedBindings;
+			}
+		}
 		if (namedBindings != null) {
 			IBound<?> binding = namedBindings.get(name);
 			if (binding != null) {
@@ -173,7 +183,7 @@ public class Injector {
 		}
 		return null;
 	}
-	
+
 	public Object getInstance(Class<?> type) {
 		return getInstance(type, null);
 	}
