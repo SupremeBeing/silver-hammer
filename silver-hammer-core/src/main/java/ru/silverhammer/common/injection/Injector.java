@@ -168,7 +168,7 @@ public class Injector {
 		if (namedBindings == null) {
 			final Map<String, IBound<?>> subTypedNamedBindings = new HashMap<>();
 			bindings.entrySet().stream()
-					.filter(e -> e.getKey().isAssignableFrom(type))
+					.filter(e -> type.isAssignableFrom(e.getKey()))
 					.map(Map.Entry::getValue)
 					.forEach(subTypedNamedBindings::putAll);
 			if (subTypedNamedBindings.size() > 0) {
