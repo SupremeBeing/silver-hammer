@@ -25,23 +25,23 @@
  */
 package ru.silverhammer.core.metadata;
 
-import java.lang.reflect.Method;
+import ru.silverhammer.reflection.MethodReflection;
 
 public class MethodAttributes {
 	
 	private final Object data;
-	private final Method method;
+	private final MethodReflection methodReflection;
 	
-	public MethodAttributes(Object data, Method method) {
+	public MethodAttributes(Object data, MethodReflection methodReflection) {
 		this.data = data;
-		this.method = method;
+		this.methodReflection = methodReflection;
 	}
 	
 	public Object getData() {
 		return data;
 	}
 	
-	public Method getMethod() {
-		return method;
+	public MethodReflection getMethodReflection() {
+		return methodReflection;
 	}
 }

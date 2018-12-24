@@ -28,8 +28,6 @@ package ru.silverhammer.swing.initializer;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -38,11 +36,13 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import ru.silverhammer.common.Location;
-import ru.silverhammer.common.Reflector;
-import ru.silverhammer.common.injection.Inject;
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.MethodReflection;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
@@ -58,7 +58,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 	}
 
 	@Override
-	public void init(Control<?, ?> control, ButtonBarAddon annotation, Object data, Field field) {
+	public void init(Control<?, ?> control, ButtonBarAddon annotation, Object data, FieldReflection field) {
 		JPanel stub = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
@@ -80,7 +80,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 				button.setText(caption);
 			}
 			button.addActionListener(e -> {
-				Method method = Reflector.findMethod(data.getClass(), b.methodName());
+				MethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.methodName());
 				injector.invoke(data, method);
 			});
 			panel.add(button);

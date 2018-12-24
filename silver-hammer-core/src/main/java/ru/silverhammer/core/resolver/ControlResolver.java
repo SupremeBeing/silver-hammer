@@ -26,11 +26,11 @@
 package ru.silverhammer.core.resolver;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.reflection.FieldReflection;
 
 public class ControlResolver implements IControlResolver {
 	
@@ -49,8 +49,8 @@ public class ControlResolver implements IControlResolver {
 	}
 
 	@Override
-	public boolean hasControlAnnotation(Field field) {
-		for (Annotation annotation : field.getAnnotations()) {
+	public boolean hasControlAnnotation(FieldReflection fieldReflection) {
+		for (Annotation annotation : fieldReflection.getAnnotations()) {
 			Class<? extends IControl<?>> controlClass = getControlClass(annotation.annotationType());
 			if (controlClass != null) {
 				return true;

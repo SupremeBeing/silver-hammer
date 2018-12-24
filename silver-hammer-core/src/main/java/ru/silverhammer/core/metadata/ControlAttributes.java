@@ -25,18 +25,17 @@
  */
 package ru.silverhammer.core.metadata;
 
-import java.lang.reflect.Field;
-
 import ru.silverhammer.common.HorizontalAlignment;
 import ru.silverhammer.common.Location;
 import ru.silverhammer.common.VerticalAlignment;
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.reflection.FieldReflection;
 
 public class ControlAttributes {
 
 	private final IControl<?> control;
 	private final Object data;
-	private final Field field;
+	private final FieldReflection fieldReflection;
 	
 	private String caption;
 	private Location captionLocation;
@@ -44,10 +43,10 @@ public class ControlAttributes {
 	private HorizontalAlignment horizontalAlignment;
 	private VerticalAlignment verticalAlignment;
 
-	public ControlAttributes(IControl<?> control, Object data, Field field) {
+	public ControlAttributes(IControl<?> control, Object data, FieldReflection fieldReflection) {
 		this.control = control;
 		this.data = data;
-		this.field = field;
+		this.fieldReflection = fieldReflection;
 	}
 
 	public IControl<?> getControl() {
@@ -58,8 +57,8 @@ public class ControlAttributes {
 		return data;
 	}
 
-	public Field getField() {
-		return field;
+	public FieldReflection getFieldReflection() {
+		return fieldReflection;
 	}
 
 	public String getCaption() {

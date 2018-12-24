@@ -25,15 +25,14 @@
  */
 package ru.silverhammer.core.initializer;
 
-import java.lang.reflect.Field;
-
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.NumberItems;
+import ru.silverhammer.reflection.FieldReflection;
 
 public class NumberItemsInitializer implements IInitializer<ICollectionControl<Number, ?>, NumberItems> {
 
 	@Override
-	public void init(ICollectionControl<Number, ?> control, NumberItems annotation, Object data, Field field) {
+	public void init(ICollectionControl<Number, ?> control, NumberItems annotation, Object data, FieldReflection field) {
 		for (double s : annotation.value()) {
 			control.addItem(s);
 		}

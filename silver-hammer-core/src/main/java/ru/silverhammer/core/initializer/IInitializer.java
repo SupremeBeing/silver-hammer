@@ -26,12 +26,12 @@
 package ru.silverhammer.core.initializer;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.reflection.FieldReflection;
 
 public interface IInitializer<Control extends IControl<?>, A extends Annotation> {
 
-	public void init(Control control, A annotation, Object data, Field field);
+	public void init(Control control, A annotation, Object data, FieldReflection fieldReflection);
 	
 }

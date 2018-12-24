@@ -26,10 +26,8 @@
 package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.util.Objects;
 
-import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.metadata.CategoryAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
@@ -38,6 +36,8 @@ import ru.silverhammer.core.processor.annotation.Groups;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.reflection.AnnotatedReflection;
 
 public class StructureClassProcessor implements IProcessor {
 
@@ -48,7 +48,7 @@ public class StructureClassProcessor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation annotation) {
+	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
 		if (annotation instanceof Groups) {
 			Groups groups = (Groups) annotation;
 			for (Group group : groups.value()) {

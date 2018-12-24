@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import ru.silverhammer.common.Location;
-import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.ICollectionControl;
@@ -49,6 +48,7 @@ import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.validator.annotation.MinSize;
+import ru.silverhammer.injection.Inject;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.swing.dialog.GenerationDialog;

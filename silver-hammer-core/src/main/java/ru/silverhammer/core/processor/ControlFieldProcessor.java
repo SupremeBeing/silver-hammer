@@ -26,13 +26,9 @@
 package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Objects;
 
-import ru.silverhammer.common.Reflector;
-import ru.silverhammer.common.injection.Inject;
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.FieldProcessor;
@@ -45,6 +41,13 @@ import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.reflection.AnnotatedReflection;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.InstanceFieldReflection;
+import ru.silverhammer.reflection.StaticFieldReflection;
+import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
 
 public class ControlFieldProcessor implements IProcessor {
 
@@ -62,12 +65,12 @@ public class ControlFieldProcessor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation annotation) {
+	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
 		Class<? extends IControl<?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
 			IControl<?> control = injector.instantiate(controlClass);
-			if (member instanceof Field) {
-				Field field = (Field) member;
+			if (member instanceof FieldReflection) {
+				FieldReflection field = (FieldReflection) member;
 				addControlAttributes(metadata, field.getAnnotation(GroupId.class), createControlAttributes(control, data, field));
 				initializeControl(control, data, field);
 			}
@@ -75,17 +78,22 @@ public class ControlFieldProcessor implements IProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initializeControl(IControl<?> control, Object data, Field field) {
-		for (Annotation annotation : field.getAnnotations()) {
-			InitializerReference ir = annotation.annotationType().getAnnotation(InitializerReference.class);
-			if (ir != null) {
-				IInitializer<IControl<?>, Annotation> initializer = (IInitializer<IControl<?>, Annotation>) injector.instantiate(ir.value());
-				initializer.init(control, annotation, data, field);
-			}
+	private void initializeControl(IControl<?> control, Object data, FieldReflection field) {
+		List<MarkedAnnotation<InitializerReference>> marked = field.getMarkedAnnotations(InitializerReference.class);
+		for (MarkedAnnotation<InitializerReference> ma : marked) {
+			IInitializer<IControl<?>, Annotation> initializer = (IInitializer<IControl<?>, Annotation>) injector.instantiate(ma.getMarker().value());
+			initializer.init(control, ma.getAnnotation(), data, field);
 		}
-		Object value = Reflector.getFieldValue(data, field);
-		value = fieldProcessor.getControlValue(value, field);
-		((IControl<Object>) control).setValue(value);
+		Object value;
+		if (field instanceof InstanceFieldReflection) {
+			value = ((InstanceFieldReflection) field).getValue(data);
+			value = fieldProcessor.getControlValue(value, field);
+			((IControl<Object>) control).setValue(value);
+		} else if (field instanceof StaticFieldReflection) {
+			value = ((StaticFieldReflection) field).getValue();
+			value = fieldProcessor.getControlValue(value, field);
+			((IControl<Object>) control).setValue(value);
+		}
 	}
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {
@@ -98,7 +106,7 @@ public class ControlFieldProcessor implements IProcessor {
 		group.addControlAttributes(attributes);
 	}
 	
-	private ControlAttributes createControlAttributes(IControl<?> control, Object data, Field field) {
+	private ControlAttributes createControlAttributes(IControl<?> control, Object data, FieldReflection field) {
 		ControlAttributes result = new ControlAttributes(control, data, field);
 		Caption caption = field.getAnnotation(Caption.class);
 		Description description = field.getAnnotation(Description.class);

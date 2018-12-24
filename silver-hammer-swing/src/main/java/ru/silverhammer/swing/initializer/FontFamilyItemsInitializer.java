@@ -26,16 +26,16 @@
 package ru.silverhammer.swing.initializer;
 
 import java.awt.GraphicsEnvironment;
-import java.lang.reflect.Field;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.IInitializer;
+import ru.silverhammer.reflection.FieldReflection;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
 
 public class FontFamilyItemsInitializer implements IInitializer<ICollectionControl<String, ?>, FontFamilyItems> {
 
 	@Override
-	public void init(ICollectionControl<String, ?> control, FontFamilyItems annotation, Object data, Field field) {
+	public void init(ICollectionControl<String, ?> control, FontFamilyItems annotation, Object data, FieldReflection field) {
 		for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
 			control.addItem(name);
 		}

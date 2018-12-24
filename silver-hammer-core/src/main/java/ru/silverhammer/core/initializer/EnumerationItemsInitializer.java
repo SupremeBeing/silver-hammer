@@ -25,15 +25,14 @@
  */
 package ru.silverhammer.core.initializer;
 
-import java.lang.reflect.Field;
-
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
+import ru.silverhammer.reflection.FieldReflection;
 
 public class EnumerationItemsInitializer implements IInitializer<ICollectionControl<Object, ?>, EnumerationItems> {
 
 	@Override
-	public void init(ICollectionControl<Object, ?> control, EnumerationItems annotation, Object data, Field field) {
+	public void init(ICollectionControl<Object, ?> control, EnumerationItems annotation, Object data, FieldReflection field) {
 		Class<?> cl = annotation.value() == Void.class ? field.getType() : annotation.value();
 		for (Object e : cl.getEnumConstants()) {
 			control.addItem(e);

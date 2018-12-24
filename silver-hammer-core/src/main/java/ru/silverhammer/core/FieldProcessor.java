@@ -26,11 +26,13 @@
 package ru.silverhammer.core;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.util.List;
 
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.converter.IConverter;
 import ru.silverhammer.core.validator.IValidator;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
 
 public class FieldProcessor {
 
@@ -40,34 +42,28 @@ public class FieldProcessor {
 		this.injector = injector;
 	}
 
-	public Object getControlValue(Object value, Field field) {
-		Annotation[] annotations = field.getAnnotations();
-		for (int i = annotations.length - 1; i >= 0; i--) {
-			Class<? extends Annotation> type = annotations[i].annotationType();
-			ConverterReference cr = type.getAnnotation(ConverterReference.class);
-			if (cr != null) {
-				@SuppressWarnings("unchecked")
-				IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(cr.value());
-				value = converter.convertForward(value, annotations[i]);
-			}
+	public Object getControlValue(Object value, FieldReflection field) {
+		List<MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
+		for (int i = marked.size() - 1; i >= 0; i--) {
+			MarkedAnnotation<ConverterReference> ma = marked.get(i);
+			@SuppressWarnings("unchecked")
+			IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+			value = converter.convertForward(value, ma.getAnnotation());
 		}
 		return value;
 	}
 	
-	public Object getFieldValue(Object value, Field field) {
-		for (Annotation annotation : field.getAnnotations()) {
-			Class<? extends Annotation> type = annotation.annotationType();
-			ConverterReference cr = type.getAnnotation(ConverterReference.class);
-			if (cr != null) {
-				@SuppressWarnings("unchecked")
-				IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(cr.value());
-				value = converter.convertBackward(value, annotation);
-			}
+	public Object getFieldValue(Object value, FieldReflection field) {
+		List<MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
+		for (MarkedAnnotation<ConverterReference> ma : marked) {
+			@SuppressWarnings("unchecked")
+			IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+			value = converter.convertBackward(value, ma.getAnnotation());
 		}
 		return value;
 	}
 	
-	public Annotation validateValue(Object value, Field field) {
+	public Annotation validateValue(Object value, FieldReflection field) {
 		for (Annotation annotation : field.getAnnotations()) {
 			for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
 				if (metaAnnotation instanceof ConverterReference) {

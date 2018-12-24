@@ -25,16 +25,18 @@
  */
 package ru.silverhammer.core.converter;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ru.silverhammer.common.Reflector;
-import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.InstanceFieldReflection;
+import ru.silverhammer.reflection.StaticFieldReflection;
 
 public class ValueToItemsConverter implements IConverter<Object, Object, ValueToItems> {
 
@@ -50,29 +52,31 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	public Object convertForward(Object source, ValueToItems annotation) {
 		if (source != null) {
 			if (source instanceof Collection) {
-				List<Field> fields = collectFields(annotation.value(), annotation);
+				List<FieldReflection> fields = collectFields(annotation.value(), annotation);
 				Collection<Object[]> result = new ArrayList<>();
 				for (Object o : (Collection<?>) source) {
 					result.add(createItem(o, fields, annotation));
 				}
 				return result;
 			} else {
-				List<Field> fields = collectFields(annotation.value(), annotation);
+				List<FieldReflection> fields = collectFields(annotation.value(), annotation);
 				return createItem(source, fields, annotation);
 			}
 		}
 		return null;
 	}
 	
-	private Object[] createItem(Object o, List<Field> fields, ValueToItems annotation) {
+	private Object[] createItem(Object o, List<FieldReflection> fields, ValueToItems annotation) {
 		Object[] item = new Object[fields.size()];
 		for (int i = 0; i < fields.size(); i++) {
-			Field field = fields.get(i);
-			Object value = Reflector.getFieldValue(o, field);
-			if (annotation.annotated()) {
-				item[i] = fieldProcessor.getControlValue(value, field);
-			} else {
-				item[i] = value;
+			FieldReflection field = fields.get(i);
+			Object value;
+			if (field instanceof InstanceFieldReflection) {
+				value = ((InstanceFieldReflection) field).getValue(o);
+				item[i] = annotation.annotated() ? fieldProcessor.getControlValue(value, field) : value;
+			} else if (field instanceof StaticFieldReflection) {
+				value = ((StaticFieldReflection) field).getValue();
+				item[i] = annotation.annotated() ? fieldProcessor.getControlValue(value, field) : value;
 			}
 		}
 		return item;
@@ -83,40 +87,45 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	public Object convertBackward(Object destination, ValueToItems annotation) {
 		if (destination != null) {
 			if (destination instanceof Collection) {
-				List<Field> fields = collectFields(annotation.value(), annotation);
-				Collection<Object> result = (Collection<Object>) Reflector.instantiate(annotation.collection());
+				List<FieldReflection> fields = collectFields(annotation.value(), annotation);
+				@SuppressWarnings("rawtypes")
+				ClassReflection<? extends Collection> cr = new ClassReflection<>(annotation.collection());
+				Collection<Object> result = cr.instantiate();
 				for (Object[] row : (Collection<Object[]>) destination) {
 					result.add(createObject(row, fields, annotation));
 				}
 				return result;
 			} else if (destination instanceof Object[]) {
-				List<Field> fields = collectFields(annotation.value(), annotation);
+				List<FieldReflection> fields = collectFields(annotation.value(), annotation);
 				return createObject((Object[]) destination, fields, annotation);
 			}
 		}
 		return null;
 	}
 	
-	private Object createObject(Object[] item, List<Field> fields, ValueToItems annotation) {
-		Object result = Reflector.instantiate(annotation.value());
+	private Object createObject(Object[] item, List<FieldReflection> fields, ValueToItems annotation) {
+		Object result = new ClassReflection<>(annotation.value()).instantiate();
 		for (int i = 0; i < fields.size(); i++) {
-			Field field = fields.get(i);
+			FieldReflection field = fields.get(i);
 			Object value = item[i];
 			if (annotation.annotated()) {
 				value = fieldProcessor.getFieldValue(value, field);
 			}
-			Reflector.setFieldValue(result, field, value);
+			if (field instanceof InstanceFieldReflection) {
+				((InstanceFieldReflection) field).setValue(result, value);
+			} else if (field instanceof StaticFieldReflection) {
+				((StaticFieldReflection) field).setValue(value);
+			}
 		}
 		return result;
 	}
 	
-	private List<Field> collectFields(Class<?> cls, ValueToItems annotation) {
-		List<Field> result = new ArrayList<>();
-		for (Class<?> cl : Reflector.getClassHierarchy(cls)) {
-			for (Field field : cl.getDeclaredFields()) {
-				if (!annotation.annotated() || controlResolver.hasControlAnnotation(field)) {
-					result.add(field);
-				}
+	private List<FieldReflection> collectFields(Class<?> cls, ValueToItems annotation) {
+		List<FieldReflection> result = new ArrayList<>();
+		ClassReflection<?> reflection = new ClassReflection<>(cls);
+		for (FieldReflection fr : reflection.getFields()) {
+			if (!annotation.annotated() || controlResolver.hasControlAnnotation(fr)) {
+				result.add(fr);
 			}
 		}
 		return result;

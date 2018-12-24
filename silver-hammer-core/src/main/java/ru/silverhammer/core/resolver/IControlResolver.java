@@ -26,9 +26,9 @@
 package ru.silverhammer.core.resolver;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.reflection.FieldReflection;
 
 public interface IControlResolver {
 
@@ -36,5 +36,5 @@ public interface IControlResolver {
 	
 	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
 
-	public boolean hasControlAnnotation(Field field);
+	public boolean hasControlAnnotation(FieldReflection fieldReflection);
 }

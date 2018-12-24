@@ -26,19 +26,21 @@
 package ru.silverhammer.core.metadata;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import ru.silverhammer.common.Reflector;
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.InstanceFieldReflection;
+import ru.silverhammer.reflection.InstanceMethodReflection;
+import ru.silverhammer.reflection.StaticFieldReflection;
 
 public class UiMetadata {
 
@@ -189,9 +191,9 @@ public class UiMetadata {
 
 	@SuppressWarnings("unchecked")
 	public <T extends IControl<?>> T findControl(Object data, Class<?> type, String fieldName) {
-		Field field = Reflector.findField(type, fieldName);
+		FieldReflection field = new ClassReflection<>(type).findField(fieldName);
 		if (field != null) {
-			ControlAttributes attrs = findControlAttributes(ca -> ca.getField().equals(field) && ca.getData().equals(data));
+			ControlAttributes attrs = findControlAttributes(ca -> ca.getFieldReflection().equals(field) && ca.getData().equals(data));
 			if (attrs != null) {
 				return (T) attrs.getControl();
 			}
@@ -204,12 +206,16 @@ public class UiMetadata {
 	}
 	
 	public void commit() {
-		visitControlAttributes(c -> commit(c.getData(), c.getField(), c.getControl()));
+		visitControlAttributes(c -> commit(c.getData(), c.getFieldReflection(), c.getControl()));
 	}
 
-	private void commit(Object data, Field field, IControl<?> control) {
+	private void commit(Object data, FieldReflection field, IControl<?> control) {
 		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
-		Reflector.setFieldValue(data, field, value);		
+		if (field instanceof InstanceFieldReflection) {
+			((InstanceFieldReflection) field).setValue(data, value);
+		} else if (field instanceof StaticFieldReflection) {
+			((StaticFieldReflection) field).setValue(value);
+		}
 	}
 
 	public boolean isValid() {
@@ -225,11 +231,11 @@ public class UiMetadata {
 
 	void initialize() {
 		initializeMethods();
-		visitControlAttributes(ca -> init(ca.getControl(), ca.getField()));
+		visitControlAttributes(ca -> init(ca.getControl(), ca.getFieldReflection()));
 		validateMethods();	
 	}
 
-	private void init(IControl<?> control, Field field) {
+	private void init(IControl<?> control, FieldReflection field) {
 		validateControl(control, field);	
 		control.addControlListener(c -> {
 			validateControl(control, field);	
@@ -237,7 +243,7 @@ public class UiMetadata {
 		});
 	}
 
-	private void validateControl(IControl<?> control, Field field) {
+	private void validateControl(IControl<?> control, FieldReflection field) {
 		if (control instanceof IValidatableControl) {
 			Object value = control.getValue();
 			Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
@@ -249,7 +255,7 @@ public class UiMetadata {
 	private boolean validateMethods() {
 		boolean result = true;
 		for (MethodAttributes ma : getValidators()) {
-			Object valid = injector.invoke(ma.getData(), ma.getMethod());
+			Object valid = injector.invoke(ma.getData(), ma.getMethodReflection());
 			if (valid instanceof Boolean) {
 				result &= (Boolean) valid;
 			}
@@ -259,7 +265,7 @@ public class UiMetadata {
 	
 	private void initializeMethods() {
 		for (MethodAttributes ma : getInitializers()) {
-			injector.invoke(ma.getData(), ma.getMethod());
+			injector.invoke(ma.getData(), ma.getMethodReflection());
 		}
 	}
 	
@@ -267,8 +273,8 @@ public class UiMetadata {
 		if (annotation != null) {
 			List<Object> params = new ArrayList<>();
 			String message = null;
-			for (Method method : annotation.annotationType().getDeclaredMethods()) {
-				Object value = Reflector.invoke(annotation, method);
+			for (InstanceMethodReflection method : new ClassReflection<>(annotation.annotationType()).getInstanceMethods()) {
+				Object value = method.invoke(annotation);
 				if ("message".equals(method.getName())) {
 					message = value.toString();
 				} else {

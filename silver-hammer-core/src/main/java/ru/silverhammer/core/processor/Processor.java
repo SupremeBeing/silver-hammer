@@ -26,15 +26,17 @@
 package ru.silverhammer.core.processor;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.List;
 
-import ru.silverhammer.common.Reflector;
-import ru.silverhammer.common.injection.Inject;
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.ProcessorReference;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.reflection.AnnotatedReflection;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
 
 public class Processor implements IProcessor {
 
@@ -45,25 +47,24 @@ public class Processor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedElement member, Annotation unused) {
-		for (Class<?> cl : Reflector.getClassHierarchy(data.getClass())) {
+	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation unused) {
+		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
+		for (ClassReflection<?> cl : cr.getHierarchy()) {
 			processAnnotations(metadata, data, cl);
-			for (Method method : cl.getDeclaredMethods()) {
-				processAnnotations(metadata, data, method);
-			}
-			for (Field field : cl.getDeclaredFields()) {
-				processAnnotations(metadata, data, field);
-			}
+		}
+		for (MethodReflection method : cr.getMethods()) {
+			processAnnotations(metadata, data, method);
+		}
+		for (FieldReflection field : cr.getFields()) {
+			processAnnotations(metadata, data, field);
 		}
 	}
 	
-	private void processAnnotations(UiMetadata metadata, Object data, AnnotatedElement element) {
-		for (Annotation annotation : element.getAnnotations()) {
-			ProcessorReference pr = annotation.annotationType().getAnnotation(ProcessorReference.class);
-			if (pr != null) {
-				IProcessor processor = injector.instantiate(pr.value());
-				processor.process(metadata, data, element, annotation);
-			}
+	private void processAnnotations(UiMetadata metadata, Object data, AnnotatedReflection<?> element) {
+		List<MarkedAnnotation<ProcessorReference>> marked = element.getMarkedAnnotations(ProcessorReference.class);
+		for (MarkedAnnotation<ProcessorReference> ma : marked) {
+			IProcessor processor = injector.instantiate(ma.getMarker().value());
+			processor.process(metadata, data, element, ma.getAnnotation());
 		}
 	}
 }

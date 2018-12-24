@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import ru.silverhammer.common.Reflector;
 import ru.silverhammer.core.converter.annotation.MapToList;
+import ru.silverhammer.reflection.ClassReflection;
 
 public class MapToListConverter implements IConverter<Map<?, ?>, Collection<Object[]>, MapToList> {
 
@@ -50,8 +50,10 @@ public class MapToListConverter implements IConverter<Map<?, ?>, Collection<Obje
 	@Override
 	public Map<?, ?> convertBackward(Collection<Object[]> destination, MapToList annotation) {
 		if (destination != null) {
+			@SuppressWarnings("rawtypes")
+			ClassReflection<? extends Map> cr = new ClassReflection<>(annotation.value());
 			@SuppressWarnings("unchecked")
-			Map<Object, Object> result = (Map<Object, Object>) Reflector.instantiate(annotation.value());
+			Map<Object, Object> result = cr.instantiate();
 			for (Object[] pair : destination) {
 				result.put(pair[0], pair[1]);
 			}

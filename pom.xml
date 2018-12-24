@@ -12,9 +12,20 @@
 	<url>https://github.com/SupremeBeing/Silver-Hammer</url>
  
 	<modules>
+		<module>silver-hammer-reflection</module>
+		<module>silver-hammer-injection</module>
 		<module>silver-hammer-core</module>
 		<module>silver-hammer-swing</module>
 	</modules>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+    			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	
 	<build>
 		<plugins>

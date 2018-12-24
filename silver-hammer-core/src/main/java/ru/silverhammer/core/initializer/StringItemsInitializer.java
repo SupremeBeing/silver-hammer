@@ -25,12 +25,11 @@
  */
 package ru.silverhammer.core.initializer;
 
-import java.lang.reflect.Field;
-
-import ru.silverhammer.common.injection.Inject;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.Inject;
+import ru.silverhammer.reflection.FieldReflection;
 
 public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?>, StringItems> {
 
@@ -41,7 +40,7 @@ public class StringItemsInitializer implements IInitializer<ICollectionControl<S
 	}
 
 	@Override
-	public void init(ICollectionControl<String, ?> control, StringItems annotation, Object data, Field field) {
+	public void init(ICollectionControl<String, ?> control, StringItems annotation, Object data, FieldReflection field) {
 		for (String s : annotation.value()) {
 			control.addItem(processor == null ? s : processor.getString(s));
 		}

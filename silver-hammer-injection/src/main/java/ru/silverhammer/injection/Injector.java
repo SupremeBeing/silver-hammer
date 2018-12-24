@@ -23,18 +23,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.common.injection;
+package ru.silverhammer.injection;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.silverhammer.common.Reflector;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.ConstructorReflection;
+import ru.silverhammer.reflection.ExecutableReflection;
+import ru.silverhammer.reflection.InstanceMethodReflection;
+import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.StaticMethodReflection;
 
 public class Injector {
 
@@ -51,7 +52,8 @@ public class Injector {
 		}
 
 		public T getInstance() {
-			return Reflector.instantiate(type);
+			// TODO: consider using parameter injection
+			return new ClassReflection<>(type).instantiate();
 		}
 	}
 
@@ -113,33 +115,25 @@ public class Injector {
 	}
 
 	public <T> T instantiate(Class<T> type) {
-		Constructor<T> constructor = getDefaultConstructor(type);
+		ConstructorReflection<T> constructor = new ClassReflection<>(type).getDefaultConstructor();
 		if (constructor != null) {
 			Object[] args = createArguments(constructor);
-			try {
-				return constructor.newInstance(args);
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
+			return constructor.invoke(args);
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> Constructor<T> getDefaultConstructor(Class<T> type) {
-		Constructor<?>[] cs = type.getConstructors();
-		if (cs.length > 0) {
-			return (Constructor<T>) cs[0];
-		}
-		return null;
-	}
-
-	public Object invoke(Object data, Method method) {
+	public Object invoke(Object data, MethodReflection method) {
 		Object[] args = createArguments(method);
-		return Reflector.invoke(data, method, args);
+		if (method instanceof InstanceMethodReflection) {
+			return ((InstanceMethodReflection) method).invoke(data, args);
+		} else if (method instanceof StaticMethodReflection) {
+			return ((StaticMethodReflection) method).invoke(args);
+		}
+		return null;
 	}
 
-	private Object[] createArguments(Executable excutable) {
+	private Object[] createArguments(ExecutableReflection<?> excutable) {
 		Parameter[] params = excutable.getParameters();
 		Object[] result = new Object[params.length];
 		for (int i = 0; i < params.length; i++) {

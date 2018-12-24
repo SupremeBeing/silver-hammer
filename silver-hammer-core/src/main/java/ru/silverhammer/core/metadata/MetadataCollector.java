@@ -25,13 +25,13 @@
  */
 package ru.silverhammer.core.metadata;
 
-import ru.silverhammer.common.injection.Injector;
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.processor.IProcessor;
 import ru.silverhammer.core.processor.Processor;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.SimpleStringProcessor;
+import ru.silverhammer.injection.Injector;
 
 public final class MetadataCollector {
 	

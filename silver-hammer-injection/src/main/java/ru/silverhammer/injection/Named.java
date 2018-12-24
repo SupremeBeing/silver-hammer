@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.common.injection;
+package ru.silverhammer.injection;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -32,4 +32,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Inject {}
+public @interface Named {
+	
+	String value();
+	
+}
