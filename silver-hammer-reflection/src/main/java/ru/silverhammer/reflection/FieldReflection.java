@@ -26,15 +26,35 @@
 package ru.silverhammer.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-public abstract class FieldReflection extends MemberReflection<Field> {
+public class FieldReflection extends MemberReflection<Field> {
 	
 	protected FieldReflection(Field field) {
 		super(field);
 	}
 	
+	public Object getValue(Object data) {
+		return Reflector.getValue(data, getElement());
+	}
+	
+	public void setValue(Object data, Object value) {
+		Reflector.setValue(data, getElement(), value);
+	}
+	
 	public Class<?>[] getGenericTypeArguments() {
-		return Reflector.getGenericTypeArguments(getElement());
+		Type t = getElement().getGenericType();
+		if (t instanceof ParameterizedType) {
+			Type[] types = ((ParameterizedType) t).getActualTypeArguments();
+			Class<?>[] result = new Class[types.length];
+			for (int i = 0; i < types.length; i++) {
+				if (types[i] instanceof Class) {
+					result[i] = (Class<?>) types[i];
+				}
+			}
+		}
+		return new Class<?>[0];
 	}
 
 	public Class<?> getType() {

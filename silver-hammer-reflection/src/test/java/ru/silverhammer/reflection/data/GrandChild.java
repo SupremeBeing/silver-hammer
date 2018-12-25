@@ -41,15 +41,18 @@ public class GrandChild extends Child {
 	private Collection<String> collection;
 	
 	public GrandChild(int code) {
+		super("");
 		this.code = code;
 		this.message = "Nothing";
 	}
 	
 	public GrandChild(String message) {
+		super("");
 		this.message = message;
 	}
 
 	public GrandChild(Collection<String> collection) {
+		super("");
 		this.collection = collection;
 		this.message = "Empty";
 	}

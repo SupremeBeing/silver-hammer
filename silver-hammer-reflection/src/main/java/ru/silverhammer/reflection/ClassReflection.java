@@ -28,7 +28,7 @@ package ru.silverhammer.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
@@ -38,26 +38,36 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ConstructorReflection<T> getDefaultConstructor() {
-		Constructor<?>[] cs = getElement().getConstructors();
-		// TODO: search for constructor with smallest argument list
-		if (cs.length > 0) {
-			return new ConstructorReflection<>((Constructor<T>) cs[0]);
+	public ConstructorReflection<T>[] getConstructors() {
+		Constructor<?>[] cs = getElement().getDeclaredConstructors();
+		ConstructorReflection<T>[] result = new ConstructorReflection[cs.length];
+		for (int i = 0; i < cs.length; i++) {
+			result[i] = new ConstructorReflection<T>((Constructor<T>) cs[i]);
 		}
-		return null;
+		return result;
 	}
 	
-	public T instantiate(Object... args) {
-		return Reflector.instantiate(getElement(), args);
+	public ConstructorReflection<T> findConstructor(Object... args) {
+		Class<?>[] types = new Class<?>[args.length];
+		for (int i = 0; i < args.length; i++) {
+			types[i] = args[i].getClass();
+		}
+		try {
+			Constructor<T> ctor = getElement().getDeclaredConstructor(types);
+			return new ConstructorReflection<>(ctor);
+		} catch (NoSuchMethodException e) {
+			return null;
+		}
 	}
 	
 	public ClassReflection<?>[] getHierarchy() {
-		List<Class<?>> classes = Reflector.getClassHierarchy(getElement());
-		ClassReflection<?>[] result = new ClassReflection[classes.size()];
-		for (int i = 0; i < classes.size(); i++) {
-			result[i] = new ClassReflection<>(classes.get(i));
+		List<ClassReflection<?>> result = new ArrayList<>();
+		Class<?> cl = getElement();
+		while (cl != null) {
+			result.add(0, new ClassReflection<>(cl));
+			cl = cl.getSuperclass();
 		}
-		return result;
+		return result.toArray(new ClassReflection<?>[result.size()]);
 	}
 	
 	public FieldReflection[] getClassFields() {
@@ -66,7 +76,7 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 
 	public FieldReflection findField(String fieldName) {
 		Field field = Reflector.findField(getElement(), fieldName);
-		return field == null ? null : createReflection(field);
+		return field == null ? null : new FieldReflection(field);
 	}
 
 	// TODO: maintain order from parent to child
@@ -77,48 +87,32 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 	private FieldReflection[] convertFields(Field[] fields) {
 		FieldReflection[] result = new FieldReflection[fields.length];
 		for (int i = 0; i < fields.length; i++) {
-			result[i] = createReflection(fields[i]);
+			result[i] = new FieldReflection(fields[i]);
 		}
 		return result;
 	}
 	
-	private FieldReflection createReflection(Field field) {
-		if (Modifier.isStatic(field.getModifiers())) {
-			return new StaticFieldReflection(field);
-		} else {
-			return new InstanceFieldReflection(field);
-		}
-	}
-
-	private MethodReflection createReflection(Method method) {
-		if (Modifier.isStatic(method.getModifiers())) {
-			return new StaticMethodReflection(method);
-		} else {
-			return new InstanceMethodReflection(method);
-		}
-	}
-
 	// TODO: maintain order from parent to child
 	public MethodReflection[] getMethods() {
 		Method[] methods = Reflector.getMethods(getElement());
 		MethodReflection[] result = new MethodReflection[methods.length];
 		for (int i = 0; i < methods.length; i++) {
-			result[i] = createReflection(methods[i]);
+			result[i] = new MethodReflection(methods[i]);
 		}
 		return result;
 	}
 
-	public InstanceMethodReflection[] getInstanceMethods() {
+	public MethodReflection[] getInstanceMethods() {
 		Method[] methods = Reflector.getInstanceMethods(getElement());
-		InstanceMethodReflection[] result = new InstanceMethodReflection[methods.length];
+		MethodReflection[] result = new MethodReflection[methods.length];
 		for (int i = 0; i < methods.length; i++) {
-			result[i] = new InstanceMethodReflection(methods[i]);
+			result[i] = new MethodReflection(methods[i]);
 		}
 		return result;
 	}
 
 	public MethodReflection findMethod(String methodName) {
 		Method method = Reflector.findMethod(getElement(), methodName);
-		return method == null ? null : createReflection(method);
+		return method == null ? null : new MethodReflection(method);
 	}
 }

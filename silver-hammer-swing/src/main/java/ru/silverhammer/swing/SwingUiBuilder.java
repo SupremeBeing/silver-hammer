@@ -41,10 +41,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import ru.silverhammer.common.HorizontalAlignment;
-import ru.silverhammer.common.Location;
-import ru.silverhammer.common.VerticalAlignment;
+import ru.silverhammer.core.HorizontalAlignment;
 import ru.silverhammer.core.IUiBuilder;
+import ru.silverhammer.core.Location;
+import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.metadata.CategoryAttributes;
 import ru.silverhammer.core.metadata.ControlAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;

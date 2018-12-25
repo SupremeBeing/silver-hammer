@@ -45,8 +45,6 @@ import ru.silverhammer.injection.Inject;
 import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.AnnotatedReflection;
 import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.InstanceFieldReflection;
-import ru.silverhammer.reflection.StaticFieldReflection;
 import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
 
 public class ControlFieldProcessor implements IProcessor {
@@ -84,16 +82,9 @@ public class ControlFieldProcessor implements IProcessor {
 			IInitializer<IControl<?>, Annotation> initializer = (IInitializer<IControl<?>, Annotation>) injector.instantiate(ma.getMarker().value());
 			initializer.init(control, ma.getAnnotation(), data, field);
 		}
-		Object value;
-		if (field instanceof InstanceFieldReflection) {
-			value = ((InstanceFieldReflection) field).getValue(data);
-			value = fieldProcessor.getControlValue(value, field);
-			((IControl<Object>) control).setValue(value);
-		} else if (field instanceof StaticFieldReflection) {
-			value = ((StaticFieldReflection) field).getValue();
-			value = fieldProcessor.getControlValue(value, field);
-			((IControl<Object>) control).setValue(value);
-		}
+		Object value = field.getValue(data);
+		value = fieldProcessor.getControlValue(value, field);
+		((IControl<Object>) control).setValue(value);
 	}
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {

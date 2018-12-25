@@ -31,9 +31,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import ru.silverhammer.common.Location;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.Location;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValidatableControl;

@@ -23,11 +23,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.common;
+package ru.silverhammer.core;
 
-public enum Location {
+public enum HorizontalAlignment {
 	Left,
-	Top,
 	Right,
-	Bottom;
+	Center;
 }

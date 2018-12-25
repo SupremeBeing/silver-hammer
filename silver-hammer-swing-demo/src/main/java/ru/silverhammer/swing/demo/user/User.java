@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import ru.silverhammer.common.Location;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.Location;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
 import ru.silverhammer.core.control.annotation.CheckBox;
 import ru.silverhammer.core.control.annotation.CheckBoxGroup;

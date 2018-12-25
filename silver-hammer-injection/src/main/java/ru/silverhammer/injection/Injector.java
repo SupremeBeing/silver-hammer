@@ -33,9 +33,7 @@ import java.util.Map;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.ConstructorReflection;
 import ru.silverhammer.reflection.ExecutableReflection;
-import ru.silverhammer.reflection.InstanceMethodReflection;
 import ru.silverhammer.reflection.MethodReflection;
-import ru.silverhammer.reflection.StaticMethodReflection;
 
 public class Injector {
 
@@ -53,7 +51,7 @@ public class Injector {
 
 		public T getInstance() {
 			// TODO: consider using parameter injection
-			return new ClassReflection<>(type).instantiate();
+			return new ClassReflection<>(type).findConstructor().invoke();
 		}
 	}
 
@@ -115,7 +113,7 @@ public class Injector {
 	}
 
 	public <T> T instantiate(Class<T> type) {
-		ConstructorReflection<T> constructor = new ClassReflection<>(type).getDefaultConstructor();
+		ConstructorReflection<T> constructor = new ClassReflection<>(type).getConstructors()[0];
 		if (constructor != null) {
 			Object[] args = createArguments(constructor);
 			return constructor.invoke(args);
@@ -125,12 +123,7 @@ public class Injector {
 
 	public Object invoke(Object data, MethodReflection method) {
 		Object[] args = createArguments(method);
-		if (method instanceof InstanceMethodReflection) {
-			return ((InstanceMethodReflection) method).invoke(data, args);
-		} else if (method instanceof StaticMethodReflection) {
-			return ((StaticMethodReflection) method).invoke(args);
-		}
-		return null;
+		return method.invoke(data, args);
 	}
 
 	private Object[] createArguments(ExecutableReflection<?> excutable) {

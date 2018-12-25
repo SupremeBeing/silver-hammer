@@ -30,8 +30,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,15 +38,6 @@ final class Reflector {
 
 	private Reflector() {}
 	
-	static List<Class<?>> getClassHierarchy(Class<?> cl) {
-		List<Class<?>> result = new ArrayList<>();
-		while (cl != null) {
-			result.add(0, cl);
-			cl = cl.getSuperclass();
-		}
-		return result;
-	}
-
 	static <T> T instantiate(Class<T> cl, Object... args) {
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -174,19 +163,5 @@ final class Reflector {
 		} catch (InvocationTargetException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	static Class<?>[] getGenericTypeArguments(Field field) {
-		Type t = field.getGenericType();
-		if (t instanceof ParameterizedType) {
-			Type[] types = ((ParameterizedType) t).getActualTypeArguments();
-			Class<?>[] result = new Class[types.length];
-			for (int i = 0; i < types.length; i++) {
-				if (types[i] instanceof Class) {
-					result[i] = (Class<?>) types[i];
-				}
-			}
-		}
-		return new Class<?>[0];
 	}
 }

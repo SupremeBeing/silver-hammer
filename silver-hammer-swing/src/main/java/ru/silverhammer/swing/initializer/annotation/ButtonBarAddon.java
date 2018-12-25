@@ -30,8 +30,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.common.Location;
 import ru.silverhammer.core.InitializerReference;
+import ru.silverhammer.core.Location;
 import ru.silverhammer.swing.initializer.ButtonBarAddonInitializer;
 
 @Target(ElementType.FIELD)

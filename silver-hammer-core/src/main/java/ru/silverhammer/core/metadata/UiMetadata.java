@@ -38,9 +38,7 @@ import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.InstanceFieldReflection;
-import ru.silverhammer.reflection.InstanceMethodReflection;
-import ru.silverhammer.reflection.StaticFieldReflection;
+import ru.silverhammer.reflection.MethodReflection;
 
 public class UiMetadata {
 
@@ -211,11 +209,7 @@ public class UiMetadata {
 
 	private void commit(Object data, FieldReflection field, IControl<?> control) {
 		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
-		if (field instanceof InstanceFieldReflection) {
-			((InstanceFieldReflection) field).setValue(data, value);
-		} else if (field instanceof StaticFieldReflection) {
-			((StaticFieldReflection) field).setValue(value);
-		}
+		field.setValue(data, value);
 	}
 
 	public boolean isValid() {
@@ -273,7 +267,7 @@ public class UiMetadata {
 		if (annotation != null) {
 			List<Object> params = new ArrayList<>();
 			String message = null;
-			for (InstanceMethodReflection method : new ClassReflection<>(annotation.annotationType()).getInstanceMethods()) {
+			for (MethodReflection method : new ClassReflection<>(annotation.annotationType()).getMethods()) {
 				Object value = method.invoke(annotation);
 				if ("message".equals(method.getName())) {
 					message = value.toString();

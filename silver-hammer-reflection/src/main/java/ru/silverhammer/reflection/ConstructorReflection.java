@@ -35,10 +35,17 @@ public class ConstructorReflection<T> extends ExecutableReflection<Constructor<T
 	}
 	
 	public T invoke(Object... args) {
-		// TODO: set accessible?
 		try {
-			return getElement().newInstance(args);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			boolean accessible = getElement().isAccessible();
+			if (!accessible) {
+				getElement().setAccessible(true);
+			}
+			T result = getElement().newInstance(args);
+			if (!accessible) {
+				getElement().setAccessible(false);
+			}
+			return result;
+		} catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
 			throw new RuntimeException(e);
 		}
 	}

@@ -34,8 +34,6 @@ import ru.silverhammer.injection.Inject;
 import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.AnnotatedReflection;
 import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.InstanceFieldReflection;
-import ru.silverhammer.reflection.StaticFieldReflection;
 
 public class GeneratableFieldProcessor extends Processor {
 
@@ -47,35 +45,18 @@ public class GeneratableFieldProcessor extends Processor {
 	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
 		if (member instanceof FieldReflection) {
 			FieldReflection field = (FieldReflection) member;
-			Object val;
-			if (member instanceof InstanceFieldReflection) {
-				val = ((InstanceFieldReflection) member).getValue(data);
-				if (field.getType().isArray()) {
-					int length = Array.getLength(val);
-					for (int i = 0; i < length; i++) {
-						super.process(metadata, Array.get(val, i), field, annotation);
-					}
-				} else if (Collection.class.isAssignableFrom(field.getType())) {
-					for (Object o : (Collection<?>) val) {
-						super.process(metadata, o, field, annotation);
-					}
-				} else {
-					super.process(metadata, val, field, annotation);
+			Object val = field.getValue(data);
+			if (field.getType().isArray()) {
+				int length = Array.getLength(val);
+				for (int i = 0; i < length; i++) {
+					super.process(metadata, Array.get(val, i), field, annotation);
 				}
-			} else if (member instanceof StaticFieldReflection) {
-				val = ((StaticFieldReflection) member).getValue();
-				if (field.getType().isArray()) {
-					int length = Array.getLength(val);
-					for (int i = 0; i < length; i++) {
-						super.process(metadata, Array.get(val, i), field, annotation);
-					}
-				} else if (Collection.class.isAssignableFrom(field.getType())) {
-					for (Object o : (Collection<?>) val) {
-						super.process(metadata, o, field, annotation);
-					}
-				} else {
-					super.process(metadata, val, field, annotation);
+			} else if (Collection.class.isAssignableFrom(field.getType())) {
+				for (Object o : (Collection<?>) val) {
+					super.process(metadata, o, field, annotation);
 				}
+			} else {
+				super.process(metadata, val, field, annotation);
 			}
 		}
 	}

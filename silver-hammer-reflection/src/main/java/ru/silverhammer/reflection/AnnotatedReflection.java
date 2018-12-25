@@ -54,6 +54,9 @@ public abstract class AnnotatedReflection<T extends AnnotatedElement> {
 	private final T element;
 	
 	protected AnnotatedReflection(T element) {
+		if (element == null) {
+			throw new IllegalArgumentException();
+		}
 		this.element = element;
 	}
 	
@@ -77,13 +80,13 @@ public abstract class AnnotatedReflection<T extends AnnotatedElement> {
 		return element.getAnnotation(cl);
 	}
 	
-	public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> marker) {
+	public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
 		List<MarkedAnnotation<A>> result = new ArrayList<>();
 		for (Annotation annotation : element.getAnnotations()) {
 			Class<? extends Annotation> type = annotation.annotationType();
-			A a = type.getAnnotation(marker);
-			if (a != null) {	
-				result.add(new MarkedAnnotation<>(annotation, a));
+			A marker = type.getAnnotation(markerClass);
+			if (marker != null) {	
+				result.add(new MarkedAnnotation<>(annotation, marker));
 			}
 		}
 		return result;

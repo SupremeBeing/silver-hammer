@@ -35,7 +35,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import ru.silverhammer.common.Location;
+import ru.silverhammer.core.Location;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;

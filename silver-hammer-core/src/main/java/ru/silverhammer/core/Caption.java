@@ -30,10 +30,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.common.HorizontalAlignment;
-import ru.silverhammer.common.Location;
-import ru.silverhammer.common.VerticalAlignment;
-
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Caption {

@@ -53,7 +53,7 @@ public class MapToListConverter implements IConverter<Map<?, ?>, Collection<Obje
 			@SuppressWarnings("rawtypes")
 			ClassReflection<? extends Map> cr = new ClassReflection<>(annotation.value());
 			@SuppressWarnings("unchecked")
-			Map<Object, Object> result = cr.instantiate();
+			Map<Object, Object> result = cr.findConstructor().invoke();
 			for (Object[] pair : destination) {
 				result.put(pair[0], pair[1]);
 			}

@@ -25,9 +25,9 @@
  */
 package ru.silverhammer.core.metadata;
 
-import ru.silverhammer.common.HorizontalAlignment;
-import ru.silverhammer.common.Location;
-import ru.silverhammer.common.VerticalAlignment;
+import ru.silverhammer.core.HorizontalAlignment;
+import ru.silverhammer.core.Location;
+import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.reflection.FieldReflection;
 

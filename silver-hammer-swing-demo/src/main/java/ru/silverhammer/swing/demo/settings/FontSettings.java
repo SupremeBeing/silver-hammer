@@ -27,10 +27,10 @@ package ru.silverhammer.swing.demo.settings;
 
 import java.awt.Color;
 
-import ru.silverhammer.common.Location;
-import ru.silverhammer.common.VerticalAlignment;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.Location;
+import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.control.annotation.ColorChooser;
 import ru.silverhammer.core.control.annotation.List;

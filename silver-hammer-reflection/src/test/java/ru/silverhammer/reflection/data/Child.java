@@ -42,6 +42,10 @@ public class Child extends Parent {
 	}
 	
 	private String message;
+	
+	protected Child(String mesage) {
+		this.message = mesage;
+	}
 
 	public String getMessage() {
 		return message;

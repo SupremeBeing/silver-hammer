@@ -27,9 +27,13 @@ package ru.silverhammer.reflection;
 
 import java.lang.reflect.Method;
 
-public abstract class MethodReflection extends ExecutableReflection<Method> {
+public class MethodReflection extends ExecutableReflection<Method> {
 
 	protected MethodReflection(Method method) {
 		super(method);
+	}
+	
+	public Object invoke(Object data, Object... args) {
+		return Reflector.invoke(data, getElement(), args);
 	}
 }

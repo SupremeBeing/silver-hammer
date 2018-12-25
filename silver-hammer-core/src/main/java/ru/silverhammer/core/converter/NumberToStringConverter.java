@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import ru.silverhammer.common.Commons;
+import ru.silverhammer.core.Commons;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
 
 public class NumberToStringConverter implements IConverter<Number, String, NumberFormat> {

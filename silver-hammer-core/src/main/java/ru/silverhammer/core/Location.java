@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2017, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,23 +21,13 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  */
-package ru.silverhammer.reflection;
+package ru.silverhammer.core;
 
-import java.lang.reflect.Field;
-
-public class StaticFieldReflection extends FieldReflection {
-
-	protected StaticFieldReflection(Field field) {
-		super(field);
-	}
-
-	public Object getValue() {
-		return Reflector.getValue(null, getElement());
-	}
-
-	public void setValue(Object value) {
-		Reflector.setValue(null, getElement(), value);
-	}
+public enum Location {
+	Left,
+	Top,
+	Right,
+	Bottom;
 }

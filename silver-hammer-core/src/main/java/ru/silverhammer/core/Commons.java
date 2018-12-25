@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.common;
+package ru.silverhammer.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

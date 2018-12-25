@@ -30,7 +30,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,22 +41,6 @@ import ru.silverhammer.reflection.data.Parent;
 
 public class ReflectorTest {
 	
-	@Test
-	public void testClassHierarchy() {
-		List<Class<?>> hierarchy = Reflector.getClassHierarchy(GrandChild.class);
-		Assert.assertEquals(4, hierarchy.size());
-		Assert.assertEquals(Object.class, hierarchy.get(0));
-		Assert.assertEquals(Parent.class, hierarchy.get(1));
-		Assert.assertEquals(Child.class, hierarchy.get(2));
-		Assert.assertEquals(GrandChild.class, hierarchy.get(3));
-	}
-	
-	@Test
-	public void testNullClassHierarchy() {
-		List<Class<?>> hierarchy = Reflector.getClassHierarchy(null);
-		Assert.assertTrue(hierarchy.isEmpty());
-	}
-
 	@Test
 	public void testInstantiate() {
 		Parent parent = Reflector.instantiate(Parent.class);
