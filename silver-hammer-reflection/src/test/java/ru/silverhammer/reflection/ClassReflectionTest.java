@@ -87,12 +87,12 @@ public class ClassReflectionTest {
 		Assert.assertEquals(Parent.class, parent.getClass());
 	}
 
-	// TODO: fix this
-	@Test(expected = NullPointerException.class)
+	// TODO: in case of null use first suitable constructor
+	@Test
 	public void testNullInstantiate() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		GrandChild grandChild = cr.findConstructor(null, null).invoke(null, null);
-		Assert.assertEquals(GrandChild.class, grandChild.getClass());
+		GrandChild grandChild = cr.instantiate((String) null);
+		Assert.assertNull(grandChild);
 	}
 
 	@Test
@@ -103,19 +103,21 @@ public class ClassReflectionTest {
 		Assert.assertEquals("Message", grandChild.getMessage());
 	}
 
-	// TODO: consider adding super type support to Reflector
-	@Test(expected = RuntimeException.class)
+	// TODO: consider adding super type support
+	@Test
 	public void testSupertypeArgsInstantiate() {
 		Collection<String> list = new ArrayList<>();
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		cr.instantiate(list);
+		GrandChild grandChild = cr.instantiate(list);
+		Assert.assertNull(grandChild);
 	}
 	
-	// TODO: consider adding primitives support to Reflector
-	@Test(expected = RuntimeException.class)
+	// TODO: consider adding primitives support
+	@Test
 	public void testPrimitiveArgsInstantiate() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		cr.instantiate(10);
+		GrandChild grandChild = cr.instantiate(10);
+		Assert.assertNull(grandChild);
 	}
 	
 	@Test
