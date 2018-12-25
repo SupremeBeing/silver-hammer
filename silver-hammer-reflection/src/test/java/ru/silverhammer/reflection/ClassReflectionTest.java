@@ -87,12 +87,12 @@ public class ClassReflectionTest {
 		Assert.assertEquals(Parent.class, parent.getClass());
 	}
 
-	// TODO: in case of null use first suitable constructor
 	@Test
 	public void testNullInstantiate() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		GrandChild grandChild = cr.instantiate((String) null);
-		Assert.assertNull(grandChild);
+		Assert.assertNotNull(grandChild);
+		Assert.assertNull(grandChild.getMessage()); // string constructor was called
 	}
 
 	@Test
@@ -103,23 +103,32 @@ public class ClassReflectionTest {
 		Assert.assertEquals("Message", grandChild.getMessage());
 	}
 
-	// TODO: consider adding super type support
 	@Test
 	public void testSupertypeArgsInstantiate() {
 		Collection<String> list = new ArrayList<>();
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		GrandChild grandChild = cr.instantiate(list);
-		Assert.assertNull(grandChild);
+		Assert.assertNotNull(grandChild);
+		Assert.assertEquals(list, grandChild.getCollection());
 	}
 	
-	// TODO: consider adding primitives support
 	@Test
 	public void testPrimitiveArgsInstantiate() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		GrandChild grandChild = cr.instantiate(10);
+		int value = 10;
+		GrandChild grandChild = cr.instantiate(value);
+		Assert.assertNotNull(grandChild);
+		Assert.assertEquals(value, grandChild.getCode());
+	}
+
+	@Test
+	public void testPrimitiveCastInstantiate() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		short value = 10;
+		GrandChild grandChild = cr.instantiate(value);
 		Assert.assertNull(grandChild);
 	}
-	
+
 	@Test
 	public void testFindOverrideMethod() {
 		GrandChild grandChild = new GrandChild("visible");

@@ -28,6 +28,7 @@ package ru.silverhammer.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,13 +59,41 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return ctor == null ? null : ctor.invoke(args);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ConstructorReflection<T> findConstructor(Class<?>... types) {
-		try {
-			Constructor<T> ctor = getElement().getDeclaredConstructor(types);
-			return new ConstructorReflection<>(ctor);
-		} catch (NoSuchMethodException e) {
-			return null;
+		for (Constructor<?> ctor : getElement().getDeclaredConstructors()) {
+			if (match(ctor, types)) {
+				return new ConstructorReflection<>((Constructor<T>) ctor);
+			}
 		}
+		return null;
+	}
+	
+	private boolean match(Constructor<?> ctor, Class<?>[] types) {
+		Parameter[] params = ctor.getParameters();
+		if (types.length != params.length) {
+			return false;
+		}
+		for (int i = 0; i < params.length; i++) {
+			Class<?> type = types[i];
+			Parameter param = params[i];
+			if (type == null) {
+				if (param.getType().isPrimitive()) {
+					return false;
+				}
+			} else {
+				if (param.getType().isPrimitive()) {
+					if (!Primitive.match(param.getType(), type)) {
+						return false;
+					}
+				} else {
+					if (!param.getType().isAssignableFrom(type)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 	
 	public ClassReflection<?>[] getHierarchy() {
