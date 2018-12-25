@@ -25,11 +25,12 @@
  */
 package ru.silverhammer.reflection;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
 
-public abstract class MemberReflection<T extends Member & AnnotatedElement> extends AnnotatedReflection<T> {
+public abstract class MemberReflection<T extends AccessibleObject & Member> extends AnnotatedReflection<T> {
 	
 	public enum AccessType {
 		Public,
@@ -45,7 +46,11 @@ public abstract class MemberReflection<T extends Member & AnnotatedElement> exte
 	public boolean isFinal() {
 		return Modifier.isFinal(getElement().getModifiers());
 	}
-	
+
+	public boolean isStatic() {
+		return Modifier.isStatic(getElement().getModifiers());
+	}
+
 	public AccessType getAccessType() {
 		if (Modifier.isPublic(getElement().getModifiers())) {
 			return AccessType.Public;
@@ -60,5 +65,19 @@ public abstract class MemberReflection<T extends Member & AnnotatedElement> exte
 
 	public String getName() {
 		return getElement().getName();
-	}	
+	}
+	
+	protected <R> R forceAccess(Supplier<R> supplier) {
+		boolean accessible = getElement().isAccessible();
+		if (!accessible) {
+			getElement().setAccessible(true);
+		}
+		try {
+			return supplier.get();
+		} finally {
+			if (!accessible) {
+				getElement().setAccessible(false);
+			}
+		}
+	}
 }

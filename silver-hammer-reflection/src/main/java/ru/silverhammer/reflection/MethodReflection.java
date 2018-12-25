@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.reflection;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MethodReflection extends ExecutableReflection<Method> {
@@ -34,6 +35,12 @@ public class MethodReflection extends ExecutableReflection<Method> {
 	}
 	
 	public Object invoke(Object data, Object... args) {
-		return Reflector.invoke(data, getElement(), args);
+		return forceAccess(() -> {
+			try {
+				return getElement().invoke(data, args);
+			} catch (InvocationTargetException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 }

@@ -81,7 +81,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 			if (destination instanceof Collection) {
 				@SuppressWarnings("rawtypes")
 				ClassReflection<? extends Collection> cr = new ClassReflection<>(annotation.collection());
-				Collection<Object> result = cr.findConstructor().invoke();
+				Collection<Object> result = cr.instantiate();
 				for (Object[] row : (Collection<Object[]>) destination) {
 					result.add(createObject(row, fields, annotation));
 				}
@@ -94,7 +94,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	}
 	
 	private Object createObject(Object[] item, List<FieldReflection> fields, ValueToItems annotation) {
-		Object result = new ClassReflection<>(annotation.value()).findConstructor().invoke();
+		Object result = new ClassReflection<>(annotation.value()).instantiate();
 		for (int i = 0; i < fields.size(); i++) {
 			FieldReflection field = fields.get(i);
 			Object value = item[i];

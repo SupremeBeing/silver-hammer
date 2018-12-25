@@ -25,8 +25,6 @@
  */
 package ru.silverhammer.injection;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +32,7 @@ import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.ConstructorReflection;
 import ru.silverhammer.reflection.ExecutableReflection;
 import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.ParameterReflection;
 
 public class Injector {
 
@@ -51,7 +50,7 @@ public class Injector {
 
 		public T getInstance() {
 			// TODO: consider using parameter injection
-			return new ClassReflection<>(type).findConstructor().invoke();
+			return new ClassReflection<>(type).instantiate();
 		}
 	}
 
@@ -113,10 +112,10 @@ public class Injector {
 	}
 
 	public <T> T instantiate(Class<T> type) {
-		ConstructorReflection<T> constructor = new ClassReflection<>(type).getConstructors()[0];
-		if (constructor != null) {
-			Object[] args = createArguments(constructor);
-			return constructor.invoke(args);
+		ConstructorReflection<T>[] constructors = new ClassReflection<>(type).getConstructors();
+		if (constructors.length != 0) {
+			Object[] args = createArguments(constructors[0]);
+			return constructors[0].invoke(args);
 		}
 		return null;
 	}
@@ -127,10 +126,10 @@ public class Injector {
 	}
 
 	private Object[] createArguments(ExecutableReflection<?> excutable) {
-		Parameter[] params = excutable.getParameters();
+		ParameterReflection[] params = excutable.getParameters();
 		Object[] result = new Object[params.length];
 		for (int i = 0; i < params.length; i++) {
-			Parameter param = params[i];
+			ParameterReflection param = params[i];
 			Object impl = getInjectedInstance(param, param.getType());
 			if (impl == null) {
 				impl = instantiate(param.getType());
@@ -140,7 +139,7 @@ public class Injector {
 		return result;
 	}
 
-	private Object getInjectedInstance(AnnotatedElement element, Class<?> type) {
+	private Object getInjectedInstance(ParameterReflection element, Class<?> type) {
 		Inject ia = element.getAnnotation(Inject.class);
 		if (ia != null) {
 			Named na = element.getAnnotation(Named.class);

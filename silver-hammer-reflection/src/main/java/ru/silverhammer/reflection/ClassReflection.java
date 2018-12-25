@@ -30,6 +30,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 	
@@ -47,11 +49,16 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return result;
 	}
 	
-	public ConstructorReflection<T> findConstructor(Object... args) {
+	public T instantiate(Object... args) {
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
 			types[i] = args[i].getClass();
 		}
+		ConstructorReflection<T> ctor = findConstructor(types);
+		return ctor.invoke(args);
+	}
+	
+	public ConstructorReflection<T> findConstructor(Class<?>... types) {
 		try {
 			Constructor<T> ctor = getElement().getDeclaredConstructor(types);
 			return new ConstructorReflection<>(ctor);
@@ -62,57 +69,72 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 	
 	public ClassReflection<?>[] getHierarchy() {
 		List<ClassReflection<?>> result = new ArrayList<>();
-		Class<?> cl = getElement();
-		while (cl != null) {
-			result.add(0, new ClassReflection<>(cl));
-			cl = cl.getSuperclass();
-		}
+		walkHierarchy(cl -> result.add(0, new ClassReflection<>(cl)));
 		return result.toArray(new ClassReflection<?>[result.size()]);
 	}
 	
 	public FieldReflection[] getClassFields() {
-		return convertFields(getElement().getDeclaredFields());
-	}
-
-	public FieldReflection findField(String fieldName) {
-		Field field = Reflector.findField(getElement(), fieldName);
-		return field == null ? null : new FieldReflection(field);
-	}
-
-	// TODO: maintain order from parent to child
-	public FieldReflection[] getFields() {
-		return convertFields(Reflector.getFields(getElement()));
-	}
-	
-	private FieldReflection[] convertFields(Field[] fields) {
+		Field[] fields  = getElement().getDeclaredFields();
 		FieldReflection[] result = new FieldReflection[fields.length];
 		for (int i = 0; i < fields.length; i++) {
 			result[i] = new FieldReflection(fields[i]);
 		}
 		return result;
 	}
+
+	public FieldReflection findField(String fieldName) {
+		Class<?> cl = getElement();
+		while (cl != null) {
+			for (Field fld : cl.getDeclaredFields()) {
+				if (Objects.equals(fieldName, fld.getName())) {
+					return new FieldReflection(fld);
+				}
+			}
+			cl = cl.getSuperclass();
+		}
+		return null;
+	}
+
+	// TODO: maintain order from parent to child
+	public FieldReflection[] getFields() {
+		List<FieldReflection> result = new ArrayList<>();
+		walkHierarchy(cl -> {
+			for (Field fld : cl.getDeclaredFields()) {
+				result.add(new FieldReflection(fld));
+			}
+		});
+		return result.toArray(new FieldReflection[result.size()]);
+	}
 	
 	// TODO: maintain order from parent to child
 	public MethodReflection[] getMethods() {
-		Method[] methods = Reflector.getMethods(getElement());
-		MethodReflection[] result = new MethodReflection[methods.length];
-		for (int i = 0; i < methods.length; i++) {
-			result[i] = new MethodReflection(methods[i]);
-		}
-		return result;
-	}
-
-	public MethodReflection[] getInstanceMethods() {
-		Method[] methods = Reflector.getInstanceMethods(getElement());
-		MethodReflection[] result = new MethodReflection[methods.length];
-		for (int i = 0; i < methods.length; i++) {
-			result[i] = new MethodReflection(methods[i]);
-		}
-		return result;
+		List<MethodReflection> result = new ArrayList<>();
+		walkHierarchy(cl -> {
+			for (Method m : cl.getDeclaredMethods()) {
+				result.add(new MethodReflection(m));
+			}
+		});
+		return result.toArray(new MethodReflection[result.size()]);
 	}
 
 	public MethodReflection findMethod(String methodName) {
-		Method method = Reflector.findMethod(getElement(), methodName);
-		return method == null ? null : new MethodReflection(method);
+		Class<?> cl = getElement();
+		while (cl != null) {
+			for (Method m : cl.getDeclaredMethods()) {
+				if (Objects.equals(methodName, m.getName())) {
+					return new MethodReflection(m);
+				}
+			}
+			cl = cl.getSuperclass();
+		}
+		return null;
+	}
+	
+	private void walkHierarchy(Consumer<Class<?>> consumer) {
+		Class<?> cl = getElement();
+		while (cl != null) {
+			consumer.accept(cl);
+			cl = cl.getSuperclass();
+		}
 	}
 }

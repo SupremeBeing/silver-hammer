@@ -25,6 +25,9 @@
  */
 package ru.silverhammer.reflection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,5 +75,121 @@ public class ClassReflectionTest {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		ConstructorReflection<GrandChild>[] ctors = cr.getConstructors();
 		Assert.assertEquals(3, ctors.length);
+		Assert.assertEquals(1, ctors[0].getParameters().length);
+		Assert.assertEquals(1, ctors[1].getParameters().length);
+		Assert.assertEquals(1, ctors[2].getParameters().length);
+	}
+	
+	@Test
+	public void testInstantiate() {
+		ClassReflection<Parent> cr = new ClassReflection<>(Parent.class);
+		Parent parent = cr.instantiate();
+		Assert.assertEquals(Parent.class, parent.getClass());
+	}
+
+	// TODO: fix this
+	@Test(expected = NullPointerException.class)
+	public void testNullInstantiate() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		GrandChild grandChild = cr.findConstructor(null, null).invoke(null, null);
+		Assert.assertEquals(GrandChild.class, grandChild.getClass());
+	}
+
+	@Test
+	public void testArgsInstantiate() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		GrandChild grandChild = cr.instantiate("Message");
+		Assert.assertEquals(GrandChild.class, grandChild.getClass());
+		Assert.assertEquals("Message", grandChild.getMessage());
+	}
+
+	// TODO: consider adding super type support to Reflector
+	@Test(expected = RuntimeException.class)
+	public void testSupertypeArgsInstantiate() {
+		Collection<String> list = new ArrayList<>();
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		cr.instantiate(list);
+	}
+	
+	// TODO: consider adding primitives support to Reflector
+	@Test(expected = RuntimeException.class)
+	public void testPrimitiveArgsInstantiate() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		cr.instantiate(10);
+	}
+	
+	@Test
+	public void testFindOverrideMethod() {
+		GrandChild grandChild = new GrandChild("visible");
+		grandChild.setMessage("shadowed");
+		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
+		MethodReflection method = cr.findMethod("getMessage");
+		Assert.assertNotNull(method);
+		Object value = method.invoke(grandChild);
+		Assert.assertEquals("visible", value);
+	}
+	
+	@Test
+	public void testFindField() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		FieldReflection field = cr.findField("code");
+		Assert.assertNotNull(field);
+		Assert.assertEquals("code", field.getName());
+	}
+	
+	@Test
+	public void testFindMissingField() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		FieldReflection field = cr.findField("code2");
+		Assert.assertNull(field);
+	}
+	
+	@Test
+	public void testFindStaticField() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		FieldReflection field = cr.findField("CONSTANT");
+		Assert.assertNotNull(field);
+		Assert.assertEquals("CONSTANT", field.getName());
+		Assert.assertTrue(field.isStatic());
+	}
+	
+	@Test
+	public void testFindInnerField() {
+		ClassReflection<Child.Inner> cr = new ClassReflection<>(Child.Inner.class);
+		FieldReflection field = cr.findField("string");
+		Assert.assertNotNull(field);
+		Assert.assertEquals("string", field.getName());
+	}
+	
+	@Test
+	public void testFindMethod() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		MethodReflection method = cr.findMethod("getCode");
+		Assert.assertNotNull(method);
+		Assert.assertEquals("getCode", method.getName());
+	}
+	
+	@Test
+	public void testFindMissingMethod() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		MethodReflection method = cr.findMethod("getCode2");
+		Assert.assertNull(method);
+	}
+	
+	@Test
+	public void testFindStaticMethod() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		MethodReflection method = cr.findMethod("setStatic");
+		Assert.assertNotNull(method);
+		Assert.assertEquals("setStatic", method.getName());
+		Assert.assertTrue(method.isStatic());
+	}
+	
+	@Test
+	public void testFindInnerMethod() {
+		ClassReflection<Child.Inner> cr = new ClassReflection<>(Child.Inner.class);
+		MethodReflection method = cr.findMethod("setString");
+		Assert.assertNotNull(method);
+		Assert.assertEquals("setString", method.getName());
 	}
 }

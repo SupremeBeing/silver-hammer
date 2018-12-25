@@ -25,21 +25,15 @@
  */
 package ru.silverhammer.reflection;
 
-import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
-public abstract class ExecutableReflection<T extends Executable> extends MemberReflection<T> {
+public class ParameterReflection extends AnnotatedReflection<Parameter> {
 
-	protected ExecutableReflection(T executable) {
-		super(executable);
+	protected ParameterReflection(Parameter element) {
+		super(element);
 	}
-	
-	public ParameterReflection[] getParameters() {
-		Parameter[] params = getElement().getParameters();
-		ParameterReflection[] result = new ParameterReflection[params.length];
-		for (int i = 0; i < params.length; i++) {
-			result[i] = new ParameterReflection(params[i]);
-		}
-		return result;
+
+	public Class<?> getType() {
+		return getElement().getType();
 	}
 }

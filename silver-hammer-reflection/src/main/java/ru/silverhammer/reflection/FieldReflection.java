@@ -35,12 +35,33 @@ public class FieldReflection extends MemberReflection<Field> {
 		super(field);
 	}
 	
+	public Object getStaticValue() {
+		return getValue(null);
+	}
+	
 	public Object getValue(Object data) {
-		return Reflector.getValue(data, getElement());
+		return forceAccess(() -> {
+			try {
+				return getElement().get(data);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+	
+	public void setStaticValue(Object value) {
+		setValue(null, value);
 	}
 	
 	public void setValue(Object data, Object value) {
-		Reflector.setValue(data, getElement(), value);
+		forceAccess(() -> {
+			try {
+				getElement().set(data, value);
+				return null;
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 	
 	public Class<?>[] getGenericTypeArguments() {
