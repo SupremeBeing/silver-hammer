@@ -49,7 +49,7 @@ public class ClassReflectionTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullHierarchy() {
+	public void testNullClass() {
 		new ClassReflection<>(null);
 	}
 

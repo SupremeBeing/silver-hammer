@@ -81,15 +81,17 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 				if (param.getType().isPrimitive()) {
 					return false;
 				}
-			} else {
-				if (param.getType().isPrimitive()) {
-					if (!Primitive.match(param.getType(), type)) {
-						return false;
-					}
-				} else {
-					if (!param.getType().isAssignableFrom(type)) {
-						return false;
-					}
+			} else if (type.isPrimitive()) {
+				if (param.getType().isPrimitive() && param.getType() != type) {
+					return false;
+				} else if (!param.getType().isPrimitive() && !Primitive.match(type, param.getType())) {
+					return false;
+				}
+			} else if (!type.isPrimitive()) {
+				if (param.getType().isPrimitive() && !Primitive.match(param.getType(), type)) {
+					return false;
+				} else if (!param.getType().isPrimitive() && !param.getType().isAssignableFrom(type)) {
+					return false;
 				}
 			}
 		}

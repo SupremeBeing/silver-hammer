@@ -96,13 +96,11 @@ public class FieldReflectionTest {
 		field.setValue(grandChild, "string");
 	}
 
-	// TODO: consider altering modifiers
 	@Test(expected = RuntimeException.class)
 	public void testSetStaticFinalField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		FieldReflection field = cr.findField("CONSTANT");
 		field.setStaticValue("ALTERED");
-		Assert.assertEquals("ALTERED", GrandChild.CONSTANT);
 	}
 
 	@Test

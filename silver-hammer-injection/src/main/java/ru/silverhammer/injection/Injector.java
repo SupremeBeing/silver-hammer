@@ -40,7 +40,7 @@ public class Injector {
 		public T getInstance();
 	}
 
-	private static class BoundType<T> implements IBound<T> {
+	private class BoundType<T> implements IBound<T> {
 
 		private Class<T> type;
 
@@ -49,12 +49,11 @@ public class Injector {
 		}
 
 		public T getInstance() {
-			// TODO: consider using parameter injection
-			return new ClassReflection<>(type).instantiate();
+			return instantiate(type);
 		}
 	}
 
-	private static class BoundInstance<T> implements IBound<T> {
+	private class BoundInstance<T> implements IBound<T> {
 
 		private T instance;
 

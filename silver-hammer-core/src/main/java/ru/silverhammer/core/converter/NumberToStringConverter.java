@@ -26,10 +26,10 @@
 package ru.silverhammer.core.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import ru.silverhammer.core.Commons;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
 
 public class NumberToStringConverter implements IConverter<Number, String, NumberFormat> {
@@ -55,7 +55,45 @@ public class NumberToStringConverter implements IConverter<Number, String, Numbe
 				result = fmt.parse(destination);
 			} catch (ParseException e) {}
 		}
-		return Commons.convertNumber(result, annotation.type());
+		return convertNumber(result, annotation.type());
 	}
 
+	private Number convertNumber(Number value, Class<?> target) {
+		if (value != null) {
+			if (value.getClass() != target) {
+				if (target == Byte.class || target == byte.class) {
+					return value.byteValue();
+				} else if (target == Short.class || target == short.class) {
+					return value.shortValue();
+				} else if (target == Integer.class || target == int.class) {
+					return value.intValue();
+				} else if (target == Long.class || target == long.class) {
+					return value.longValue();
+				} else if (target == Float.class || target == float.class) {
+					return value.floatValue();
+				} else if (target == Double.class || target == double.class) {
+					return value.doubleValue();
+				} else if (target == BigInteger.class) {
+					return new BigInteger(Long.toString(value.longValue()));
+				} else if (target == BigDecimal.class) {
+					return value instanceof BigInteger ? new BigDecimal((BigInteger) value) : new BigDecimal(value.doubleValue());
+				}
+			}
+		} else if (target.isPrimitive()) {
+			if (target == byte.class) {
+				return (byte) 0;
+			} else if (target == short.class) {
+				return (short) 0;
+			} else if (target == int.class) {
+				return (int) 0;
+			} else if (target == long.class) {
+				return (long) 0;
+			} else if (target == float.class) {
+				return (float) 0;
+			} else if (target == double.class) {
+				return (double) 0;
+			}
+		}
+		return value;
+	}
 }
