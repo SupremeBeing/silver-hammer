@@ -102,9 +102,9 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 
 	@Override
 	public void setValue(Object value) {
-		if (getValueType() == ValueType.Content && value instanceof Collection) {
+		if (getValueType() == ValueType.Content) {
 			getModel().removeAllElements();
-			if (value != null) {
+			if (value instanceof Collection) {
 				for (Object o : (Collection<?>) value) {
 					getModel().addElement(o);
 				}
@@ -113,13 +113,15 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		} else if (getValueType() == ValueType.Selection) {
 			if (getSelectionType() == SelectionType.Single) {
 				getComponent().setSelectedValue(value, true);
-			} else if (value instanceof Collection) {
+			} else {
 				getComponent().clearSelection();
-				int count = getModel().getSize();
-				for (int i = 0; i < count; i++) {
-					Object val = getModel().get(i);
-					if (((Collection<?>) value).contains(val)) {
-						getComponent().addSelectionInterval(i, i);
+				if (value instanceof Collection) {
+					int count = getModel().getSize();
+					for (int i = 0; i < count; i++) {
+						Object val = getModel().get(i);
+						if (((Collection<?>) value).contains(val)) {
+							getComponent().addSelectionInterval(i, i);
+						}
 					}
 				}
 			}

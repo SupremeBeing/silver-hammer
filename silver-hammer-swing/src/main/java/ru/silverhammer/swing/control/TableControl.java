@@ -52,17 +52,17 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		
 		@Override
 		public String getColumnName(int column) {
-			return column < captions.size() ? captions.get(column) : null;
+			return captions != null && column < captions.size() ? captions.get(column) : null;
 		}
 
 		@Override
 		public int getColumnCount() {
-			return captions.size();
+			return captions == null ? 0 : captions.size();
 		}
 		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if (rowIndex < data.size()) {
+			if (data != null && rowIndex < data.size()) {
 				Object[] row = data.get(rowIndex);
 				if (columnIndex < row.length) {
 					return row[columnIndex];
@@ -73,7 +73,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		
 		@Override
 		public int getRowCount() {
-			return data.size();
+			return data == null ? 0 : data.size();
 		}
 	}
 
@@ -142,7 +142,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 				if (i != -1) {
 					getComponent().setRowSelectionInterval(i, i);
 				}
-			} else if (getSelectionType() == SelectionType.Interval && value instanceof Collection) {
+			} else if (getSelectionType() != SelectionType.Single && value instanceof Collection) {
 				for (Object[] o : (Collection<Object[]>) value) {
 					int i = findRow(o);
 					if (i != -1) {
@@ -150,9 +150,11 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 					}
 				}
 			}
-		} else if (getValueType() == ValueType.Content && value instanceof Collection) {
+		} else if (getValueType() == ValueType.Content) {
 			data.clear();
-			data.addAll((Collection<Object[]>) value);
+			if (value instanceof Collection) {
+				data.addAll((Collection<Object[]>) value);
+			}
 			getModel().fireTableStructureChanged();
 			fireValueChanged();
 		}

@@ -43,7 +43,7 @@ public class Injector {
 
 	private class BoundType<T> implements IBound<T> {
 
-		private Class<T> type;
+		private final Class<T> type;
 
 		private BoundType(Class<T> type) {
 			this.type = type;
@@ -57,7 +57,7 @@ public class Injector {
 
 	private class BoundInstance<T> implements IBound<T> {
 
-		private T instance;
+		private final T instance;
 
 		private BoundInstance(T instance) {
 			this.instance = instance;
@@ -119,8 +119,8 @@ public class Injector {
 		return method.invoke(data, args);
 	}
 
-	private Object[] createArguments(ExecutableReflection<?> excutable) {
-		List<ParameterReflection> params = excutable.getParameters();
+	private Object[] createArguments(ExecutableReflection<?> executable) {
+		List<ParameterReflection> params = executable.getParameters();
 		Object[] result = new Object[params.size()];
 		for (int i = 0; i < params.size(); i++) {
 			ParameterReflection param = params.get(i);

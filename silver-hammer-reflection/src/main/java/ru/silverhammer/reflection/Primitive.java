@@ -50,7 +50,7 @@ public enum Primitive {
 	private final Class<?> primitiveType;
 	private final Class<?> boxedType;
 	
-	private Primitive(Class<?> primitiveType, Class<?> boxedType) {
+	Primitive(Class<?> primitiveType, Class<?> boxedType) {
 		this.primitiveType = primitiveType;
 		this.boxedType = boxedType;
 	}

@@ -96,9 +96,9 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 	}
 	
 	private String checkExtension(String file, FileNameExtensionFilter filter) {
-		String[] exts = filter.getExtensions();
-		if (exts.length > 0) {
-			String ext = "." + exts[0];
+		String[] extensions = filter.getExtensions();
+		if (extensions.length > 0) {
+			String ext = "." + extensions[0];
 			if (!file.endsWith(ext)) {
 				return file + ext;
 			}

@@ -27,5 +27,5 @@ package ru.silverhammer.swing.demo.user;
 
 public enum Sex {
 	Male,
-	Female;
+	Female
 }

@@ -108,7 +108,7 @@ public class User {
 	@ComboBox
 	@GroupId("user")
 	@Caption("user.city")
-	@ControlProperties(editable = true)
+	@ControlProperties
 	@StringItems({"Paris", "New York", "Saint Petersburg", "Prague"})
 	private String city = "Saint Petersburg";	
 

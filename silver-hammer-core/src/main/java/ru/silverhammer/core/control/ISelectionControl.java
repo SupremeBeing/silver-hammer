@@ -30,7 +30,7 @@ public interface ISelectionControl<Item, Value> extends IControl<Value> {
 	enum SelectionType {
 		Single,
 		Interval,
-		Multi;
+		Multi
 	}
 
 	SelectionType getSelectionType();

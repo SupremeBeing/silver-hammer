@@ -63,7 +63,7 @@ public class FontSettings {
 			public String toString() {
 				return "<html><s>" + super.toString();
 			}
-		};
+		}
 	}
 
 	@Text

@@ -43,8 +43,8 @@ public class Child extends Parent {
 	
 	private String message;
 	
-	protected Child(String mesage) {
-		this.message = mesage;
+	protected Child(String message) {
+		this.message = message;
 	}
 
 	public String getMessage() {

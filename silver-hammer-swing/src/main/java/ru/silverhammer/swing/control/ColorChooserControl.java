@@ -43,11 +43,11 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 
 	private Color value;
 	
-	private JPanel colorPanel;
-	private JSlider red;
-	private JSlider green;
-	private JSlider blue;
-	private JSlider alpha;
+	private final JPanel colorPanel;
+	private final JSlider red;
+	private final JSlider green;
+	private final JSlider blue;
+	private final JSlider alpha;
 
 	public ColorChooserControl() {
 		super(false);
@@ -78,22 +78,22 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 		getComponent().add(colorPanel, gbc);
 
 		JLabel label1 = new JLabel(UIManager.getString("ColorChooser.rgbRedText", getLocale()));
-		getComponent().add(label1, createLableConstraints(0));
+		getComponent().add(label1, createLabelConstraints(0));
 		red = createSlider();
 		getComponent().add(red, createSliderConstraints(0));
 
 		JLabel label2 = new JLabel(UIManager.getString("ColorChooser.rgbGreenText", getLocale()));
-		getComponent().add(label2, createLableConstraints(1));
+		getComponent().add(label2, createLabelConstraints(1));
 		green = createSlider();
 		getComponent().add(green, createSliderConstraints(1));
 
 		JLabel label3 = new JLabel(UIManager.getString("ColorChooser.rgbBlueText", getLocale()));
-		getComponent().add(label3, createLableConstraints(2));
+		getComponent().add(label3, createLabelConstraints(2));
 		blue = createSlider();
 		getComponent().add(blue, createSliderConstraints(2));
 
 		JLabel label4 = new JLabel(UIManager.getString("ColorChooser.rgbAlphaText", getLocale()));
-		getComponent().add(label4, createLableConstraints(3));
+		getComponent().add(label4, createLabelConstraints(3));
 		alpha = createSlider();
 		getComponent().add(alpha, createSliderConstraints(3));
 		
@@ -118,12 +118,12 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 		alpha.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
 	}
 
-	private GridBagConstraints createLableConstraints(int gridy) {
+	private GridBagConstraints createLabelConstraints(int gridY) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 1;
-		gbc.gridy = gridy;
+		gbc.gridy = gridY;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 5, gridy == 3 ? 0 : 5, 5);
+		gbc.insets = new Insets(0, 5, gridY == 3 ? 0 : 5, 5);
 		gbc.weightx = 0;
 		return gbc;
 	}
@@ -137,11 +137,11 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 		return result;
 	}
 	
-	private GridBagConstraints createSliderConstraints(int gridy) {
+	private GridBagConstraints createSliderConstraints(int gridY) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(0, 0, gridy == 3 ? 0 : 5, 0);
+		gbc.insets = new Insets(0, 0, gridY == 3 ? 0 : 5, 0);
 		gbc.gridx = 2;
-		gbc.gridy = gridy;
+		gbc.gridy = gridY;
 		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		return gbc;

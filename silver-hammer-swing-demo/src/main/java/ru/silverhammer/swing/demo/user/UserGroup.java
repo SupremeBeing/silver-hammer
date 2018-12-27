@@ -35,7 +35,7 @@ public class UserGroup {
 		Guest,
 		User,
 		Operator,
-		RemoteAccess;
+		RemoteAccess
 	}
 
 	@Text

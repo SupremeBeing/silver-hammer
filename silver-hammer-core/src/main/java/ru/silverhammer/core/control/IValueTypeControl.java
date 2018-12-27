@@ -29,7 +29,7 @@ public interface IValueTypeControl<Value> extends IControl<Value> {
 
 	enum ValueType {
 		Selection,
-		Content;
+		Content
 	}
 	
 	ValueType getValueType();
