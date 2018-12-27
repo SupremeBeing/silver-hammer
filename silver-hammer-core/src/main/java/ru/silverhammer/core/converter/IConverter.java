@@ -29,8 +29,8 @@ import java.lang.annotation.Annotation;
 
 public interface IConverter<Source, Destination, A extends Annotation> {
 
-	public Destination convertForward(Source source, A annotation);
+	Destination convertForward(Source source, A annotation);
 	
-	public Source convertBackward(Destination destination, A annotation);
+	Source convertBackward(Destination destination, A annotation);
 	
 }

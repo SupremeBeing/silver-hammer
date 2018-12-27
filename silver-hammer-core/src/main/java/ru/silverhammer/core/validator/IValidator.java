@@ -29,6 +29,6 @@ import java.lang.annotation.Annotation;
 
 public interface IValidator<A extends Annotation> {
 	
-	public boolean validate(Object value, A annotation);
+	boolean validate(Object value, A annotation);
 	
 }

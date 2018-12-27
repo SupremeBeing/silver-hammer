@@ -27,16 +27,16 @@ package ru.silverhammer.core.control;
 
 public interface IControl<Value> {
 
-	public Value getValue();
+	Value getValue();
 	
-	public void setValue(Value value);
+	void setValue(Value value);
 
-	public void addControlListener(IControlListener listener);
+	void addControlListener(IControlListener listener);
 
-	public void removeControlListener(IControlListener listener);
+	void removeControlListener(IControlListener listener);
 
-	public boolean isEnabled();
+	boolean isEnabled();
 	
-	public void setEnabled(boolean enabled);
+	void setEnabled(boolean enabled);
 
 }

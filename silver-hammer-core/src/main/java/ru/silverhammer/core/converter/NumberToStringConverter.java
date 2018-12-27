@@ -53,7 +53,7 @@ public class NumberToStringConverter implements IConverter<Number, String, Numbe
 					fmt.setParseBigDecimal(true);
 				}
 				result = fmt.parse(destination);
-			} catch (ParseException e) {}
+			} catch (ParseException ignore) {}
 		}
 		return convertNumber(result, annotation.type());
 	}

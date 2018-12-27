@@ -41,7 +41,7 @@ public @interface ButtonBarAddon {
 
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Button {
+	@interface Button {
 
 		String caption();
 

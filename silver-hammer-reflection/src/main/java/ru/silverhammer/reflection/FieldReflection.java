@@ -28,6 +28,8 @@ package ru.silverhammer.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FieldReflection extends MemberReflection<Field> {
 	
@@ -64,18 +66,19 @@ public class FieldReflection extends MemberReflection<Field> {
 		});
 	}
 	
-	public Class<?>[] getGenericTypeArguments() {
+	public List<ClassReflection<?>> getGenericClasses() {
 		Type t = getElement().getGenericType();
 		if (t instanceof ParameterizedType) {
 			Type[] types = ((ParameterizedType) t).getActualTypeArguments();
-			Class<?>[] result = new Class[types.length];
-			for (int i = 0; i < types.length; i++) {
-				if (types[i] instanceof Class) {
-					result[i] = (Class<?>) types[i];
+			List<ClassReflection<?>> result = new ArrayList<>();
+			for (Type type : types) {
+				if (type instanceof Class) {
+					result.add(new ClassReflection<>((Class<?>) type));
 				}
 			}
+			return result;
 		}
-		return new Class<?>[0];
+		return new ArrayList<>();
 	}
 
 	public Class<?> getType() {

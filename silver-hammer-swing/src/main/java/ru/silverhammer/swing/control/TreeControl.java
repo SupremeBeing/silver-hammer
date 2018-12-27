@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -55,12 +53,7 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 	public TreeControl() {
 		super(true);
 		getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		getComponent().getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				fireValueChanged();
-			}
-		});
+		getComponent().getSelectionModel().addTreeSelectionListener(e -> fireValueChanged());
 		getComponent().setShowsRootHandles(true);
 		getComponent().setModel(new DefaultTreeModel(root));
 		getComponent().setRootVisible(false);

@@ -43,7 +43,7 @@ public @interface Groups {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Repeatable(Groups.class)
 	@ProcessorReference(StructureClassProcessor.class)
-	public @interface Group {
+	@interface Group {
 
 		String value();
 		

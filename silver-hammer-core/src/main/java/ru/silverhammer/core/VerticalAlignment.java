@@ -28,5 +28,5 @@ package ru.silverhammer.core;
 public enum VerticalAlignment {
 	Top,
 	Center,
-	Bottom;
+	Bottom
 }

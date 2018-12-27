@@ -33,8 +33,6 @@ import java.util.Objects;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.IRowsControl;
@@ -51,12 +49,9 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 	public ListControl() {
 		super(true);
 		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getComponent().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (valueType == ValueType.Selection) {
-					fireValueChanged();
-				}
+		getComponent().getSelectionModel().addListSelectionListener(e -> {
+			if (valueType == ValueType.Selection) {
+				fireValueChanged();
 			}
 		});
 		getComponent().addKeyListener(new SearchAdapter() {

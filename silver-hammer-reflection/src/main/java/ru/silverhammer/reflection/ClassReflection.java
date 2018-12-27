@@ -40,11 +40,10 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ConstructorReflection<T>[] getConstructors() {
-		Constructor<?>[] cs = getElement().getDeclaredConstructors();
-		ConstructorReflection<T>[] result = new ConstructorReflection[cs.length];
-		for (int i = 0; i < cs.length; i++) {
-			result[i] = new ConstructorReflection<T>((Constructor<T>) cs[i]);
+	public List<ConstructorReflection<T>> getConstructors() {
+		List<ConstructorReflection<T>> result = new ArrayList<>();
+		for (Constructor<?> ctor : getElement().getDeclaredConstructors()) {
+			result.add(new ConstructorReflection<>((Constructor<T>) ctor));
 		}
 		return result;
 	}
@@ -98,21 +97,20 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return true;
 	}
 	
-	public ClassReflection<?>[] getHierarchy() {
+	public List<ClassReflection<?>> getHierarchy() {
 		List<ClassReflection<?>> result = new ArrayList<>();
 		Class<?> cl = getElement();
 		while (cl != null) {
 			result.add(0, new ClassReflection<>(cl));
 			cl = cl.getSuperclass();
 		}
-		return result.toArray(new ClassReflection<?>[result.size()]);
+		return result;
 	}
 	
-	public FieldReflection[] getClassFields() {
-		Field[] fields = getElement().getDeclaredFields();
-		FieldReflection[] result = new FieldReflection[fields.length];
-		for (int i = 0; i < fields.length; i++) {
-			result[i] = new FieldReflection(fields[i]);
+	public List<FieldReflection> getClassFields() {
+		List<FieldReflection> result = new ArrayList<>();
+		for (Field field : getElement().getDeclaredFields()) {
+			result.add(new FieldReflection(field));
 		}
 		return result;
 	}
@@ -130,31 +128,26 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return null;
 	}
 
-	public FieldReflection[] getFields() {
+	public List<FieldReflection> getFields() {
 		List<FieldReflection> result = new ArrayList<>();
 		for (ClassReflection<?> cr : getHierarchy()) {
-			for (FieldReflection fld : cr.getClassFields()) {
-				result.add(fld);
-			}
+			result.addAll(cr.getClassFields());
 		}
-		return result.toArray(new FieldReflection[result.size()]);
+		return result;
 	}
 	
-	public MethodReflection[] getMethods() {
+	public List<MethodReflection> getMethods() {
 		List<MethodReflection> result = new ArrayList<>();
 		for (ClassReflection<?> cr : getHierarchy()) {
-			for (MethodReflection m : cr.getClassMethods()) {
-				result.add(m);
-			}
+			result.addAll(cr.getClassMethods());
 		}
-		return result.toArray(new MethodReflection[result.size()]);
+		return result;
 	}
 	
-	public MethodReflection[] getClassMethods() {
-		Method[] methods = getElement().getDeclaredMethods();
-		MethodReflection[] result = new MethodReflection[methods.length];
-		for (int i = 0; i < methods.length; i++) {
-			result[i] = new MethodReflection(methods[i]);
+	public List<MethodReflection> getClassMethods() {
+		List<MethodReflection> result = new ArrayList<>();
+		for (Method method : getElement().getDeclaredMethods()) {
+			result.add(new MethodReflection(method));
 		}
 		return result;
 	}

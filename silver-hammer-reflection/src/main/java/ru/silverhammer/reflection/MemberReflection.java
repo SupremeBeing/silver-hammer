@@ -36,7 +36,7 @@ public abstract class MemberReflection<T extends AccessibleObject & Member> exte
 		Public,
 		Protected,
 		Private,
-		Default;
+		Default
 	}
 
 	protected MemberReflection(T member) {

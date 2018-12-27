@@ -27,8 +27,8 @@ package ru.silverhammer.core.control;
 
 public interface IRowsControl<Value> extends IControl<Value> {
 
-	public int getVisibleRowCount();
+	int getVisibleRowCount();
 	
-	public void setVisibleRowCount(int count);
+	void setVisibleRowCount(int count);
 	
 }

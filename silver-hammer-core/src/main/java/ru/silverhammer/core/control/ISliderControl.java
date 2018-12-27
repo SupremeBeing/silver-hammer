@@ -27,28 +27,28 @@ package ru.silverhammer.core.control;
 
 public interface ISliderControl extends IControl<Integer> {
 
-	public int getMinimum();
+	int getMinimum();
 	
-	public void setMinimum(int min);
+	void setMinimum(int min);
 	
-	public int getMaximum();
+	int getMaximum();
 	
-	public void setMaximum(int max);
+	void setMaximum(int max);
 	
-	public int getMinorTicks();
+	int getMinorTicks();
 	
-	public void setMinorTicks(int minor);
+	void setMinorTicks(int minor);
 	
-	public int getMajorTicks();
+	int getMajorTicks();
 	
-	public void setMajorTicks(int major);
+	void setMajorTicks(int major);
 	
-	public boolean hasLabels();
+	boolean hasLabels();
 	
-	public void setLabels(boolean labels);
+	void setLabels(boolean labels);
 	
-	public boolean hasTicks();
+	boolean hasTicks();
 	
-	public void setTicks(boolean ticks);
+	void setTicks(boolean ticks);
 	
 }

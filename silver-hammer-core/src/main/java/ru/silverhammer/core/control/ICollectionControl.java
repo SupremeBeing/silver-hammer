@@ -27,20 +27,20 @@ package ru.silverhammer.core.control;
 
 public interface ICollectionControl<Item, Value> extends IControl<Value> {
 	
-	public void addItem(Item item);
+	void addItem(Item item);
 	
-	public void addItem(int i, Item item);
+	void addItem(int i, Item item);
 	
-	public void setItem(int i, Item item);
+	void setItem(int i, Item item);
 	
-	public void removeItem(Item item);
+	void removeItem(Item item);
 
-	public void removeItem(int i);
+	void removeItem(int i);
 	
-	public int getItemCount();
+	int getItemCount();
 	
-	public Item getItem(int i);
+	Item getItem(int i);
 
-	public void clearItems();
+	void clearItems();
 
 }

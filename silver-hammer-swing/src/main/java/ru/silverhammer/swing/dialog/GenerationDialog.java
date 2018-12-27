@@ -36,7 +36,6 @@ import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.SimpleStringProcessor;
 import ru.silverhammer.swing.SwingControlResolver;
 import ru.silverhammer.swing.SwingUiBuilder;
-import ru.silverhammer.swing.dialog.StandardDialog;
 
 public class GenerationDialog extends StandardDialog implements IControlListener {
 

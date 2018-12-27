@@ -27,26 +27,26 @@ package ru.silverhammer.core.control;
 
 public interface IHierarchyControl<Item, Value> extends IControl<Value> {
 
-	public void addItem(Item parent, Item item);
+	void addItem(Item parent, Item item);
 
-	public void addItem(Item parent, int i, Item item);
+	void addItem(Item parent, int i, Item item);
 	
-	public void setItem(Item parent, int i, Item item);
+	void setItem(Item parent, int i, Item item);
 
-	public void removeItem(Item item);
+	void removeItem(Item item);
 
-	public void removeItem(Item parent, int i);
+	void removeItem(Item parent, int i);
 
-	public Item getItem(Item parent, int i);
+	Item getItem(Item parent, int i);
 	
-	public int getItemCount(Item parent);
+	int getItemCount(Item parent);
 	
-	public void clearItems();
+	void clearItems();
 
-	public void expand(Item item);
+	void expand(Item item);
 	
-	public void collapse(Item item);
+	void collapse(Item item);
 	
-	public Item getParent(Item item);
+	Item getParent(Item item);
 
 }

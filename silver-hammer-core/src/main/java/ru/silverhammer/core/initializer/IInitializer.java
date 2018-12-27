@@ -32,6 +32,6 @@ import ru.silverhammer.reflection.FieldReflection;
 
 public interface IInitializer<Control extends IControl<?>, A extends Annotation> {
 
-	public void init(Control control, A annotation, Object data, FieldReflection fieldReflection);
+	void init(Control control, A annotation, Object data, FieldReflection fieldReflection);
 	
 }

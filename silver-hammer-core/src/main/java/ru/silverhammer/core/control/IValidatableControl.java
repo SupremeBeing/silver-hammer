@@ -27,10 +27,10 @@ package ru.silverhammer.core.control;
 
 public interface IValidatableControl<Value> extends IControl<Value> {
 
-	public boolean isControlValid();
+	boolean isControlValid();
 	
-	public void setValidationMessage(String message);
+	void setValidationMessage(String message);
 
-	public String getValidationMessage();
+	String getValidationMessage();
 	
 }

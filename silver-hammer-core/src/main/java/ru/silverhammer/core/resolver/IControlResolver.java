@@ -32,9 +32,9 @@ import ru.silverhammer.reflection.FieldReflection;
 
 public interface IControlResolver {
 
-	public Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
+	Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
 	
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+	void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
 
-	public boolean hasControlAnnotation(FieldReflection fieldReflection);
+	boolean hasControlAnnotation(FieldReflection fieldReflection);
 }

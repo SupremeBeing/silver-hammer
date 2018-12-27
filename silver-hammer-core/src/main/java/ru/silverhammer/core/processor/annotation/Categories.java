@@ -44,7 +44,7 @@ public @interface Categories {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Repeatable(Categories.class)
 	@ProcessorReference(StructureClassProcessor.class)
-	public @interface Category {
+	@interface Category {
 
 		String caption();
 

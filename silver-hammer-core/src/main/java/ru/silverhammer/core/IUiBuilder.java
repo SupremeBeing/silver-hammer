@@ -29,6 +29,6 @@ import ru.silverhammer.core.metadata.UiMetadata;
 
 public interface IUiBuilder<Container> {
 
-	public Container buildUi(UiMetadata metadata);
+	Container buildUi(UiMetadata metadata);
 
 }

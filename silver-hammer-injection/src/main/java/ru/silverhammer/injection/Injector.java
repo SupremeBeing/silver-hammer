@@ -26,6 +26,7 @@
 package ru.silverhammer.injection;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ru.silverhammer.reflection.ClassReflection;
@@ -37,17 +38,18 @@ import ru.silverhammer.reflection.ParameterReflection;
 public class Injector {
 
 	private interface IBound<T> {
-		public T getInstance();
+		T getInstance();
 	}
 
 	private class BoundType<T> implements IBound<T> {
 
 		private Class<T> type;
 
-		public BoundType(Class<T> type) {
+		private BoundType(Class<T> type) {
 			this.type = type;
 		}
 
+		@Override
 		public T getInstance() {
 			return instantiate(type);
 		}
@@ -57,10 +59,11 @@ public class Injector {
 
 		private T instance;
 
-		public BoundInstance(T instance) {
+		private BoundInstance(T instance) {
 			this.instance = instance;
 		}
 
+		@Override
 		public T getInstance() {
 			return instance;
 		}
@@ -74,22 +77,14 @@ public class Injector {
 
 	public <T> void bind(Class<?> type, String name, T impl) {
 		if (type != null && impl != null) {
-			Map<String, IBound<?>> namedBindings = bindings.get(type);
-			if (namedBindings == null) {
-				namedBindings = new HashMap<>();
-				bindings.put(type, namedBindings);
-			}
+			Map<String, IBound<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
 			namedBindings.put(name, new BoundInstance<>(impl));
 		}
 	}
 
 	public <T> void bind(Class<?> type, String name, Class<? extends T> implClass) {
 		if (name != null && implClass != null) {
-			Map<String, IBound<?>> namedBindings = bindings.get(type);
-			if (namedBindings == null) {
-				namedBindings = new HashMap<>();
-				bindings.put(type, namedBindings);
-			}
+			Map<String, IBound<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
 			namedBindings.put(name, new BoundType<>(implClass));
 		}
 	}
@@ -111,10 +106,10 @@ public class Injector {
 	}
 
 	public <T> T instantiate(Class<T> type) {
-		ConstructorReflection<T>[] constructors = new ClassReflection<>(type).getConstructors();
-		if (constructors.length != 0) {
-			Object[] args = createArguments(constructors[0]);
-			return constructors[0].invoke(args);
+		List<ConstructorReflection<T>> constructors = new ClassReflection<>(type).getConstructors();
+		if (!constructors.isEmpty()) {
+			Object[] args = createArguments(constructors.get(0));
+			return constructors.get(0).invoke(args);
 		}
 		return null;
 	}
@@ -125,10 +120,10 @@ public class Injector {
 	}
 
 	private Object[] createArguments(ExecutableReflection<?> excutable) {
-		ParameterReflection[] params = excutable.getParameters();
-		Object[] result = new Object[params.length];
-		for (int i = 0; i < params.length; i++) {
-			ParameterReflection param = params[i];
+		List<ParameterReflection> params = excutable.getParameters();
+		Object[] result = new Object[params.size()];
+		for (int i = 0; i < params.size(); i++) {
+			ParameterReflection param = params.get(i);
 			Object impl = getInjectedInstance(param, param.getType());
 			if (impl == null) {
 				impl = instantiate(param.getType());

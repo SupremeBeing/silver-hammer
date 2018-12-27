@@ -29,5 +29,5 @@ public enum Location {
 	Left,
 	Top,
 	Right,
-	Bottom;
+	Bottom
 }

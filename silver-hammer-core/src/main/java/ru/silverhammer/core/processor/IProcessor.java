@@ -32,6 +32,6 @@ import ru.silverhammer.reflection.AnnotatedReflection;
 
 public interface IProcessor {
 
-	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation);
+	void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation);
 	
 }

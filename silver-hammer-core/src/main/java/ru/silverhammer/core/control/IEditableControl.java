@@ -27,8 +27,8 @@ package ru.silverhammer.core.control;
 
 public interface IEditableControl<Value> extends IControl<Value> {
 
-	public boolean isEditable();
+	boolean isEditable();
 	
-	public void setEditable(boolean editable);
+	void setEditable(boolean editable);
 	
 }

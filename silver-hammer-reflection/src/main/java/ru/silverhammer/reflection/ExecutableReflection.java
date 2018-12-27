@@ -27,6 +27,8 @@ package ru.silverhammer.reflection;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ExecutableReflection<T extends Executable> extends MemberReflection<T> {
 
@@ -34,11 +36,10 @@ public abstract class ExecutableReflection<T extends Executable> extends MemberR
 		super(executable);
 	}
 	
-	public ParameterReflection[] getParameters() {
-		Parameter[] params = getElement().getParameters();
-		ParameterReflection[] result = new ParameterReflection[params.length];
-		for (int i = 0; i < params.length; i++) {
-			result[i] = new ParameterReflection(params[i]);
+	public List<ParameterReflection> getParameters() {
+		List<ParameterReflection> result = new ArrayList<>();
+		for (Parameter param : getElement().getParameters()) {
+			result.add(new ParameterReflection(param));
 		}
 		return result;
 	}

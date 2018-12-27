@@ -28,5 +28,5 @@ package ru.silverhammer.core;
 public enum HorizontalAlignment {
 	Left,
 	Right,
-	Center;
+	Center
 }

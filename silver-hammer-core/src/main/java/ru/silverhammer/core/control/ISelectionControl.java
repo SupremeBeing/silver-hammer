@@ -27,21 +27,21 @@ package ru.silverhammer.core.control;
 
 public interface ISelectionControl<Item, Value> extends IControl<Value> {
 
-	public enum SelectionType {
+	enum SelectionType {
 		Single,
 		Interval,
 		Multi;
 	}
 
-	public SelectionType getSelectionType();
+	SelectionType getSelectionType();
 	
-	public void setSelectionType(SelectionType type);
+	void setSelectionType(SelectionType type);
 
-	public Item getSingleSelection();
+	Item getSingleSelection();
 
-	public Item[] getSelection();
+	Item[] getSelection();
 
-	public void select(Item value);
+	void select(Item value);
 	
-	public void deselect(Item value);
+	void deselect(Item value);
 }

@@ -27,6 +27,6 @@ package ru.silverhammer.core.string;
 
 public interface IStringProcessor {
 
-	public String getString(String str);
+	String getString(String str);
 	
 }

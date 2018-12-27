@@ -27,13 +27,13 @@ package ru.silverhammer.core.control;
 
 public interface IValueTypeControl<Value> extends IControl<Value> {
 
-	public enum ValueType {
+	enum ValueType {
 		Selection,
 		Content;
 	}
 	
-	public ValueType getValueType();
+	ValueType getValueType();
 	
-	public void setValueType(ValueType type);
+	void setValueType(ValueType type);
 
 }

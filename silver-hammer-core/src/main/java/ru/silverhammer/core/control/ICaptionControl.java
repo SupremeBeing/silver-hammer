@@ -27,7 +27,7 @@ package ru.silverhammer.core.control;
 
 public interface ICaptionControl<Value> extends IControl<Value> {
 
-	public String getCaption();
+	String getCaption();
 	
-	public void setCaption(String caption);
+	void setCaption(String caption);
 }

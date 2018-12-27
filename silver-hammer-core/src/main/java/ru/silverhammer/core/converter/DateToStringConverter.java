@@ -48,7 +48,7 @@ public class DateToStringConverter implements IConverter<Date, String, DateForma
 			SimpleDateFormat fmt = new SimpleDateFormat(annotation.format());
 			try {
 				return fmt.parse(destination);
-			} catch (ParseException e) {}
+			} catch (ParseException ignore) {}
 		}
 		return null;
 	}

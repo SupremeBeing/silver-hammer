@@ -27,6 +27,7 @@ package ru.silverhammer.reflection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,12 +41,12 @@ public class ClassReflectionTest {
 	@Test
 	public void testClassHierarchy() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		ClassReflection<?>[] hierarchy = cr.getHierarchy();
-		Assert.assertEquals(4, hierarchy.length);
-		Assert.assertEquals(Object.class, hierarchy[0].getElement());
-		Assert.assertEquals(Parent.class, hierarchy[1].getElement());
-		Assert.assertEquals(Child.class, hierarchy[2].getElement());
-		Assert.assertEquals(GrandChild.class, hierarchy[3].getElement());
+		List<ClassReflection<?>> hierarchy = cr.getHierarchy();
+		Assert.assertEquals(4, hierarchy.size());
+		Assert.assertEquals(Object.class, hierarchy.get(0).getElement());
+		Assert.assertEquals(Parent.class, hierarchy.get(1).getElement());
+		Assert.assertEquals(Child.class, hierarchy.get(2).getElement());
+		Assert.assertEquals(GrandChild.class, hierarchy.get(3).getElement());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -56,28 +57,28 @@ public class ClassReflectionTest {
 	@Test
 	public void testVoidHierarchy() {
 		ClassReflection<Void> cr = new ClassReflection<>(void.class);
-		ClassReflection<?>[] hierarchy = cr.getHierarchy();
-		Assert.assertEquals(1, hierarchy.length);
-		Assert.assertEquals(void.class, hierarchy[0].getElement());
+		List<ClassReflection<?>> hierarchy = cr.getHierarchy();
+		Assert.assertEquals(1, hierarchy.size());
+		Assert.assertEquals(void.class, hierarchy.get(0).getElement());
 	}
 
 	@Test
 	public void testArrayHierarchy() {
 		ClassReflection<int[]> cr = new ClassReflection<>(int[].class);
-		ClassReflection<?>[] hierarchy = cr.getHierarchy();
-		Assert.assertEquals(2, hierarchy.length);
-		Assert.assertEquals(Object.class, hierarchy[0].getElement());
-		Assert.assertEquals(int[].class, hierarchy[1].getElement());
+		List<ClassReflection<?>> hierarchy = cr.getHierarchy();
+		Assert.assertEquals(2, hierarchy.size());
+		Assert.assertEquals(Object.class, hierarchy.get(0).getElement());
+		Assert.assertEquals(int[].class, hierarchy.get(1).getElement());
 	}
 
 	@Test
 	public void testGetConstructors() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		ConstructorReflection<GrandChild>[] ctors = cr.getConstructors();
-		Assert.assertEquals(3, ctors.length);
-		Assert.assertEquals(1, ctors[0].getParameters().length);
-		Assert.assertEquals(1, ctors[1].getParameters().length);
-		Assert.assertEquals(1, ctors[2].getParameters().length);
+		List<ConstructorReflection<GrandChild>> ctors = cr.getConstructors();
+		Assert.assertEquals(3, ctors.size());
+		Assert.assertEquals(1, ctors.get(0).getParameters().size());
+		Assert.assertEquals(1, ctors.get(1).getParameters().size());
+		Assert.assertEquals(1, ctors.get(2).getParameters().size());
 	}
 	
 	@Test

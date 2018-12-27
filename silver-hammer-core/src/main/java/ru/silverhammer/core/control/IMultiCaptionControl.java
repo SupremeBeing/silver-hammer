@@ -27,22 +27,22 @@ package ru.silverhammer.core.control;
 
 public interface IMultiCaptionControl<Value> extends IControl<Value> {
 
-	public void addCaption(String caption);
+	void addCaption(String caption);
 	
-	public void addCaption(int i, String caption);
+	void addCaption(int i, String caption);
 
-	public void setCaption(int i, String caption);
+	void setCaption(int i, String caption);
 	
-	public void removeCaption(String caption);
+	void removeCaption(String caption);
 
-	public void removeCaption(int i);
+	void removeCaption(int i);
 	
-	public int getCaptionCount();
+	int getCaptionCount();
 	
-	public String getCaption(int i);
+	String getCaption(int i);
 
-	public String[] getCaptions();
+	String[] getCaptions();
 	
-	public void clearCaptions();
+	void clearCaptions();
 	
 }

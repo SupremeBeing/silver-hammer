@@ -29,6 +29,6 @@ import java.util.EventListener;
 
 public interface IControlListener extends EventListener {
 
-	public void valueChanged(IControl<?> control);
+	void valueChanged(IControl<?> control);
 
 }

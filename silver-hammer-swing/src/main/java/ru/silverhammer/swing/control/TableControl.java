@@ -33,8 +33,6 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 import ru.silverhammer.core.control.ICollectionControl;
@@ -59,12 +57,12 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 
 		@Override
 		public int getColumnCount() {
-			return captions == null ? 0 : captions.size();
+			return captions.size();
 		}
 		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if (data != null && rowIndex < data.size()) {
+			if (rowIndex < data.size()) {
 				Object[] row = data.get(rowIndex);
 				if (columnIndex < row.length) {
 					return row[columnIndex];
@@ -75,7 +73,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		
 		@Override
 		public int getRowCount() {
-			return data == null ? 0 : data.size();
+			return data.size();
 		}
 	}
 
@@ -87,12 +85,9 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 	public TableControl() {
 		super(true);
 		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getComponent().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (valueType == ValueType.Selection) {
-					fireValueChanged();
-				}
+		getComponent().getSelectionModel().addListSelectionListener(e -> {
+			if (valueType == ValueType.Selection) {
+				fireValueChanged();
 			}
 		});
 		getComponent().addKeyListener(new SearchAdapter() {
@@ -132,7 +127,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 				return result;
 			}
 		} else if (getValueType() == ValueType.Content) {
-			return (Collection<?>) data.clone();
+			return data.clone();
 		}
 		return null;
 	}
