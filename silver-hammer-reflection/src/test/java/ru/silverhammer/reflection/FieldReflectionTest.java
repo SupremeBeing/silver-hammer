@@ -30,6 +30,9 @@ import org.junit.Test;
 
 import ru.silverhammer.reflection.data.Child;
 import ru.silverhammer.reflection.data.GrandChild;
+import ru.silverhammer.reflection.data.Parent;
+
+import java.util.List;
 
 public class FieldReflectionTest {
 
@@ -118,5 +121,15 @@ public class FieldReflectionTest {
 		FieldReflection field = cr.findField("STATIC");
 		field.setStaticValue(200);
 		Assert.assertEquals(200, GrandChild.STATIC);
+	}
+
+	@Test
+	public void testGenericType() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		FieldReflection field = cr.findField("map");
+		List<ClassReflection<?>> generics = field.getGenericClasses();
+		Assert.assertEquals(2, generics.size());
+		Assert.assertEquals(String.class, generics.get(0).getType());
+		Assert.assertEquals(Parent.class, generics.get(1).getType());
 	}
 }

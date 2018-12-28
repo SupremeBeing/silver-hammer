@@ -25,6 +25,6 @@
  */
 package ru.silverhammer.reflection.data;
 
-public class Parent {
+public abstract class Parent {
 
 }

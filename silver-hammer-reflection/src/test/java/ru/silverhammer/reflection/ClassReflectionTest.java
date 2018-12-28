@@ -81,11 +81,10 @@ public class ClassReflectionTest {
 		Assert.assertEquals(1, ctors.get(2).getParameters().size());
 	}
 	
-	@Test
-	public void testInstantiate() {
+	@Test(expected = RuntimeException.class)
+	public void testAbstractInstantiate() {
 		ClassReflection<Parent> cr = new ClassReflection<>(Parent.class);
-		Parent parent = cr.instantiate();
-		Assert.assertEquals(Parent.class, parent.getClass());
+		cr.instantiate();
 	}
 
 	@Test
@@ -97,7 +96,7 @@ public class ClassReflectionTest {
 	}
 
 	@Test
-	public void testArgsInstantiate() {
+	public void testInstantiate() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		GrandChild grandChild = cr.instantiate("Message");
 		Assert.assertEquals(GrandChild.class, grandChild.getClass());
@@ -130,17 +129,6 @@ public class ClassReflectionTest {
 		Assert.assertNull(grandChild);
 	}
 
-	@Test
-	public void testFindOverrideMethod() {
-		GrandChild grandChild = new GrandChild("visible");
-		grandChild.setMessage("shadowed");
-		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
-		MethodReflection method = cr.findMethod("getMessage");
-		Assert.assertNotNull(method);
-		Object value = method.invoke(grandChild);
-		Assert.assertEquals("visible", value);
-	}
-	
 	@Test
 	public void testFindField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
@@ -180,7 +168,18 @@ public class ClassReflectionTest {
 		Assert.assertNotNull(method);
 		Assert.assertEquals("getCode", method.getName());
 	}
-	
+
+	@Test
+	public void testFindOverrideMethod() {
+		GrandChild grandChild = new GrandChild("visible");
+		grandChild.setMessage("shadowed");
+		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
+		MethodReflection method = cr.findMethod("getMessage");
+		Assert.assertNotNull(method);
+		Object value = method.invoke(grandChild);
+		Assert.assertEquals("visible", value);
+	}
+
 	@Test
 	public void testFindMissingMethod() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
@@ -204,4 +203,24 @@ public class ClassReflectionTest {
 		Assert.assertNotNull(method);
 		Assert.assertEquals("setString", method.getName());
 	}
+
+	@Test
+	public void testGetMethods() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		List<MethodReflection> methods = cr.getMethods();
+		Assert.assertTrue(methods.size() > 6);
+		Assert.assertTrue(methods.stream().anyMatch(m -> "getCode".equals(m.getName())));
+		Assert.assertTrue(methods.stream().anyMatch(m -> "setStatic".equals(m.getName())));
+	}
+
+	@Test
+	public void testGetFields() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		List<FieldReflection> fields = cr.getFields();
+		Assert.assertEquals(6, fields.size());
+		Assert.assertEquals("CONSTANT", fields.get(1).getName());
+		Assert.assertEquals("STATIC", fields.get(2).getName());
+		Assert.assertEquals("code", fields.get(3).getName());
+	}
+
 }

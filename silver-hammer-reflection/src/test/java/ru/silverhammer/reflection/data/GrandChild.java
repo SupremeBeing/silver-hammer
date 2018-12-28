@@ -26,6 +26,7 @@
 package ru.silverhammer.reflection.data;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class GrandChild extends Child {
 	
@@ -39,7 +40,8 @@ public class GrandChild extends Child {
 	private int code;
 	private final String message;
 	private Collection<String> collection;
-	
+	private Map<String, Parent> map;
+
 	public GrandChild(int code) {
 		super("");
 		this.code = code;
