@@ -43,4 +43,9 @@ public class ConstructorReflection<T> extends ExecutableReflection<Constructor<T
 			}
 		});
 	}
+
+	@Override
+	public Class<?> getType() {
+		return getElement().getDeclaringClass();
+	}
 }

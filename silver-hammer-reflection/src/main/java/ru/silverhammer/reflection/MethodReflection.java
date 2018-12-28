@@ -27,6 +27,7 @@ package ru.silverhammer.reflection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class MethodReflection extends ExecutableReflection<Method> {
 
@@ -42,5 +43,18 @@ public class MethodReflection extends ExecutableReflection<Method> {
 				throw new RuntimeException(e);
 			}
 		});
+	}
+
+	public boolean isStatic() {
+		return Modifier.isStatic(getElement().getModifiers());
+	}
+
+	public boolean isFinal() {
+		return Modifier.isFinal(getElement().getModifiers());
+	}
+
+	@Override
+	public Class<?> getType() {
+		return getElement().getReturnType();
 	}
 }

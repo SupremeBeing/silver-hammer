@@ -26,6 +26,7 @@
 package ru.silverhammer.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -36,7 +37,15 @@ public class FieldReflection extends MemberReflection<Field> {
 	protected FieldReflection(Field field) {
 		super(field);
 	}
-	
+
+	public boolean isStatic() {
+		return Modifier.isStatic(getElement().getModifiers());
+	}
+
+	public boolean isFinal() {
+		return Modifier.isFinal(getElement().getModifiers());
+	}
+
 	public Object getStaticValue() {
 		return getValue(null);
 	}
@@ -81,6 +90,7 @@ public class FieldReflection extends MemberReflection<Field> {
 		return new ArrayList<>();
 	}
 
+	@Override
 	public Class<?> getType() {
 		return getElement().getType();
 	}

@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.reflection;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
 public class ParameterReflection extends AnnotatedReflection<Parameter> {
@@ -33,7 +34,19 @@ public class ParameterReflection extends AnnotatedReflection<Parameter> {
 		super(element);
 	}
 
+	@Override
 	public Class<?> getType() {
 		return getElement().getType();
 	}
+
+	@Override
+	public String getName() {
+		return getElement().getName();
+	}
+
+	public boolean isFinal() {
+		return Modifier.isFinal(getElement().getModifiers());
+	}
+
+
 }

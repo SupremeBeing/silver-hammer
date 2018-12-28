@@ -25,10 +25,7 @@
  */
 package ru.silverhammer.reflection;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +44,25 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		}
 		return result;
 	}
-	
+
+	public boolean isStatic() {
+		return Modifier.isStatic(getElement().getModifiers());
+	}
+
+	public boolean isFinal() {
+		return Modifier.isFinal(getElement().getModifiers());
+	}
+
+	@Override
+	public String getName() {
+		return getElement().getName();
+	}
+
+	@Override
+	public Class<?> getType() {
+		return getElement();
+	}
+
 	public T instantiate(Object... args) {
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {

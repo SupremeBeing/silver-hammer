@@ -30,7 +30,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AnnotatedReflection<T extends AnnotatedElement> {
+public abstract class AnnotatedReflection<T extends AnnotatedElement> implements IReflection {
 	
 	public static class MarkedAnnotation<A extends Annotation> {
 		
@@ -66,8 +66,8 @@ public abstract class AnnotatedReflection<T extends AnnotatedElement> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof MemberReflection) {
-			return element.equals(((MemberReflection<?>) obj).getElement());
+		if (obj instanceof AnnotatedReflection) {
+			return element.equals(((AnnotatedReflection<?>) obj).getElement());
 		}
 		return false;
 	}

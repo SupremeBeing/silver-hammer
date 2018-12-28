@@ -43,14 +43,6 @@ public abstract class MemberReflection<T extends AccessibleObject & Member> exte
 		super(member);
 	}
 	
-	public boolean isFinal() {
-		return Modifier.isFinal(getElement().getModifiers());
-	}
-
-	public boolean isStatic() {
-		return Modifier.isStatic(getElement().getModifiers());
-	}
-
 	public AccessType getAccessType() {
 		if (Modifier.isPublic(getElement().getModifiers())) {
 			return AccessType.Public;
@@ -63,6 +55,7 @@ public abstract class MemberReflection<T extends AccessibleObject & Member> exte
 		}
 	}
 
+	@Override
 	public String getName() {
 		return getElement().getName();
 	}
