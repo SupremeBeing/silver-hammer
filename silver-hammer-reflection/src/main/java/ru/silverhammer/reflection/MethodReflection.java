@@ -29,14 +29,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-class MethodReflection extends ExecutableReflection<Method> implements IMethodReflection {
+class MethodReflection extends ExecutableReflection<Method, Object> implements IMethodReflection {
 
 	protected MethodReflection(Method method) {
 		super(method);
 	}
 
 	@Override
-	public Object invoke(Object data, Object... args) {
+	public Object invokeOn(Object data, Object... args) {
 		return forceAccess(() -> {
 			try {
 				return getElement().invoke(data, args);
@@ -47,8 +47,8 @@ class MethodReflection extends ExecutableReflection<Method> implements IMethodRe
 	}
 
 	@Override
-	public Object invokeStatic(Object... args) {
-		return invoke(null, args);
+	public Object invoke(Object... args) {
+		return invokeOn(null, args);
 	}
 
 	@Override

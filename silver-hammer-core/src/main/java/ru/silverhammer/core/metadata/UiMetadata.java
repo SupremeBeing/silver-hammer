@@ -266,7 +266,7 @@ public class UiMetadata {
 			List<Object> params = new ArrayList<>();
 			String message = null;
 			for (IMethodReflection method : new ClassReflection<>(annotation.annotationType()).getMethods()) {
-				Object value = method.invoke(annotation);
+				Object value = method.invokeOn(annotation);
 				if ("message".equals(method.getName())) {
 					message = value.toString();
 				} else {

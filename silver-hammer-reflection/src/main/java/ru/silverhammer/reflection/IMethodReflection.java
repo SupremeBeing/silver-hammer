@@ -1,11 +1,9 @@
 package ru.silverhammer.reflection;
 
-public interface IMethodReflection extends IExecutableReflection {
+public interface IMethodReflection extends IExecutableReflection<Object> {
 
     boolean isStatic();
 
-    Object invoke(Object data, Object... args);
-
-    Object invokeStatic(Object... args);
+    Object invokeOn(Object data, Object... args);
 
 }

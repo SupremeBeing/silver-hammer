@@ -243,7 +243,7 @@ public class ClassReflectionTest {
 		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
 		IMethodReflection method = cr.findMethod("getMessage");
 		Assert.assertNotNull(method);
-		Object value = method.invoke(grandChild);
+		Object value = method.invokeOn(grandChild);
 		Assert.assertEquals("visible", value);
 	}
 

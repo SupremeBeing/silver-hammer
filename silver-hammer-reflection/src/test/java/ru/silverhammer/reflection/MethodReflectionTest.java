@@ -36,7 +36,7 @@ public class MethodReflectionTest {
         ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
         IMethodReflection m = cr.findMethod("getCode");
         GrandChild grandChild = new GrandChild(100);
-        Object value = m.invoke(grandChild);
+        Object value = m.invokeOn(grandChild);
         Assert.assertTrue(value instanceof Integer);
         Assert.assertEquals(100, value);
     }
@@ -45,7 +45,7 @@ public class MethodReflectionTest {
     public void testStaticInvocation() {
         ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
         IMethodReflection m = cr.findMethod("setStatic");
-        Object value = m.invoke(null, 20);
+        Object value = m.invoke(20);
         Assert.assertNull(value);
         Assert.assertEquals(20, GrandChild.STATIC);
     }
@@ -54,7 +54,7 @@ public class MethodReflectionTest {
     public void testInvalidStaticInvocation() {
         ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
         IMethodReflection m = cr.findMethod("getCode");
-        m.invoke(null);
+        m.invoke();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -62,7 +62,7 @@ public class MethodReflectionTest {
         ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
         IMethodReflection m = cr.findMethod("getCode");
         GrandChild grandChild = new GrandChild(100);
-        m.invoke(grandChild, 200);
+        m.invokeOn(grandChild, 200);
     }
 
 }

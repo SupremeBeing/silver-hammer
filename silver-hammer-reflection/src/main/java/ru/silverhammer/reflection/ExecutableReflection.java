@@ -30,7 +30,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class ExecutableReflection<T extends Executable> extends MemberReflection<T> implements IExecutableReflection {
+abstract class ExecutableReflection<T extends Executable, R> extends MemberReflection<T> implements IExecutableReflection<R> {
 
 	protected ExecutableReflection(T executable) {
 		super(executable);

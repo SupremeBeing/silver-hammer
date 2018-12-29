@@ -25,13 +25,12 @@
  */
 package ru.silverhammer.injection;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import ru.silverhammer.reflection.*;
 
+// TODO: consider making thread-safe
 public class Injector implements IInjector {
 
 	private final Map<Class<?>, Map<String, Supplier<?>>> bindings = new HashMap<>();
@@ -41,33 +40,38 @@ public class Injector implements IInjector {
 	}
 
 	@Override
-	public <T, I extends T> void bind(Class<T> type, String name, I impl) {
-		if (type != null && impl != null) {
-			Map<String, Supplier<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
-			namedBindings.put(name, () -> impl);
+	public <T> void bind(Class<T> type, String name, T implementation) {
+		if (type == null || implementation == null || name == null) {
+			throw new IllegalArgumentException();
 		}
+		getNamedBindings(type).put(name, () -> implementation);
 	}
 
 	@Override
-	public <T> void bind(Class<T> type, String name, Class<? extends T> implClass) {
-		if (name != null && implClass != null) {
-			Map<String, Supplier<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
-			namedBindings.put(name, () -> instantiate(implClass));
+	public <T> void bind(Class<T> type, T implementation) {
+		bind(type, DEFAULT_NAME, implementation);
+	}
+
+	@Override
+	public <T> void bind(Class<T> type, String name, Class<T> implClass) {
+		if (type == null || implClass == null || name == null) {
+			throw new IllegalArgumentException();
 		}
+		// TODO: consider non-singleton implementation
+		getNamedBindings(type).put(name, () -> instantiate(implClass));
+	}
+
+	private Map<String, Supplier<?>> getNamedBindings(Class<?> type) {
+		return bindings.computeIfAbsent(type, k -> new HashMap<>());
 	}
 
 	@Override
-	public <T, I extends T> void bind(Class<T> type, I impl) {
-		bind(type, DEFAULT_NAME, impl);
-	}
-
-	@Override
-	public <T> void bind(Class<T> type, Class<? extends T> implClass) {
+	public <T> void bind(Class<T> type, Class<T> implClass) {
 		bind(type, DEFAULT_NAME, implClass);
 	}
 
 	@Override
-	public <T> void unbind(Class<T> type) {
+	public void unbind(Class<?> type) {
 		bindings.remove(type);
 	}
 
@@ -76,60 +80,61 @@ public class Injector implements IInjector {
 		bindings.clear();
 	}
 
-	public <T> T instantiate(Class<T> type) {
-		List<IConstructorReflection<T>> constructors = new ClassReflection<>(type).getConstructors();
-		if (!constructors.isEmpty()) {
-			Object[] args = createArguments(constructors.get(0));
-			return constructors.get(0).invoke(args);
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getInstance(Class<T> type, String name) {
+		Set<Class<?>> boundTypes = new HashSet<>(bindings.keySet());
+		for (Class<?> boundType : boundTypes) {
+			if (type.isAssignableFrom(boundType)) {
+				Map<String, Supplier<?>> namedBindings = bindings.get(boundType);
+				if (namedBindings != null) {
+					Supplier<?> supplier = namedBindings.get(name);
+					if (supplier != null) {
+						return (T) supplier.get();
+					}
+				}
+			}
 		}
 		return null;
+	}
+
+	@Override
+	public <T> T getInstance(Class<T> type) {
+		return getInstance(type, DEFAULT_NAME);
+	}
+
+	public <T> T instantiate(Class<T> type) {
+		IConstructorReflection<T> least = null;
+		for (IConstructorReflection<T> ctor : new ClassReflection<>(type).getConstructors()) {
+			List<IParameterReflection> params = ctor.getParameters();
+			if (params.isEmpty()) {
+				return invoke(ctor);
+			}
+			if (least == null || params.size() < least.getParameters().size()) {
+				least = ctor;
+			}
+		}
+		return least == null ? null : invoke(least);
+	}
+
+	private <T> T invoke(IConstructorReflection<T> method) {
+		Object[] args = createArguments(method);
+		return method.invoke(args);
 	}
 
 	public Object invoke(Object data, IMethodReflection method) {
 		Object[] args = createArguments(method);
-		return method.invoke(data, args);
+		return method.invokeOn(data, args);
 	}
 
-	public Object getInstance(Class<?> type, String name) {
-		Map<String, Supplier<?>> namedBindings = bindings.get(type);
-		if (namedBindings == null) {
-			final Map<String, Supplier<?>> subTypedNamedBindings = new HashMap<>();
-			bindings.entrySet().stream()
-					.filter(e -> type.isAssignableFrom(e.getKey()))
-					.map(Map.Entry::getValue)
-					.forEach(subTypedNamedBindings::putAll);
-			if (subTypedNamedBindings.size() > 0) {
-				namedBindings = subTypedNamedBindings;
-			}
-		}
-		if (namedBindings != null) {
-			Supplier<?> binding = namedBindings.get(name);
-			if (binding != null) {
-				return binding.get();
-			}
-		}
-		return null;
-	}
-
-	public Object getInstance(Class<?> type) {
-		return getInstance(type, DEFAULT_NAME);
-	}
-
-	private Object[] createArguments(IExecutableReflection executable) {
+	private Object[] createArguments(IExecutableReflection<?> executable) {
 		List<IParameterReflection> params = executable.getParameters();
 		Object[] result = new Object[params.size()];
 		for (int i = 0; i < params.size(); i++) {
 			IReflection param = params.get(i);
-			result[i] = getInjectedInstance(param, param.getType());
+			Inject ia = param.getAnnotation(Inject.class);
+			result[i] = getInstance(param.getType(), ia == null ? DEFAULT_NAME : ia.value());
 		}
 		return result;
-	}
-
-	private Object getInjectedInstance(IReflection element, Class<?> type) {
-		Inject ia = element.getAnnotation(Inject.class);
-		if (ia != null) {
-			return getInstance(type, ia.value());
-		}
-		return instantiate(type);
 	}
 }
