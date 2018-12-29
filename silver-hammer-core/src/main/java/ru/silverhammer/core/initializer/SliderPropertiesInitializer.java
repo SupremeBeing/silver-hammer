@@ -27,12 +27,12 @@ package ru.silverhammer.core.initializer;
 
 import ru.silverhammer.core.control.ISliderControl;
 import ru.silverhammer.core.initializer.annotation.SliderProperties;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class SliderPropertiesInitializer implements IInitializer<ISliderControl, SliderProperties> {
 
 	@Override
-	public void init(ISliderControl control, SliderProperties annotation, Object data, FieldReflection field) {
+	public void init(ISliderControl control, SliderProperties annotation, Object data, IFieldReflection field) {
 		control.setMinimum(annotation.min());
 		control.setMaximum(annotation.max());
 		control.setMajorTicks(annotation.majorTicks());

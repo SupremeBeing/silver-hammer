@@ -32,8 +32,8 @@ import java.util.Collection;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.injection.Inject;
 import ru.silverhammer.injection.Injector;
-import ru.silverhammer.reflection.AnnotatedReflection;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.reflection.IReflection;
 
 public class GeneratableFieldProcessor extends Processor {
 
@@ -42,9 +42,9 @@ public class GeneratableFieldProcessor extends Processor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
-		if (member instanceof FieldReflection) {
-			FieldReflection field = (FieldReflection) member;
+	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
+		if (reflection instanceof IFieldReflection) {
+			IFieldReflection field = (IFieldReflection) reflection;
 			Object val = field.getValue(data);
 			if (field.getType().isArray()) {
 				int length = Array.getLength(val);

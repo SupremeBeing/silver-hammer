@@ -29,13 +29,13 @@ import ru.silverhammer.core.HorizontalAlignment;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlAttributes {
 
 	private final IControl<?> control;
 	private final Object data;
-	private final FieldReflection fieldReflection;
+	private final IFieldReflection fieldReflection;
 	
 	private String caption;
 	private Location captionLocation;
@@ -43,7 +43,7 @@ public class ControlAttributes {
 	private HorizontalAlignment horizontalAlignment;
 	private VerticalAlignment verticalAlignment;
 
-	public ControlAttributes(IControl<?> control, Object data, FieldReflection fieldReflection) {
+	public ControlAttributes(IControl<?> control, Object data, IFieldReflection fieldReflection) {
 		this.control = control;
 		this.data = data;
 		this.fieldReflection = fieldReflection;
@@ -57,7 +57,7 @@ public class ControlAttributes {
 		return data;
 	}
 
-	public FieldReflection getFieldReflection() {
+	public IFieldReflection getFieldReflection() {
 		return fieldReflection;
 	}
 

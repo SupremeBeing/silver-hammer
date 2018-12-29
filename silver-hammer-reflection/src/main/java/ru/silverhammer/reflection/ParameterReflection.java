@@ -28,7 +28,7 @@ package ru.silverhammer.reflection;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
-public class ParameterReflection extends AnnotatedReflection<Parameter> {
+class ParameterReflection extends AnnotatedReflection<Parameter> implements IParameterReflection {
 
 	protected ParameterReflection(Parameter element) {
 		super(element);
@@ -47,6 +47,5 @@ public class ParameterReflection extends AnnotatedReflection<Parameter> {
 	public boolean isFinal() {
 		return Modifier.isFinal(getElement().getModifiers());
 	}
-
 
 }

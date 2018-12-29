@@ -32,7 +32,7 @@ import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class AnnotatedCaptionsInitializer implements IInitializer<IMultiCaptionControl<?>, AnnotatedCaptions> {
 
@@ -45,8 +45,8 @@ public class AnnotatedCaptionsInitializer implements IInitializer<IMultiCaptionC
 	}
 
 	@Override
-	public void init(IMultiCaptionControl<?> control, AnnotatedCaptions annotation, Object data, FieldReflection field) {
-		for (FieldReflection fr : new ClassReflection<>(annotation.value()).getFields()) {
+	public void init(IMultiCaptionControl<?> control, AnnotatedCaptions annotation, Object data, IFieldReflection field) {
+		for (IFieldReflection fr : new ClassReflection<>(annotation.value()).getFields()) {
 			if (controlResolver.hasControlAnnotation(fr)) {
 				Caption c = fr.getAnnotation(Caption.class);
 				control.addCaption(c == null ? "" : processor.getString(c.value()));

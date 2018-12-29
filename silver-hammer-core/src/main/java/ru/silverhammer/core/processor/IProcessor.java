@@ -28,10 +28,10 @@ package ru.silverhammer.core.processor;
 import java.lang.annotation.Annotation;
 
 import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.reflection.AnnotatedReflection;
+import ru.silverhammer.reflection.IReflection;
 
 public interface IProcessor {
 
-	void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation);
+	void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation);
 	
 }

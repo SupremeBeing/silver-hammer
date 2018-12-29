@@ -29,12 +29,12 @@ import java.io.File;
 
 import ru.silverhammer.core.control.IHierarchyControl;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class FileTreeItemsInitializer implements IInitializer<IHierarchyControl<File, ?>, FileTreeItems> {
 
 	@Override
-	public void init(IHierarchyControl<File, ?> control, FileTreeItems annotation, Object data, FieldReflection field) {
+	public void init(IHierarchyControl<File, ?> control, FileTreeItems annotation, Object data, IFieldReflection field) {
 		File file = new File(annotation.value());
 		populate(control, null, file);
 	}

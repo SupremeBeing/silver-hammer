@@ -36,9 +36,7 @@ import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Injector;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.*;
 
 public class UiMetadata {
 
@@ -189,7 +187,7 @@ public class UiMetadata {
 
 	@SuppressWarnings("unchecked")
 	public <T extends IControl<?>> T findControl(Object data, Class<?> type, String fieldName) {
-		FieldReflection field = new ClassReflection<>(type).findField(fieldName);
+		IFieldReflection field = new ClassReflection<>(type).findField(fieldName);
 		if (field != null) {
 			ControlAttributes attrs = findControlAttributes(ca -> ca.getFieldReflection().equals(field) && ca.getData().equals(data));
 			if (attrs != null) {
@@ -207,7 +205,7 @@ public class UiMetadata {
 		visitControlAttributes(c -> commit(c.getData(), c.getFieldReflection(), c.getControl()));
 	}
 
-	private void commit(Object data, FieldReflection field, IControl<?> control) {
+	private void commit(Object data, IFieldReflection field, IControl<?> control) {
 		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
 		field.setValue(data, value);
 	}
@@ -229,7 +227,7 @@ public class UiMetadata {
 		validateMethods();	
 	}
 
-	private void init(IControl<?> control, FieldReflection field) {
+	private void init(IControl<?> control, IFieldReflection field) {
 		validateControl(control, field);	
 		control.addControlListener(c -> {
 			validateControl(control, field);	
@@ -237,7 +235,7 @@ public class UiMetadata {
 		});
 	}
 
-	private void validateControl(IControl<?> control, FieldReflection field) {
+	private void validateControl(IControl<?> control, IFieldReflection field) {
 		if (control instanceof IValidatableControl) {
 			Object value = control.getValue();
 			Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
@@ -267,7 +265,7 @@ public class UiMetadata {
 		if (annotation != null) {
 			List<Object> params = new ArrayList<>();
 			String message = null;
-			for (MethodReflection method : new ClassReflection<>(annotation.annotationType()).getMethods()) {
+			for (IMethodReflection method : new ClassReflection<>(annotation.annotationType()).getMethods()) {
 				Object value = method.invoke(annotation);
 				if ("message".equals(method.getName())) {
 					message = value.toString();

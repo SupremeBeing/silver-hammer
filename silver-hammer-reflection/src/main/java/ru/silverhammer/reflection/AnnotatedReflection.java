@@ -30,27 +30,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AnnotatedReflection<T extends AnnotatedElement> implements IReflection {
+abstract class AnnotatedReflection<T extends AnnotatedElement> implements IReflection {
 	
-	public static class MarkedAnnotation<A extends Annotation> {
-		
-		private final Annotation annotation;
-		private final A marker;
-		
-		private MarkedAnnotation(Annotation annotation, A marker) {
-			this.annotation = annotation;
-			this.marker = marker;
-		}
-
-		public Annotation getAnnotation() {
-			return annotation;
-		}
-
-		public A getMarker() {
-			return marker;
-		}
-	}
-
 	private final T element;
 	
 	protected AnnotatedReflection(T element) {
@@ -72,14 +53,22 @@ public abstract class AnnotatedReflection<T extends AnnotatedElement> implements
 		return false;
 	}
 
+	@Override
+	public int hashCode() {
+		return getElement().hashCode();
+	}
+
+	@Override
 	public Annotation[] getAnnotations() {
 		return element.getAnnotations();
 	}
-	
-	public <A extends Annotation> A getAnnotation(Class<A> cl) {
-		return element.getAnnotation(cl);
+
+	@Override
+	public <A extends Annotation> A getAnnotation(Class<A> type) {
+		return element.getAnnotation(type);
 	}
-	
+
+	@Override
 	public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
 		List<MarkedAnnotation<A>> result = new ArrayList<>();
 		for (Annotation annotation : element.getAnnotations()) {

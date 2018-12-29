@@ -31,8 +31,8 @@ import java.util.List;
 import ru.silverhammer.core.converter.IConverter;
 import ru.silverhammer.core.validator.IValidator;
 import ru.silverhammer.injection.Injector;
-import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
+import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
 public class FieldProcessor {
 
@@ -42,7 +42,7 @@ public class FieldProcessor {
 		this.injector = injector;
 	}
 
-	public Object getControlValue(Object value, FieldReflection field) {
+	public Object getControlValue(Object value, IFieldReflection field) {
 		List<MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
 		for (int i = marked.size() - 1; i >= 0; i--) {
 			MarkedAnnotation<ConverterReference> ma = marked.get(i);
@@ -53,7 +53,7 @@ public class FieldProcessor {
 		return value;
 	}
 	
-	public Object getFieldValue(Object value, FieldReflection field) {
+	public Object getFieldValue(Object value, IFieldReflection field) {
 		List<MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
 		for (MarkedAnnotation<ConverterReference> ma : marked) {
 			@SuppressWarnings("unchecked")
@@ -63,7 +63,7 @@ public class FieldProcessor {
 		return value;
 	}
 	
-	public Annotation validateValue(Object value, FieldReflection field) {
+	public Annotation validateValue(Object value, IFieldReflection field) {
 		for (Annotation annotation : field.getAnnotations()) {
 			for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
 				if (metaAnnotation instanceof ConverterReference) {

@@ -29,12 +29,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public class MethodReflection extends ExecutableReflection<Method> {
+class MethodReflection extends ExecutableReflection<Method> implements IMethodReflection {
 
 	protected MethodReflection(Method method) {
 		super(method);
 	}
-	
+
+	@Override
 	public Object invoke(Object data, Object... args) {
 		return forceAccess(() -> {
 			try {
@@ -45,6 +46,12 @@ public class MethodReflection extends ExecutableReflection<Method> {
 		});
 	}
 
+	@Override
+	public Object invokeStatic(Object... args) {
+		return invoke(null, args);
+	}
+
+	@Override
 	public boolean isStatic() {
 		return Modifier.isStatic(getElement().getModifiers());
 	}

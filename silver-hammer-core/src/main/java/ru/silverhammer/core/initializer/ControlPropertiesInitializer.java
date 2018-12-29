@@ -35,7 +35,7 @@ import ru.silverhammer.core.control.IValueTypeControl;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlPropertiesInitializer implements IInitializer<IControl<?>, ControlProperties> {
 
@@ -46,7 +46,7 @@ public class ControlPropertiesInitializer implements IInitializer<IControl<?>, C
 	}
 
 	@Override
-	public void init(IControl<?> control, ControlProperties annotation, Object data, FieldReflection field) {
+	public void init(IControl<?> control, ControlProperties annotation, Object data, IFieldReflection field) {
 		control.setEnabled(!annotation.readOnly());
 		if (control instanceof IEditableControl) {
 			((IEditableControl<?>) control).setEditable(annotation.editable());

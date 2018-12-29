@@ -30,11 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.ConstructorReflection;
-import ru.silverhammer.reflection.ExecutableReflection;
-import ru.silverhammer.reflection.MethodReflection;
-import ru.silverhammer.reflection.ParameterReflection;
+import ru.silverhammer.reflection.*;
 
 public class Injector implements IInjector {
 
@@ -81,7 +77,7 @@ public class Injector implements IInjector {
 	}
 
 	public <T> T instantiate(Class<T> type) {
-		List<ConstructorReflection<T>> constructors = new ClassReflection<>(type).getConstructors();
+		List<IConstructorReflection<T>> constructors = new ClassReflection<>(type).getConstructors();
 		if (!constructors.isEmpty()) {
 			Object[] args = createArguments(constructors.get(0));
 			return constructors.get(0).invoke(args);
@@ -89,7 +85,7 @@ public class Injector implements IInjector {
 		return null;
 	}
 
-	public Object invoke(Object data, MethodReflection method) {
+	public Object invoke(Object data, IMethodReflection method) {
 		Object[] args = createArguments(method);
 		return method.invoke(data, args);
 	}
@@ -119,17 +115,17 @@ public class Injector implements IInjector {
 		return getInstance(type, DEFAULT_NAME);
 	}
 
-	private Object[] createArguments(ExecutableReflection<?> executable) {
-		List<ParameterReflection> params = executable.getParameters();
+	private Object[] createArguments(IExecutableReflection executable) {
+		List<IParameterReflection> params = executable.getParameters();
 		Object[] result = new Object[params.size()];
 		for (int i = 0; i < params.size(); i++) {
-			ParameterReflection param = params.get(i);
+			IReflection param = params.get(i);
 			result[i] = getInjectedInstance(param, param.getType());
 		}
 		return result;
 	}
 
-	private Object getInjectedInstance(ParameterReflection element, Class<?> type) {
+	private Object getInjectedInstance(IReflection element, Class<?> type) {
 		Inject ia = element.getAnnotation(Inject.class);
 		if (ia != null) {
 			return getInstance(type, ia.value());

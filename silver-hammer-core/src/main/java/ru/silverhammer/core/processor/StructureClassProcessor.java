@@ -37,7 +37,7 @@ import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.reflection.AnnotatedReflection;
+import ru.silverhammer.reflection.IReflection;
 
 public class StructureClassProcessor implements IProcessor {
 
@@ -48,7 +48,7 @@ public class StructureClassProcessor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
+	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
 		if (annotation instanceof Groups) {
 			Groups groups = (Groups) annotation;
 			for (Group group : groups.value()) {

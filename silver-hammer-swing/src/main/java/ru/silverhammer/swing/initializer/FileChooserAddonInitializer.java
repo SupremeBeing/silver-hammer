@@ -37,7 +37,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
 
@@ -50,7 +50,7 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 	}
 
 	@Override
-	public void init(Control<String, JTextField> control, FileChooserAddon annotation, Object data, FieldReflection field) {
+	public void init(Control<String, JTextField> control, FileChooserAddon annotation, Object data, IFieldReflection field) {
 		JButton button = new JButton(processor.getString(annotation.buttonCaption()));
 		button.setMargin(new Insets(0, 5, 0, 5));
 		control.add(button, BorderLayout.EAST);

@@ -41,8 +41,8 @@ import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.Inject;
 import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
 import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
@@ -58,7 +58,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 	}
 
 	@Override
-	public void init(Control<?, ?> control, ButtonBarAddon annotation, Object data, FieldReflection field) {
+	public void init(Control<?, ?> control, ButtonBarAddon annotation, Object data, IFieldReflection field) {
 		JPanel stub = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
@@ -80,7 +80,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 				button.setText(caption);
 			}
 			button.addActionListener(e -> {
-				MethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.methodName());
+				IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.methodName());
 				injector.invoke(data, method);
 			});
 			panel.add(button);

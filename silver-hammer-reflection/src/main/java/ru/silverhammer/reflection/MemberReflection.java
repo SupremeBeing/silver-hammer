@@ -30,7 +30,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 
-public abstract class MemberReflection<T extends AccessibleObject & Member> extends AnnotatedReflection<T> {
+abstract class MemberReflection<T extends AccessibleObject & Member> extends AnnotatedReflection<T> {
 	
 	public enum AccessType {
 		Public,

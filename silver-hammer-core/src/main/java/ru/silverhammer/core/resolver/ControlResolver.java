@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlResolver implements IControlResolver {
 	
@@ -49,7 +49,7 @@ public class ControlResolver implements IControlResolver {
 	}
 
 	@Override
-	public boolean hasControlAnnotation(FieldReflection fieldReflection) {
+	public boolean hasControlAnnotation(IFieldReflection fieldReflection) {
 		for (Annotation annotation : fieldReflection.getAnnotations()) {
 			Class<? extends IControl<?>> controlClass = getControlClass(annotation.annotationType());
 			if (controlClass != null) {

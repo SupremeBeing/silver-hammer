@@ -30,14 +30,15 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ExecutableReflection<T extends Executable> extends MemberReflection<T> {
+abstract class ExecutableReflection<T extends Executable> extends MemberReflection<T> implements IExecutableReflection {
 
 	protected ExecutableReflection(T executable) {
 		super(executable);
 	}
 
-	public List<ParameterReflection> getParameters() {
-		List<ParameterReflection> result = new ArrayList<>();
+	@Override
+	public List<IParameterReflection> getParameters() {
+		List<IParameterReflection> result = new ArrayList<>();
 		for (Parameter param : getElement().getParameters()) {
 			result.add(new ParameterReflection(param));
 		}

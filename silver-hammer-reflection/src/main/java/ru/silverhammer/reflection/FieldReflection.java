@@ -32,12 +32,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FieldReflection extends MemberReflection<Field> {
+class FieldReflection extends MemberReflection<Field> implements IFieldReflection {
 	
 	protected FieldReflection(Field field) {
 		super(field);
 	}
 
+	@Override
 	public boolean isStatic() {
 		return Modifier.isStatic(getElement().getModifiers());
 	}
@@ -46,10 +47,12 @@ public class FieldReflection extends MemberReflection<Field> {
 		return Modifier.isFinal(getElement().getModifiers());
 	}
 
+	@Override
 	public Object getStaticValue() {
 		return getValue(null);
 	}
-	
+
+	@Override
 	public Object getValue(Object data) {
 		return forceAccess(() -> {
 			try {
@@ -59,11 +62,13 @@ public class FieldReflection extends MemberReflection<Field> {
 			}
 		});
 	}
-	
+
+	@Override
 	public void setStaticValue(Object value) {
 		setValue(null, value);
 	}
-	
+
+	@Override
 	public void setValue(Object data, Object value) {
 		forceAccess(() -> {
 			try {
@@ -74,7 +79,8 @@ public class FieldReflection extends MemberReflection<Field> {
 			}
 		});
 	}
-	
+
+	@Override
 	public List<ClassReflection<?>> getGenericClasses() {
 		Type t = getElement().getGenericType();
 		if (t instanceof ParameterizedType) {

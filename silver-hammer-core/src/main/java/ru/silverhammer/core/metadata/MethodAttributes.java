@@ -25,14 +25,14 @@
  */
 package ru.silverhammer.core.metadata;
 
-import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.IMethodReflection;
 
 public class MethodAttributes {
 	
 	private final Object data;
-	private final MethodReflection methodReflection;
+	private final IMethodReflection methodReflection;
 	
-	public MethodAttributes(Object data, MethodReflection methodReflection) {
+	public MethodAttributes(Object data, IMethodReflection methodReflection) {
 		this.data = data;
 		this.methodReflection = methodReflection;
 	}
@@ -41,7 +41,7 @@ public class MethodAttributes {
 		return data;
 	}
 	
-	public MethodReflection getMethodReflection() {
+	public IMethodReflection getMethodReflection() {
 		return methodReflection;
 	}
 }

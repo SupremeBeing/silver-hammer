@@ -36,15 +36,6 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		super(cl);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<ConstructorReflection<T>> getConstructors() {
-		List<ConstructorReflection<T>> result = new ArrayList<>();
-		for (Constructor<?> ctor : getElement().getDeclaredConstructors()) {
-			result.add(new ConstructorReflection<>((Constructor<T>) ctor));
-		}
-		return result;
-	}
-
 	public boolean isStatic() {
 		return Modifier.isStatic(getElement().getModifiers());
 	}
@@ -63,47 +54,49 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return getElement();
 	}
 
-	@SuppressWarnings("unchecked")
 	public T instantiate(Object... args) {
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
 			Object arg = args[i];
 			types[i] = arg == null ? null : arg.getClass();
 		}
-		if (getElement().isArray()) {
-			int size = args.length == 1 && args[0] instanceof Integer ? (Integer) args[0] : 0;
-			return (T) Array.newInstance(getElement().getComponentType(), size);
-		} else {
-			ConstructorReflection<T> ctor = findConstructor(types);
-			if (ctor != null) {
-				return ctor.invoke(args);
-			}
+		IConstructorReflection<T> ctor = findConstructor(types);
+		if (ctor != null) {
+			return ctor.invoke(args);
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public ConstructorReflection<T> findConstructor(Class<?>... types) {
-		Class<?> cl = getElement();
-		if (cl.isPrimitive()) {
-			cl = Primitive.findByPrimitiveType(cl).getBoxedType();
+	public List<IConstructorReflection<T>> getConstructors() {
+		List<IConstructorReflection<T>> result = new ArrayList<>();
+		if (getElement().isArray()) {
+			result.add(new ArrayConstructorReflection<>(getElement()));
+		} else {
+			Class<?> cl = getElement().isPrimitive() ? Primitive.findByPrimitiveType(getElement()).getBoxedType() : getElement();
+			for (Constructor<?> ctor : cl.getDeclaredConstructors()) {
+				result.add(new ConstructorReflection<>((Constructor<T>) ctor));
+			}
 		}
-		for (Constructor<?> ctor : cl.getDeclaredConstructors()) {
-			if (match(ctor, types)) {
-				return new ConstructorReflection<>((Constructor<T>) ctor);
+		return result;
+	}
+
+	public IConstructorReflection<T> findConstructor(Class<?>... types) {
+		for (IConstructorReflection<T> ctor : getConstructors()) {
+			if (match(ctor.getParameters(), types)) {
+				return ctor;
 			}
 		}
 		return null;
 	}
 	
-	private boolean match(Constructor<?> ctor, Class<?>[] types) {
-		Parameter[] params = ctor.getParameters();
-		if (types.length != params.length) {
+	private boolean match(List<IParameterReflection> params, Class<?>[] types) {
+		if (types.length != params.size()) {
 			return false;
 		}
-		for (int i = 0; i < params.length; i++) {
+		for (int i = 0; i < params.size(); i++) {
 			Class<?> type = types[i];
-			Parameter param = params[i];
+			IReflection param = params.get(i);
 			if (type == null) {
 				if (param.getType().isPrimitive()) {
 					return false;
@@ -135,15 +128,15 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return result;
 	}
 	
-	public List<FieldReflection> getClassFields() {
-		List<FieldReflection> result = new ArrayList<>();
+	public List<IFieldReflection> getClassFields() {
+		List<IFieldReflection> result = new ArrayList<>();
 		for (Field field : getElement().getDeclaredFields()) {
 			result.add(new FieldReflection(field));
 		}
 		return result;
 	}
 
-	public FieldReflection findField(String fieldName) {
+	public IFieldReflection findField(String fieldName) {
 		Class<?> cl = getElement();
 		while (cl != null) {
 			for (Field fld : cl.getDeclaredFields()) {
@@ -156,31 +149,31 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return null;
 	}
 
-	public List<FieldReflection> getFields() {
-		List<FieldReflection> result = new ArrayList<>();
+	public List<IFieldReflection> getFields() {
+		List<IFieldReflection> result = new ArrayList<>();
 		for (ClassReflection<?> cr : getHierarchy()) {
 			result.addAll(cr.getClassFields());
 		}
 		return result;
 	}
 	
-	public List<MethodReflection> getMethods() {
-		List<MethodReflection> result = new ArrayList<>();
+	public List<IMethodReflection> getMethods() {
+		List<IMethodReflection> result = new ArrayList<>();
 		for (ClassReflection<?> cr : getHierarchy()) {
 			result.addAll(cr.getClassMethods());
 		}
 		return result;
 	}
 	
-	public List<MethodReflection> getClassMethods() {
-		List<MethodReflection> result = new ArrayList<>();
+	public List<IMethodReflection> getClassMethods() {
+		List<IMethodReflection> result = new ArrayList<>();
 		for (Method method : getElement().getDeclaredMethods()) {
 			result.add(new MethodReflection(method));
 		}
 		return result;
 	}
 
-	public MethodReflection findMethod(String methodName) {
+	public IMethodReflection findMethod(String methodName) {
 		Class<?> cl = getElement();
 		while (cl != null) {
 			for (Method m : cl.getDeclaredMethods()) {

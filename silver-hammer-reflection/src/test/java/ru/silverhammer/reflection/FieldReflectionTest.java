@@ -40,7 +40,7 @@ public class FieldReflectionTest {
 	public void testGetValue() {
 		GrandChild grandChild = new GrandChild(10);
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		Object value = field.getValue(grandChild);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Integer);
@@ -50,14 +50,14 @@ public class FieldReflectionTest {
 	@Test(expected = RuntimeException.class)
 	public void testGetInvalidField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		field.getStaticValue();
 	}
 
 	@Test
 	public void testGetStaticField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("CONSTANT");
+		IFieldReflection field = cr.findField("CONSTANT");
 		Object value = field.getStaticValue();
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof String);
@@ -69,7 +69,7 @@ public class FieldReflectionTest {
 		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
 		GrandChild grandChild = new GrandChild("visible");
 		grandChild.setMessage("shadowed");
-		FieldReflection field = cr.findField("message");
+		IFieldReflection field = cr.findField("message");
 		Assert.assertNotNull(field);
 		Object value = field.getValue(grandChild);
 		Assert.assertEquals("shadowed", value);
@@ -79,7 +79,7 @@ public class FieldReflectionTest {
 	public void testSetValue() {
 		GrandChild grandChild = new GrandChild(10);
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		field.setValue(grandChild, 20);
 		Assert.assertEquals(20, grandChild.getCode());
 	}
@@ -87,7 +87,7 @@ public class FieldReflectionTest {
 	@Test(expected = RuntimeException.class)
 	public void testSetInvalidField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		field.setValue(null, 0);
 	}
 
@@ -95,14 +95,14 @@ public class FieldReflectionTest {
 	public void testSetInvalidTypeField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		GrandChild grandChild = new GrandChild(10);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		field.setValue(grandChild, "string");
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testSetStaticFinalField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("CONSTANT");
+		IFieldReflection field = cr.findField("CONSTANT");
 		field.setStaticValue("ALTERED");
 	}
 
@@ -110,7 +110,7 @@ public class FieldReflectionTest {
 	public void testSetFinalField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		GrandChild grandChild = new GrandChild(10);
-		FieldReflection field = cr.findField("message");
+		IFieldReflection field = cr.findField("message");
 		field.setValue(grandChild, "Altered");
 		Assert.assertEquals("Altered", grandChild.getMessage());
 	}
@@ -118,7 +118,7 @@ public class FieldReflectionTest {
 	@Test
 	public void testSetStaticField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("STATIC");
+		IFieldReflection field = cr.findField("STATIC");
 		field.setStaticValue(200);
 		Assert.assertEquals(200, GrandChild.STATIC);
 	}
@@ -126,7 +126,7 @@ public class FieldReflectionTest {
 	@Test
 	public void testGenericType() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("map");
+		IFieldReflection field = cr.findField("map");
 		List<ClassReflection<?>> generics = field.getGenericClasses();
 		Assert.assertEquals(2, generics.size());
 		Assert.assertEquals(String.class, generics.get(0).getType());

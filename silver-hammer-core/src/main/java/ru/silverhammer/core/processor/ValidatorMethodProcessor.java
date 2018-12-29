@@ -29,15 +29,15 @@ import java.lang.annotation.Annotation;
 
 import ru.silverhammer.core.metadata.MethodAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.reflection.AnnotatedReflection;
-import ru.silverhammer.reflection.MethodReflection;
+import ru.silverhammer.reflection.IMethodReflection;
+import ru.silverhammer.reflection.IReflection;
 
 public class ValidatorMethodProcessor implements IProcessor {
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation annotation) {
-		if (member instanceof MethodReflection) {
-			metadata.addValidator(new MethodAttributes(data, (MethodReflection) member));
+	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
+		if (reflection instanceof IMethodReflection) {
+			metadata.addValidator(new MethodAttributes(data, (IMethodReflection) reflection));
 		}
 	}
 }

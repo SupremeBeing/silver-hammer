@@ -32,11 +32,8 @@ import ru.silverhammer.core.ProcessorReference;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.injection.Inject;
 import ru.silverhammer.injection.Injector;
-import ru.silverhammer.reflection.AnnotatedReflection;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.FieldReflection;
-import ru.silverhammer.reflection.MethodReflection;
-import ru.silverhammer.reflection.AnnotatedReflection.MarkedAnnotation;
+import ru.silverhammer.reflection.*;
+import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
 public class Processor implements IProcessor {
 
@@ -47,24 +44,24 @@ public class Processor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, AnnotatedReflection<?> member, Annotation unused) {
+	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation unused) {
 		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
 		for (ClassReflection<?> cl : cr.getHierarchy()) {
 			processAnnotations(metadata, data, cl);
 		}
-		for (MethodReflection method : cr.getMethods()) {
+		for (IMethodReflection method : cr.getMethods()) {
 			processAnnotations(metadata, data, method);
 		}
-		for (FieldReflection field : cr.getFields()) {
+		for (IFieldReflection field : cr.getFields()) {
 			processAnnotations(metadata, data, field);
 		}
 	}
 	
-	private void processAnnotations(UiMetadata metadata, Object data, AnnotatedReflection<?> element) {
-		List<MarkedAnnotation<ProcessorReference>> marked = element.getMarkedAnnotations(ProcessorReference.class);
+	private void processAnnotations(UiMetadata metadata, Object data, IReflection reflection) {
+		List<MarkedAnnotation<ProcessorReference>> marked = reflection.getMarkedAnnotations(ProcessorReference.class);
 		for (MarkedAnnotation<ProcessorReference> ma : marked) {
 			IProcessor processor = injector.instantiate(ma.getMarker().value());
-			processor.process(metadata, data, element, ma.getAnnotation());
+			processor.process(metadata, data, reflection, ma.getAnnotation());
 		}
 	}
 }

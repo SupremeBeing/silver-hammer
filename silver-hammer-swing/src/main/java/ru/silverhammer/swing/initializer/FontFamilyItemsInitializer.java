@@ -29,13 +29,13 @@ import java.awt.GraphicsEnvironment;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.IInitializer;
-import ru.silverhammer.reflection.FieldReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
 
 public class FontFamilyItemsInitializer implements IInitializer<ICollectionControl<String, ?>, FontFamilyItems> {
 
 	@Override
-	public void init(ICollectionControl<String, ?> control, FontFamilyItems annotation, Object data, FieldReflection field) {
+	public void init(ICollectionControl<String, ?> control, FontFamilyItems annotation, Object data, IFieldReflection field) {
 		for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
 			control.addItem(name);
 		}

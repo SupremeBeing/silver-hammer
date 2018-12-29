@@ -75,7 +75,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testGetConstructors() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		List<ConstructorReflection<GrandChild>> ctors = cr.getConstructors();
+		List<IConstructorReflection<GrandChild>> ctors = cr.getConstructors();
 		Assert.assertEquals(3, ctors.size());
 		Assert.assertEquals(1, ctors.get(0).getParameters().size());
 		Assert.assertEquals(1, ctors.get(1).getParameters().size());
@@ -85,22 +85,22 @@ public class ClassReflectionTest {
 	@Test
 	public void testGetArrayConstructors() {
 		ClassReflection<int[]> cr = new ClassReflection<>(int[].class);
-		List<ConstructorReflection<int[]>> ctors = cr.getConstructors();
-		Assert.assertEquals(0, ctors.size());
+		List<IConstructorReflection<int[]>> ctors = cr.getConstructors();
+		Assert.assertEquals(1, ctors.size());
 	}
 
 	@Test
 	public void testGetEnumConstructors() {
 		ClassReflection<ElementType> cr = new ClassReflection<>(ElementType.class);
-		List<ConstructorReflection<ElementType>> ctors = cr.getConstructors();
+		List<IConstructorReflection<ElementType>> ctors = cr.getConstructors();
 		Assert.assertEquals(1, ctors.size());
 	}
 
 	@Test
 	public void testGetPrimitiveConstructors() {
 		ClassReflection<Integer> cr = new ClassReflection<>(int.class);
-		List<ConstructorReflection<Integer>> ctors = cr.getConstructors();
-		Assert.assertEquals(0, ctors.size());
+		List<IConstructorReflection<Integer>> ctors = cr.getConstructors();
+		Assert.assertEquals(2, ctors.size());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -199,7 +199,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code");
+		IFieldReflection field = cr.findField("code");
 		Assert.assertNotNull(field);
 		Assert.assertEquals("code", field.getName());
 	}
@@ -207,14 +207,14 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindMissingField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("code2");
+		IFieldReflection field = cr.findField("code2");
 		Assert.assertNull(field);
 	}
 	
 	@Test
 	public void testFindStaticField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		FieldReflection field = cr.findField("CONSTANT");
+		IFieldReflection field = cr.findField("CONSTANT");
 		Assert.assertNotNull(field);
 		Assert.assertEquals("CONSTANT", field.getName());
 		Assert.assertTrue(field.isStatic());
@@ -223,7 +223,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindInnerField() {
 		ClassReflection<Child.Inner> cr = new ClassReflection<>(Child.Inner.class);
-		FieldReflection field = cr.findField("string");
+		IFieldReflection field = cr.findField("string");
 		Assert.assertNotNull(field);
 		Assert.assertEquals("string", field.getName());
 	}
@@ -231,7 +231,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindMethod() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		MethodReflection method = cr.findMethod("getCode");
+		IMethodReflection method = cr.findMethod("getCode");
 		Assert.assertNotNull(method);
 		Assert.assertEquals("getCode", method.getName());
 	}
@@ -241,7 +241,7 @@ public class ClassReflectionTest {
 		GrandChild grandChild = new GrandChild("visible");
 		grandChild.setMessage("shadowed");
 		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
-		MethodReflection method = cr.findMethod("getMessage");
+		IMethodReflection method = cr.findMethod("getMessage");
 		Assert.assertNotNull(method);
 		Object value = method.invoke(grandChild);
 		Assert.assertEquals("visible", value);
@@ -250,14 +250,14 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindMissingMethod() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		MethodReflection method = cr.findMethod("getCode2");
+		IMethodReflection method = cr.findMethod("getCode2");
 		Assert.assertNull(method);
 	}
 	
 	@Test
 	public void testFindStaticMethod() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		MethodReflection method = cr.findMethod("setStatic");
+		IMethodReflection method = cr.findMethod("setStatic");
 		Assert.assertNotNull(method);
 		Assert.assertEquals("setStatic", method.getName());
 		Assert.assertTrue(method.isStatic());
@@ -266,7 +266,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testFindInnerMethod() {
 		ClassReflection<Child.Inner> cr = new ClassReflection<>(Child.Inner.class);
-		MethodReflection method = cr.findMethod("setString");
+		IMethodReflection method = cr.findMethod("setString");
 		Assert.assertNotNull(method);
 		Assert.assertEquals("setString", method.getName());
 	}
@@ -274,7 +274,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testGetMethods() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		List<MethodReflection> methods = cr.getMethods();
+		List<IMethodReflection> methods = cr.getMethods();
 		Assert.assertTrue(methods.size() > 6);
 		Assert.assertTrue(methods.stream().anyMatch(m -> "getCode".equals(m.getName())));
 		Assert.assertTrue(methods.stream().anyMatch(m -> "setStatic".equals(m.getName())));
@@ -283,7 +283,7 @@ public class ClassReflectionTest {
 	@Test
 	public void testGetFields() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
-		List<FieldReflection> fields = cr.getFields();
+		List<IFieldReflection> fields = cr.getFields();
 		Assert.assertEquals(7, fields.size());
 		Assert.assertEquals("CONSTANT", fields.get(1).getName());
 		Assert.assertEquals("STATIC", fields.get(2).getName());

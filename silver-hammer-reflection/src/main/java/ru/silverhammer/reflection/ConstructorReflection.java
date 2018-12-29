@@ -28,12 +28,13 @@ package ru.silverhammer.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class ConstructorReflection<T> extends ExecutableReflection<Constructor<T>> {
+class ConstructorReflection<T> extends ExecutableReflection<Constructor<T>> implements IConstructorReflection<T> {
 
 	protected ConstructorReflection(Constructor<T> constructor) {
 		super(constructor);
 	}
-	
+
+	@Override
 	public T invoke(Object... args) {
 		return forceAccess(() -> {
 			try {
