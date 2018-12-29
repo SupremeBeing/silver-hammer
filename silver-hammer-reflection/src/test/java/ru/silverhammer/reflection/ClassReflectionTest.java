@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.reflection;
 
+import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -80,7 +81,28 @@ public class ClassReflectionTest {
 		Assert.assertEquals(1, ctors.get(1).getParameters().size());
 		Assert.assertEquals(1, ctors.get(2).getParameters().size());
 	}
-	
+
+	@Test
+	public void testGetArrayConstructors() {
+		ClassReflection<int[]> cr = new ClassReflection<>(int[].class);
+		List<ConstructorReflection<int[]>> ctors = cr.getConstructors();
+		Assert.assertEquals(0, ctors.size());
+	}
+
+	@Test
+	public void testGetEnumConstructors() {
+		ClassReflection<ElementType> cr = new ClassReflection<>(ElementType.class);
+		List<ConstructorReflection<ElementType>> ctors = cr.getConstructors();
+		Assert.assertEquals(1, ctors.size());
+	}
+
+	@Test
+	public void testGetPrimitiveConstructors() {
+		ClassReflection<Integer> cr = new ClassReflection<>(int.class);
+		List<ConstructorReflection<Integer>> ctors = cr.getConstructors();
+		Assert.assertEquals(0, ctors.size());
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void testAbstractInstantiate() {
 		ClassReflection<Parent> cr = new ClassReflection<>(Parent.class);
@@ -101,6 +123,51 @@ public class ClassReflectionTest {
 		GrandChild grandChild = cr.instantiate("Message");
 		Assert.assertEquals(GrandChild.class, grandChild.getClass());
 		Assert.assertEquals("Message", grandChild.getMessage());
+	}
+
+	@Test
+	public void testArrayInstantiate() {
+		ClassReflection<int[]> cr = new ClassReflection<>(int[].class);
+		int[] intArray = cr.instantiate(2);
+		Assert.assertNotNull(intArray);
+		Assert.assertEquals(2, intArray.length);
+	}
+
+	@Test
+	public void testInnerInstantiate() {
+		ClassReflection<Child> cr = new ClassReflection<>(Child.class);
+		Child child = cr.instantiate("Nothing");
+		ClassReflection<Child.Inner> ir = new ClassReflection<>(Child.Inner.class);
+		Child.Inner inner = ir.instantiate(child);
+		Assert.assertNotNull(inner);
+	}
+
+	@Test
+	public void testInterfaceInstantiate() {
+		ClassReflection<List> cr = new ClassReflection<>(List.class);
+		List list = cr.instantiate();
+		Assert.assertNull(list);
+	}
+
+	@Test
+	public void testAnnotationInstantiate() {
+		ClassReflection<SuppressWarnings> cr = new ClassReflection<>(SuppressWarnings.class);
+		SuppressWarnings a = cr.instantiate();
+		Assert.assertNull(a);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEnumInstantiate() {
+		ClassReflection<ElementType> cr = new ClassReflection<>(ElementType.class);
+		cr.instantiate("PARAMETER", 3);
+	}
+
+	@Test
+	public void testPrimitiveInstantiate() {
+		ClassReflection<Integer> cr = new ClassReflection<>(int.class);
+		Integer obj = cr.instantiate(10);
+		Assert.assertNotNull(obj);
+		Assert.assertEquals(Integer.valueOf(10), obj);
 	}
 
 	@Test
@@ -217,7 +284,7 @@ public class ClassReflectionTest {
 	public void testGetFields() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		List<FieldReflection> fields = cr.getFields();
-		Assert.assertEquals(6, fields.size());
+		Assert.assertEquals(7, fields.size());
 		Assert.assertEquals("CONSTANT", fields.get(1).getName());
 		Assert.assertEquals("STATIC", fields.get(2).getName());
 		Assert.assertEquals("code", fields.get(3).getName());

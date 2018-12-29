@@ -27,7 +27,7 @@ package ru.silverhammer.reflection.data;
 
 public class Child extends Parent {
 	
-	public static class Inner {
+	public class Inner {
 		
 		private String string;
 		

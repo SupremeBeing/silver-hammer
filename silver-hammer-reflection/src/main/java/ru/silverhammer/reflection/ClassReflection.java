@@ -63,19 +63,32 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		return getElement();
 	}
 
+	@SuppressWarnings("unchecked")
 	public T instantiate(Object... args) {
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
 			Object arg = args[i];
 			types[i] = arg == null ? null : arg.getClass();
 		}
-		ConstructorReflection<T> ctor = findConstructor(types);
-		return ctor == null ? null : ctor.invoke(args);
+		if (getElement().isArray()) {
+			int size = args.length == 1 && args[0] instanceof Integer ? (Integer) args[0] : 0;
+			return (T) Array.newInstance(getElement().getComponentType(), size);
+		} else {
+			ConstructorReflection<T> ctor = findConstructor(types);
+			if (ctor != null) {
+				return ctor.invoke(args);
+			}
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public ConstructorReflection<T> findConstructor(Class<?>... types) {
-		for (Constructor<?> ctor : getElement().getDeclaredConstructors()) {
+		Class<?> cl = getElement();
+		if (cl.isPrimitive()) {
+			cl = Primitive.findByPrimitiveType(cl).getBoxedType();
+		}
+		for (Constructor<?> ctor : cl.getDeclaredConstructors()) {
 			if (match(ctor, types)) {
 				return new ConstructorReflection<>((Constructor<T>) ctor);
 			}
@@ -98,11 +111,11 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 			} else if (type.isPrimitive()) {
 				if (param.getType().isPrimitive() && param.getType() != type) {
 					return false;
-				} else if (!param.getType().isPrimitive() && !Primitive.match(type, param.getType())) {
+				} else if (!param.getType().isPrimitive() && !Primitive.exists(type, param.getType())) {
 					return false;
 				}
 			} else if (!type.isPrimitive()) {
-				if (param.getType().isPrimitive() && !Primitive.match(param.getType(), type)) {
+				if (param.getType().isPrimitive() && !Primitive.exists(param.getType(), type)) {
 					return false;
 				} else if (!param.getType().isPrimitive() && !param.getType().isAssignableFrom(type)) {
 					return false;

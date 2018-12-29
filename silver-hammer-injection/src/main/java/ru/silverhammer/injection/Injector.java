@@ -28,6 +28,7 @@ package ru.silverhammer.injection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.ConstructorReflection;
@@ -35,73 +36,47 @@ import ru.silverhammer.reflection.ExecutableReflection;
 import ru.silverhammer.reflection.MethodReflection;
 import ru.silverhammer.reflection.ParameterReflection;
 
-public class Injector {
+public class Injector implements IInjector {
 
-	private interface IBound<T> {
-		T getInstance();
-	}
-
-	private class BoundType<T> implements IBound<T> {
-
-		private final Class<T> type;
-
-		private BoundType(Class<T> type) {
-			this.type = type;
-		}
-
-		@Override
-		public T getInstance() {
-			return instantiate(type);
-		}
-	}
-
-	private class BoundInstance<T> implements IBound<T> {
-
-		private final T instance;
-
-		private BoundInstance(T instance) {
-			this.instance = instance;
-		}
-
-		@Override
-		public T getInstance() {
-			return instance;
-		}
-	}
-
-	private final Map<Class<?>, Map<String, IBound<?>>> bindings = new HashMap<>();
+	private final Map<Class<?>, Map<String, Supplier<?>>> bindings = new HashMap<>();
 
 	public Injector() {
 		bind(Injector.class, this);
 	}
 
-	public <T> void bind(Class<?> type, String name, T impl) {
+	@Override
+	public <T, I extends T> void bind(Class<T> type, String name, I impl) {
 		if (type != null && impl != null) {
-			Map<String, IBound<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
-			namedBindings.put(name, new BoundInstance<>(impl));
+			Map<String, Supplier<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
+			namedBindings.put(name, () -> impl);
 		}
 	}
 
-	public <T> void bind(Class<?> type, String name, Class<? extends T> implClass) {
+	@Override
+	public <T> void bind(Class<T> type, String name, Class<? extends T> implClass) {
 		if (name != null && implClass != null) {
-			Map<String, IBound<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
-			namedBindings.put(name, new BoundType<>(implClass));
+			Map<String, Supplier<?>> namedBindings = bindings.computeIfAbsent(type, k -> new HashMap<>());
+			namedBindings.put(name, () -> instantiate(implClass));
 		}
 	}
 
-	public <T> void bind(Class<T> type, T impl) {
-		bind(type, null, impl);
+	@Override
+	public <T, I extends T> void bind(Class<T> type, I impl) {
+		bind(type, DEFAULT_NAME, impl);
 	}
 
+	@Override
 	public <T> void bind(Class<T> type, Class<? extends T> implClass) {
-		bind(type, null, implClass);
+		bind(type, DEFAULT_NAME, implClass);
 	}
 
+	@Override
 	public <T> void unbind(Class<T> type) {
 		bindings.remove(type);
 	}
 
-	public void unbidAll() {
+	@Override
+	public void unbindAll() {
 		bindings.clear();
 	}
 
@@ -117,6 +92,31 @@ public class Injector {
 	public Object invoke(Object data, MethodReflection method) {
 		Object[] args = createArguments(method);
 		return method.invoke(data, args);
+	}
+
+	public Object getInstance(Class<?> type, String name) {
+		Map<String, Supplier<?>> namedBindings = bindings.get(type);
+		if (namedBindings == null) {
+			final Map<String, Supplier<?>> subTypedNamedBindings = new HashMap<>();
+			bindings.entrySet().stream()
+					.filter(e -> type.isAssignableFrom(e.getKey()))
+					.map(Map.Entry::getValue)
+					.forEach(subTypedNamedBindings::putAll);
+			if (subTypedNamedBindings.size() > 0) {
+				namedBindings = subTypedNamedBindings;
+			}
+		}
+		if (namedBindings != null) {
+			Supplier<?> binding = namedBindings.get(name);
+			if (binding != null) {
+				return binding.get();
+			}
+		}
+		return null;
+	}
+
+	public Object getInstance(Class<?> type) {
+		return getInstance(type, DEFAULT_NAME);
 	}
 
 	private Object[] createArguments(ExecutableReflection<?> executable) {
@@ -137,34 +137,9 @@ public class Injector {
 		Inject ia = element.getAnnotation(Inject.class);
 		if (ia != null) {
 			Named na = element.getAnnotation(Named.class);
-			String name = na == null ? null : na.value();
+			String name = na == null ? DEFAULT_NAME : na.value();
 			return getInstance(type, name);
 		}
 		return null;
-	}
-
-	public Object getInstance(Class<?> type, String name) {
-		Map<String, IBound<?>> namedBindings = bindings.get(type);
-		if (namedBindings == null) {
-			final Map<String, IBound<?>> subTypedNamedBindings = new HashMap<>();
-			bindings.entrySet().stream()
-					.filter(e -> type.isAssignableFrom(e.getKey()))
-					.map(Map.Entry::getValue)
-					.forEach(subTypedNamedBindings::putAll);
-			if (subTypedNamedBindings.size() > 0) {
-				namedBindings = subTypedNamedBindings;
-			}
-		}
-		if (namedBindings != null) {
-			IBound<?> binding = namedBindings.get(name);
-			if (binding != null) {
-				return binding.getInstance();
-			}
-		}
-		return null;
-	}
-
-	public Object getInstance(Class<?> type) {
-		return getInstance(type, null);
 	}
 }

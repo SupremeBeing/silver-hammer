@@ -36,15 +36,30 @@ public enum Primitive {
 	Int(int.class, Integer.class),
 	Long(long.class, Long.class),
 	Float(float.class, Float.class),
-	Double(double.class, Double.class);
+	Double(double.class, Double.class),
+	Void(void.class, Void.class);
 
-	public static boolean match(Class<?> primitiveType, Class<?> boxedType) {
-		for (Primitive p : values()) {
-			if (Objects.equals(p.getPrimitiveType(), primitiveType) && Objects.equals(p.getBoxedType(), boxedType)) {
-				return true;
+	public static Primitive findByPrimitiveType(Class<?> primitiveType) {
+		for (Primitive primitive : values()) {
+			if (Objects.equals(primitive.getPrimitiveType(), primitiveType)) {
+				return primitive;
 			}
 		}
-		return false;
+		return null;
+	}
+
+	public static Primitive findByBoxedType(Class<?> boxedType) {
+		for (Primitive primitive : values()) {
+			if (Objects.equals(primitive.getBoxedType(), boxedType)) {
+				return primitive;
+			}
+		}
+		return null;
+	}
+
+	public static boolean exists(Class<?> primitiveType, Class<?> boxedType) {
+		Primitive primitive = findByPrimitiveType(primitiveType);
+		return primitive != null && Objects.equals(primitive.getBoxedType(), boxedType);
 	}
 	
 	private final Class<?> primitiveType;
