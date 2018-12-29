@@ -35,12 +35,12 @@ import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.injection.Injector;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.*;
 
 public class UiMetadata {
 
-	private final Injector injector;
+	private final IInjector injector;
 	private final FieldProcessor fieldProcessor;
 	private final IStringProcessor stringProcessor;
 	
@@ -49,7 +49,7 @@ public class UiMetadata {
 	private final List<MethodAttributes> initializers = new ArrayList<>();
 	private final List<MethodAttributes> validators = new ArrayList<>();
 
-	UiMetadata(Injector injector, FieldProcessor fieldProcessor, IStringProcessor stringProcessor) {
+	UiMetadata(IInjector injector, FieldProcessor fieldProcessor, IStringProcessor stringProcessor) {
 		this.injector = injector;
 		this.fieldProcessor = fieldProcessor;
 		this.stringProcessor = stringProcessor;

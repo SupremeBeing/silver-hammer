@@ -31,6 +31,7 @@ import ru.silverhammer.core.processor.Processor;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.SimpleStringProcessor;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Injector;
 
 public final class MetadataCollector {
@@ -48,7 +49,7 @@ public final class MetadataCollector {
 	}
 
 	public UiMetadata collect(Object... data) {
-		Injector injector = new Injector();
+		IInjector injector = new Injector();
 		FieldProcessor fieldProcessor = new FieldProcessor(injector);
 		IProcessor processor = new Processor(injector);
 

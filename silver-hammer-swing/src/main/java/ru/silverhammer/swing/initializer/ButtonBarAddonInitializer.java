@@ -38,8 +38,8 @@ import javax.swing.JPanel;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
@@ -50,9 +50,9 @@ import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
 public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, ButtonBarAddon> {
 
 	private final IStringProcessor processor;
-	private final Injector injector; 
+	private final IInjector injector;
 	
-	public ButtonBarAddonInitializer(@Inject IStringProcessor processor, @Inject Injector injector) {
+	public ButtonBarAddonInitializer(@Inject IStringProcessor processor, @Inject IInjector injector) {
 		this.processor = processor;
 		this.injector = injector;
 	}

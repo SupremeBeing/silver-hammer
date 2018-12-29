@@ -1,5 +1,7 @@
 package ru.silverhammer.injection;
 
+import ru.silverhammer.reflection.IMethodReflection;
+
 public interface IInjector {
 
     String DEFAULT_NAME = "DEFAULT_BINDING_NAME";
@@ -20,4 +22,7 @@ public interface IInjector {
 
     <T> T getInstance(Class<T> type);
 
+    <T> T instantiate(Class<T> type);
+
+    Object invoke(Object data, IMethodReflection method);
 }

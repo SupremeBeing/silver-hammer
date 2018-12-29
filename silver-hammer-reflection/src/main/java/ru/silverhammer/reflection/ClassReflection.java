@@ -36,10 +36,6 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		super(cl);
 	}
 	
-	public boolean isStatic() {
-		return Modifier.isStatic(getElement().getModifiers());
-	}
-
 	public boolean isFinal() {
 		return Modifier.isFinal(getElement().getModifiers());
 	}

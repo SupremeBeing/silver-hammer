@@ -30,14 +30,14 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IReflection;
 
 public class GeneratableFieldProcessor extends Processor {
 
-	public GeneratableFieldProcessor(@Inject Injector injector) {
+	public GeneratableFieldProcessor(@Inject IInjector injector) {
 		super(injector);
 	}
 

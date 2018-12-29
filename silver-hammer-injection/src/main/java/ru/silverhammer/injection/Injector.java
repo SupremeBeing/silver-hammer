@@ -36,7 +36,7 @@ public class Injector implements IInjector {
 	private final Map<Class<?>, Map<String, Supplier<?>>> bindings = new HashMap<>();
 
 	public Injector() {
-		bind(Injector.class, this);
+		bind(IInjector.class, this);
 	}
 
 	@Override

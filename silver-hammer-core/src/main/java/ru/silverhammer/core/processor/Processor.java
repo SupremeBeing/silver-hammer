@@ -30,16 +30,16 @@ import java.util.List;
 
 import ru.silverhammer.core.ProcessorReference;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Inject;
-import ru.silverhammer.injection.Injector;
 import ru.silverhammer.reflection.*;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
 public class Processor implements IProcessor {
 
-	private final Injector injector;
+	private final IInjector injector;
 	
-	public Processor(@Inject Injector injector) {
+	public Processor(@Inject IInjector injector) {
 		this.injector = injector;
 	}
 

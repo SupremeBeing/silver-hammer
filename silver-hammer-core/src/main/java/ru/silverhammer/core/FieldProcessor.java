@@ -30,15 +30,15 @@ import java.util.List;
 
 import ru.silverhammer.core.converter.IConverter;
 import ru.silverhammer.core.validator.IValidator;
-import ru.silverhammer.injection.Injector;
+import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
 public class FieldProcessor {
 
-	private final Injector injector;
+	private final IInjector injector;
 	
-	public FieldProcessor(Injector injector) {
+	public FieldProcessor(IInjector injector) {
 		this.injector = injector;
 	}
 
