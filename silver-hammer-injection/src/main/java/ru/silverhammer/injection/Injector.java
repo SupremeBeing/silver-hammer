@@ -124,11 +124,7 @@ public class Injector implements IInjector {
 		Object[] result = new Object[params.size()];
 		for (int i = 0; i < params.size(); i++) {
 			ParameterReflection param = params.get(i);
-			Object impl = getInjectedInstance(param, param.getType());
-			if (impl == null) {
-				impl = instantiate(param.getType());
-			}
-			result[i] = impl;
+			result[i] = getInjectedInstance(param, param.getType());
 		}
 		return result;
 	}
@@ -136,10 +132,8 @@ public class Injector implements IInjector {
 	private Object getInjectedInstance(ParameterReflection element, Class<?> type) {
 		Inject ia = element.getAnnotation(Inject.class);
 		if (ia != null) {
-			Named na = element.getAnnotation(Named.class);
-			String name = na == null ? DEFAULT_NAME : na.value();
-			return getInstance(type, name);
+			return getInstance(type, ia.value());
 		}
-		return null;
+		return instantiate(type);
 	}
 }

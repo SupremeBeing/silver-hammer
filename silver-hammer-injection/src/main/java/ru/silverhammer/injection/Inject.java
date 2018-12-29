@@ -32,4 +32,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Inject {}
+public @interface Inject {
+
+    String value() default IInjector.DEFAULT_NAME;
+
+}
