@@ -4,7 +4,7 @@
 
 Silver Hammer is an extensible annotation-based UI generation framework.
 
-Currently only Swing implementation is present. JavaFX and web implementations are planned.
+Currently only Swing implementation is present. Web implementation is planned.
 
 ## Example
 
