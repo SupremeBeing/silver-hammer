@@ -10,9 +10,9 @@ public interface IInjector {
 
     <T> void bind(Class<T> type, T implementation);
 
-    <T> void bind(Class<T> type, String name, Class<T> implClass);
+    <T> void bind(Class<T> type, String name, Class<? extends T> implClass);
 
-    <T> void bind(Class<T> type, Class<T> implClass);
+    <T> void bind(Class<T> type, Class<? extends T> implClass);
 
     void unbind(Class<?> type);
 

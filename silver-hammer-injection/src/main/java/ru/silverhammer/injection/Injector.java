@@ -53,7 +53,7 @@ public class Injector implements IInjector {
 	}
 
 	@Override
-	public <T> void bind(Class<T> type, String name, Class<T> implClass) {
+	public <T> void bind(Class<T> type, String name, Class<? extends T> implClass) {
 		if (type == null || implClass == null || name == null) {
 			throw new IllegalArgumentException();
 		}
@@ -66,7 +66,7 @@ public class Injector implements IInjector {
 	}
 
 	@Override
-	public <T> void bind(Class<T> type, Class<T> implClass) {
+	public <T> void bind(Class<T> type, Class<? extends T> implClass) {
 		bind(type, DEFAULT_NAME, implClass);
 	}
 
@@ -83,9 +83,12 @@ public class Injector implements IInjector {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getInstance(Class<T> type, String name) {
+		if (type == null || name == null) {
+			throw new IllegalArgumentException();
+		}
 		Set<Class<?>> boundTypes = new HashSet<>(bindings.keySet());
 		for (Class<?> boundType : boundTypes) {
-			if (type.isAssignableFrom(boundType)) {
+			if (type.isAssignableFrom(boundType) || Primitive.exists(type, boundType) || Primitive.exists(boundType, type)) {
 				Map<String, Supplier<?>> namedBindings = bindings.get(boundType);
 				if (namedBindings != null) {
 					Supplier<?> supplier = namedBindings.get(name);
@@ -116,6 +119,9 @@ public class Injector implements IInjector {
 
 	@Override
 	public Object invoke(Object data, IMethodReflection method) {
+		if (method == null) {
+			throw new IllegalArgumentException();
+		}
 		Object[] args = createArguments(method);
 		return method.invokeOn(data, args);
 	}
