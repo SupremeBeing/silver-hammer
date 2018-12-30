@@ -32,7 +32,6 @@ import java.util.List;
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
@@ -41,7 +40,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	private final FieldProcessor fieldProcessor;
 	private final IControlResolver controlResolver;
 
-	public ValueToItemsConverter(@Inject FieldProcessor fieldProcessor, @Inject IControlResolver controlResolver) {
+	public ValueToItemsConverter(FieldProcessor fieldProcessor, IControlResolver controlResolver) {
 		this.fieldProcessor = fieldProcessor;
 		this.controlResolver = controlResolver;
 	}

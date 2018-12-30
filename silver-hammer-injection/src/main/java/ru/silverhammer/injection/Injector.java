@@ -103,17 +103,9 @@ public class Injector implements IInjector {
 		return getInstance(type, DEFAULT_NAME);
 	}
 
+	@Override
 	public <T> T instantiate(Class<T> type) {
-		IConstructorReflection<T> least = null;
-		for (IConstructorReflection<T> ctor : new ClassReflection<>(type).getConstructors()) {
-			List<IParameterReflection> params = ctor.getParameters();
-			if (params.isEmpty()) {
-				return invoke(ctor);
-			}
-			if (least == null || params.size() < least.getParameters().size()) {
-				least = ctor;
-			}
-		}
+		IConstructorReflection<T> least = new ClassReflection<>(type).findDefaultConstructor();
 		return least == null ? null : invoke(least);
 	}
 
@@ -122,6 +114,7 @@ public class Injector implements IInjector {
 		return method.invoke(args);
 	}
 
+	@Override
 	public Object invoke(Object data, IMethodReflection method) {
 		Object[] args = createArguments(method);
 		return method.invokeOn(data, args);
@@ -131,9 +124,9 @@ public class Injector implements IInjector {
 		List<IParameterReflection> params = executable.getParameters();
 		Object[] result = new Object[params.size()];
 		for (int i = 0; i < params.size(); i++) {
-			IReflection param = params.get(i);
-			Inject ia = param.getAnnotation(Inject.class);
-			result[i] = getInstance(param.getType(), ia == null ? DEFAULT_NAME : ia.value());
+			IParameterReflection param = params.get(i);
+			InjectNamed in = param.getAnnotation(InjectNamed.class);
+			result[i] = getInstance(param.getType(), in == null ? DEFAULT_NAME : in.value());
 		}
 		return result;
 	}

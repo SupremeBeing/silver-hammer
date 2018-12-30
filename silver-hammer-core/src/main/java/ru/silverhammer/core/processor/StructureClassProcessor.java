@@ -36,14 +36,13 @@ import ru.silverhammer.core.processor.annotation.Groups;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.IReflection;
 
 public class StructureClassProcessor implements IProcessor {
 
 	private final IStringProcessor stringProcessor;
 	
-	public StructureClassProcessor(@Inject IStringProcessor stringProcessor) {
+	public StructureClassProcessor(IStringProcessor stringProcessor) {
 		this.stringProcessor = stringProcessor;
 	}
 

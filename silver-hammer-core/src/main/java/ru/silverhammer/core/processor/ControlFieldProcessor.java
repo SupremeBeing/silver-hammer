@@ -42,7 +42,6 @@ import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IReflection;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
@@ -54,8 +53,7 @@ public class ControlFieldProcessor implements IProcessor {
 	private final IControlResolver controlResolver;
 	private final FieldProcessor fieldProcessor;
 	
-	public ControlFieldProcessor(@Inject IInjector injector, @Inject IStringProcessor stringProcessor,
-								 @Inject IControlResolver controlResolver, @Inject FieldProcessor fieldProcessor) {
+	public ControlFieldProcessor(IInjector injector, IStringProcessor stringProcessor, IControlResolver controlResolver, FieldProcessor fieldProcessor) {
 		this.injector = injector;
 		this.stringProcessor = stringProcessor;
 		this.controlResolver = controlResolver;

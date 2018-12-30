@@ -85,6 +85,20 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		}
 		return null;
 	}
+
+	public IConstructorReflection<T> findDefaultConstructor() {
+		IConstructorReflection<T> least = null;
+		for (IConstructorReflection<T> ctor : getConstructors()) {
+			List<IParameterReflection> params = ctor.getParameters();
+			if (params.isEmpty()) {
+				return ctor;
+			}
+			if (least == null || params.size() < least.getParameters().size()) {
+				least = ctor;
+			}
+		}
+		return least;
+	}
 	
 	private boolean match(List<IParameterReflection> params, Class<?>[] types) {
 		if (types.length != params.size()) {
@@ -92,7 +106,7 @@ public class ClassReflection<T> extends AnnotatedReflection<Class<T>> {
 		}
 		for (int i = 0; i < params.size(); i++) {
 			Class<?> type = types[i];
-			IReflection param = params.get(i);
+			IParameterReflection param = params.get(i);
 			if (type == null) {
 				if (param.getType().isPrimitive()) {
 					return false;

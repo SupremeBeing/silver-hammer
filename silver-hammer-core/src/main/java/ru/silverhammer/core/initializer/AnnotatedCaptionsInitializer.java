@@ -30,7 +30,6 @@ import ru.silverhammer.core.control.IMultiCaptionControl;
 import ru.silverhammer.core.initializer.annotation.AnnotatedCaptions;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
@@ -39,7 +38,7 @@ public class AnnotatedCaptionsInitializer implements IInitializer<IMultiCaptionC
 	private final IStringProcessor processor;
 	private final IControlResolver controlResolver;
 
-	public AnnotatedCaptionsInitializer(@Inject IStringProcessor processor, @Inject IControlResolver controlResolver) {
+	public AnnotatedCaptionsInitializer(IStringProcessor processor, IControlResolver controlResolver) {
 		this.processor = processor;
 		this.controlResolver = controlResolver;
 	}

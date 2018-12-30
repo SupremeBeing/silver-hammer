@@ -48,7 +48,6 @@ import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.validator.annotation.MinSize;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.swing.dialog.GenerationDialog;
@@ -91,7 +90,7 @@ public class Environment {
 	private File root;
 	
 	@InitializerMethod
-	private void initializeTable(@Inject UiMetadata metadata) {
+	private void initializeTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
 		table.addItem(new Object[] {"maven.test.skip", true});
 		table.addItem(new Object[] {"JDK version", "1.8.0"});
@@ -100,7 +99,7 @@ public class Environment {
 	}
 	
 	@ValidatorMethod
-	private boolean validateTable(@Inject UiMetadata metadata) {
+	private boolean validateTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
 		if (table instanceof IValidatableControl) {
 			IValidatableControl<?> control = (IValidatableControl<?>) table;
@@ -122,7 +121,7 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private void addPressed(@Inject UiMetadata metadata) {
+	private void addPressed(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
 		KeyValue val = new KeyValue();
 		GenerationDialog dialog = new GenerationDialog(null, val);
@@ -134,7 +133,7 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private void deletePressed(@Inject UiMetadata metadata) {
+	private void deletePressed(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
 		ISelectionControl<Object[], Object> selection = metadata.findControl(this, "properties");
 		Object[] sel = selection.getSingleSelection();

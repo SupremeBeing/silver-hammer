@@ -197,6 +197,14 @@ public class ClassReflectionTest {
 	}
 
 	@Test
+	public void testFindDefaultConstructor() {
+		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
+		IConstructorReflection<GrandChild> ctor = cr.findDefaultConstructor();
+		Assert.assertNotNull(ctor);
+		Assert.assertEquals(1, ctor.getParameters().size());
+	}
+
+	@Test
 	public void testFindField() {
 		ClassReflection<GrandChild> cr = new ClassReflection<>(GrandChild.class);
 		IFieldReflection field = cr.findField("code");

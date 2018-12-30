@@ -31,7 +31,6 @@ import java.util.List;
 import ru.silverhammer.core.ProcessorReference;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.*;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
@@ -39,7 +38,7 @@ public class Processor implements IProcessor {
 
 	private final IInjector injector;
 	
-	public Processor(@Inject IInjector injector) {
+	public Processor(IInjector injector) {
 		this.injector = injector;
 	}
 

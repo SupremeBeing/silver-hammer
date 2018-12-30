@@ -39,7 +39,6 @@ import ru.silverhammer.core.Location;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
@@ -52,7 +51,7 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 	private final IStringProcessor processor;
 	private final IInjector injector;
 	
-	public ButtonBarAddonInitializer(@Inject IStringProcessor processor, @Inject IInjector injector) {
+	public ButtonBarAddonInitializer(IStringProcessor processor, IInjector injector) {
 		this.processor = processor;
 		this.injector = injector;
 	}

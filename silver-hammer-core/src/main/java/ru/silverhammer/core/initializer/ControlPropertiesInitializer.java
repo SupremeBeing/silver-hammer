@@ -34,14 +34,13 @@ import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlPropertiesInitializer implements IInitializer<IControl<?>, ControlProperties> {
 
 	private final IStringProcessor processor;
 
-	public ControlPropertiesInitializer(@Inject IStringProcessor processor) {
+	public ControlPropertiesInitializer(IStringProcessor processor) {
 		this.processor = processor;
 	}
 

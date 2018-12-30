@@ -36,7 +36,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.injection.Inject;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.swing.control.Control;
 import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
@@ -45,7 +44,7 @@ public class FileChooserAddonInitializer implements IInitializer<Control<String,
 
 	private final IStringProcessor processor;
 
-	public FileChooserAddonInitializer(@Inject IStringProcessor processor) {
+	public FileChooserAddonInitializer(IStringProcessor processor) {
 		this.processor = processor;
 	}
 
