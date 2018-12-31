@@ -1,6 +1,7 @@
 package ru.silverhammer.reflection;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +40,7 @@ class VirtualParameterReflection implements IParameterReflection {
 
     @Override
     public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

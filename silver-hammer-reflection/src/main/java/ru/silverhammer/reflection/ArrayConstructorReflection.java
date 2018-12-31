@@ -55,7 +55,7 @@ class ArrayConstructorReflection<T> implements IConstructorReflection<T> {
 
     @Override
     public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

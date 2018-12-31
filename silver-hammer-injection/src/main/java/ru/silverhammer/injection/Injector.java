@@ -112,9 +112,9 @@ public class Injector implements IInjector {
 		return least == null ? null : invoke(least);
 	}
 
-	private <T> T invoke(IConstructorReflection<T> method) {
-		Object[] args = createArguments(method);
-		return method.invoke(args);
+	private <T> T invoke(IConstructorReflection<T> ctor) {
+		Object[] args = createArguments(ctor);
+		return ctor.invoke(args);
 	}
 
 	@Override
