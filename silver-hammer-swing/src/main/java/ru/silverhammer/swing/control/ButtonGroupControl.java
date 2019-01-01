@@ -65,7 +65,7 @@ public class ButtonGroupControl
 
 	@Override
 	public Object getSingleSelection() {
-		for (Object item : getData()) {
+		for (Object item : data) {
 			AbstractButton btn = getButton(item);
 			if (btn.isSelected()) {
 				return item;
@@ -77,7 +77,7 @@ public class ButtonGroupControl
 	@Override
 	public Object[] getSelection() {
 		List<Object> result = new ArrayList<>();
-		for (Object item : getData()) {
+		for (Object item : data) {
 			AbstractButton btn = getButton(item);
 			if (btn.isSelected()) {
 				result.add(item);
@@ -112,7 +112,7 @@ public class ButtonGroupControl
 		}
 	}
 
-	protected AbstractButton createButton() {
+	private AbstractButton createButton() {
 		if (selectionType == SelectionType.Single) {
 			return new JRadioButton();
 		} else {
@@ -120,7 +120,7 @@ public class ButtonGroupControl
 		}
 	}
 
-	protected AbstractButton createButton(Object item) {
+	private AbstractButton createButton(Object item) {
 		AbstractButton button = createButton();
 		button.setText(item.toString());
 		button.addActionListener(l -> fireValueChanged());
@@ -130,18 +130,14 @@ public class ButtonGroupControl
 		return button;
 	}
 	
-	protected AbstractButton getButton(Object item) {
+	private AbstractButton getButton(Object item) {
 		return buttons.get(item);
 	}
 	
-	protected Iterable<Object> getData() {
-		return data;
-	}
-
 	@Override
 	public Object getValue() {
 		if (selectionType == SelectionType.Single) {
-			for (Object item : getData()) {
+			for (Object item : data) {
 				AbstractButton btn = getButton(item);
 				if (btn.isSelected()) {
 					return item;
@@ -149,7 +145,7 @@ public class ButtonGroupControl
 			}
 		} else {
 			List<Object> result = new ArrayList<>();
-			for (Object o : getData()) {
+			for (Object o : data) {
 				AbstractButton button = getButton(o);
 				if (button.isSelected()) {
 					result.add(o);
@@ -169,7 +165,7 @@ public class ButtonGroupControl
 				fireValueChanged();
 			}
 		} else if (value instanceof Collection) {
-			for (Object o : getData()) {
+			for (Object o : data) {
 				AbstractButton button = getButton(o);
 				button.setSelected(((Collection<?>) value).contains(o));
 			}
@@ -195,7 +191,7 @@ public class ButtonGroupControl
 	@Override
 	public void clearItems() {
 		if (selectionType == SelectionType.Single) {
-			for (Object item : getData()) {
+			for (Object item : data) {
 				group.remove(getButton(item));
 			}
 		}
@@ -257,7 +253,7 @@ public class ButtonGroupControl
 	
 	protected void rebuild() {
 		if (selectionType == SelectionType.Single) {
-			for (Object item : getData()) {
+			for (Object item : data) {
 				group.remove(getButton(item));
 			}
 		}
