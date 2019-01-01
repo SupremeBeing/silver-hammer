@@ -31,12 +31,10 @@ import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.core.control.annotation.CheckBoxGroup;
-import ru.silverhammer.core.control.annotation.ColorChooser;
-import ru.silverhammer.core.control.annotation.List;
-import ru.silverhammer.core.control.annotation.Slider;
-import ru.silverhammer.core.control.annotation.Text;
+import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.SliderProperties;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
@@ -84,7 +82,8 @@ public class FontSettings {
 	@SliderProperties(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	private int size = 12;
 
-	@CheckBoxGroup
+	@ButtonGroup
+	@ControlProperties(selection = ISelectionControl.SelectionType.Multi)
 	@GroupId("font")
 	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
 	@EnumerationItems(Style.class)

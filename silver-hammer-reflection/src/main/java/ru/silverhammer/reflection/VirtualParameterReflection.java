@@ -1,11 +1,8 @@
 package ru.silverhammer.reflection;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-class VirtualParameterReflection implements IParameterReflection {
+class VirtualParameterReflection extends VirtualReflection implements IParameterReflection {
 
     private final Class<?> type;
     private final String name;
@@ -26,21 +23,6 @@ class VirtualParameterReflection implements IParameterReflection {
     @Override
     public Class<?> getType() {
         return type;
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return new Annotation[0];
-    }
-
-    @Override
-    public <A extends Annotation> A getAnnotation(Class<A> type) {
-        return null;
-    }
-
-    @Override
-    public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
-        return new ArrayList<>();
     }
 
     @Override

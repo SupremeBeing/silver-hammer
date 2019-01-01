@@ -34,15 +34,9 @@ import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl.ValueType;
-import ru.silverhammer.core.control.annotation.CheckBox;
-import ru.silverhammer.core.control.annotation.CheckBoxGroup;
-import ru.silverhammer.core.control.annotation.ComboBox;
-import ru.silverhammer.core.control.annotation.Label;
-import ru.silverhammer.core.control.annotation.Password;
-import ru.silverhammer.core.control.annotation.Table;
-import ru.silverhammer.core.control.annotation.Text;
-import ru.silverhammer.core.control.annotation.TextArea;
+import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
@@ -134,7 +128,8 @@ public class User {
 	@ControlProperties(visibleRows = 5)
 	private String description;
 
-	@CheckBoxGroup
+	@ButtonGroup
+	@ControlProperties(selection = ISelectionControl.SelectionType.Multi)
 	@GroupId("langs")
 	@StringItems({"English", "Russian", "Spanish", "German", "Italian"})
 	@MinSize(value = 1, message = "Select at least one language")

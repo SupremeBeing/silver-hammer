@@ -1,12 +1,11 @@
 package ru.silverhammer.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-class ArrayConstructorReflection<T> implements IConstructorReflection<T> {
+class ArrayConstructorReflection<T> extends VirtualReflection implements IConstructorReflection<T> {
 
     private final Class<?> arrayType;
 
@@ -41,21 +40,6 @@ class ArrayConstructorReflection<T> implements IConstructorReflection<T> {
     @Override
     public Class<?> getType() {
         return arrayType;
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return new Annotation[0];
-    }
-
-    @Override
-    public <A extends Annotation> A getAnnotation(Class<A> type) {
-        return null;
-    }
-
-    @Override
-    public <A extends Annotation> List<MarkedAnnotation<A>> getMarkedAnnotations(Class<A> markerClass) {
-        return new ArrayList<>();
     }
 
     @Override

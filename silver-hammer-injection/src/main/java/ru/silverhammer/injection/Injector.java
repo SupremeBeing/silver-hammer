@@ -57,7 +57,7 @@ public class Injector implements IInjector {
 		if (type == null || implClass == null || name == null) {
 			throw new IllegalArgumentException();
 		}
-		// TODO: consider non-singleton implementation
+		// TODO: consider singleton implementation
 		getNamedBindings(type).put(name, () -> instantiate(implClass));
 	}
 
