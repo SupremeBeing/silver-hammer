@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,33 +21,27 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.initializer.annotation;
+package ru.silverhammer.core.initializer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ru.silverhammer.core.control.*;
+import ru.silverhammer.core.control.annotation.CheckBox;
+import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.reflection.IFieldReflection;
 
-import ru.silverhammer.core.InitializerReference;
-import ru.silverhammer.core.initializer.SliderPropertiesInitializer;
+public class CaptionInitializer implements IInitializer<ICaptionControl<?>, CheckBox> {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@InitializerReference(SliderPropertiesInitializer.class)
-public @interface SliderProperties {
+	private final IStringProcessor processor;
 
-	int min();
-	
-	int max();
-	
-	int majorTicks() default 0;
-	
-	int minorTicks() default 0;
-	
-	boolean labels() default true;
-	
-	boolean ticks() default true;
-	
+	public CaptionInitializer(IStringProcessor processor) {
+		this.processor = processor;
+	}
+
+	@Override
+	public void init(ICaptionControl<?> control, CheckBox annotation, Object data, IFieldReflection field) {
+		String caption = annotation.caption();
+		control.setCaption(processor == null ? caption : processor.getString(caption));
+	}
+
 }

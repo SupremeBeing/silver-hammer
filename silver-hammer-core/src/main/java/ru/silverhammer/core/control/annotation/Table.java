@@ -30,10 +30,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.initializer.CaptionsInitializer;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface Table {}
+@InitializerReference(CaptionsInitializer.class)
+public @interface Table {
+
+    String[] captions() default {};
+
+    Class<?> annotationCaptions() default Void.class;
+
+}

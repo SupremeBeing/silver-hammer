@@ -36,7 +36,6 @@ import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
-import ru.silverhammer.core.initializer.annotation.SliderProperties;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
 import ru.silverhammer.swing.converter.annotation.IntegerToColor;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
@@ -76,10 +75,9 @@ public class FontSettings {
 	@FontFamilyItems
 	private String family = "Tahoma";
 
-	@Slider
+	@Slider(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	@GroupId("font")
 	@Caption(value = "Size:", verticalAlignment = VerticalAlignment.Top)
-	@SliderProperties(min = 1, max = 72, minorTicks = 10, majorTicks = 25, ticks = false)
 	private int size = 12;
 
 	@ButtonGroup

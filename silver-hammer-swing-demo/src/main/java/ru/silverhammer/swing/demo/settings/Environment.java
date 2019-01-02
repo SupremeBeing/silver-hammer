@@ -72,9 +72,9 @@ public class Environment {
 
 	}
 	
-	@Table
+	@Table(captions = {"Key", "Value"})
 	@GroupId("env")
-	@ControlProperties(value = ValueType.Content, visibleRows = 10, captions = {"Key", "Value"})
+	@ControlProperties(value = ValueType.Content, visibleRows = 10)
 	@MapToList(LinkedHashMap.class)
 	@ButtonBarAddon(value = {
 			@Button(caption = "Add", icon = "/add.png", methodName = "addPressed"), 

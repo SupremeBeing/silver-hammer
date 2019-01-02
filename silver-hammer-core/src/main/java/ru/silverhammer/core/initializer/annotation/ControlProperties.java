@@ -44,8 +44,6 @@ public @interface ControlProperties {
 	
 	boolean editable() default true;
 
-	String[] captions() default {};
-
 	int visibleRows() default 0;
 	
 	SelectionType selection() default SelectionType.Single;

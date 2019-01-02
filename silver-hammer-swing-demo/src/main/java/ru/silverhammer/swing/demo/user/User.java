@@ -40,7 +40,6 @@ import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
-import ru.silverhammer.core.initializer.annotation.AnnotatedCaptions;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.StringItems;
@@ -141,9 +140,8 @@ public class User {
 		}
 	};
 
-	@Table
+	@Table(annotationCaptions = UserGroup.class)
 	@GroupId("groups")
-	@AnnotatedCaptions(UserGroup.class)
 	@ControlProperties(value = ValueType.Content, visibleRows = 3)
 	@ValueToItems(UserGroup.class)
 	@ArrayToList(UserGroup.class)
@@ -152,8 +150,7 @@ public class User {
 			new UserGroup("Remote user", "Remote access is granted for this group", Type.RemoteAccess)
 	};
 	
-	@CheckBox
-	@ControlProperties(captions = "user.visibility")
+	@CheckBox(caption = "user.visibility")
 	private boolean isPublic = true;
 	
 	@GeneratableField

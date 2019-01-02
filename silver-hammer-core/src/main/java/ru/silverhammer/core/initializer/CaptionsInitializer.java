@@ -25,19 +25,37 @@
  */
 package ru.silverhammer.core.initializer;
 
-import ru.silverhammer.core.control.ISliderControl;
-import ru.silverhammer.core.initializer.annotation.SliderProperties;
+import ru.silverhammer.core.Caption;
+import ru.silverhammer.core.control.IMultiCaptionControl;
+import ru.silverhammer.core.control.annotation.Table;
+import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class SliderPropertiesInitializer implements IInitializer<ISliderControl, SliderProperties> {
+public class CaptionsInitializer implements IInitializer<IMultiCaptionControl<?>, Table> {
+
+	private final IStringProcessor processor;
+	private final IControlResolver controlResolver;
+
+	public CaptionsInitializer(IStringProcessor processor, IControlResolver controlResolver) {
+		this.processor = processor;
+		this.controlResolver = controlResolver;
+	}
 
 	@Override
-	public void init(ISliderControl control, SliderProperties annotation, Object data, IFieldReflection field) {
-		control.setMinimum(annotation.min());
-		control.setMaximum(annotation.max());
-		control.setMajorTicks(annotation.majorTicks());
-		control.setMinorTicks(annotation.minorTicks());
-		control.setTicks(annotation.ticks());
-		control.setLabels(annotation.labels());
+	public void init(IMultiCaptionControl<?> control, Table annotation, Object data, IFieldReflection field) {
+		if (annotation.annotationCaptions() != Void.class) {
+			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
+				if (controlResolver.hasControlAnnotation(fr)) {
+					Caption c = fr.getAnnotation(Caption.class);
+					control.addCaption(c == null ? fr.getName() : processor.getString(c.value()));
+				}
+			}
+		} else if (annotation.captions().length > 0) {
+			for (String caption : annotation.captions()) {
+				control.addCaption(processor == null ? caption : processor.getString(caption));
+			}
+		}
 	}
 }

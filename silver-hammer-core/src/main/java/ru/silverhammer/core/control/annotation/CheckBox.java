@@ -30,10 +30,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.initializer.CaptionInitializer;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface CheckBox {}
+@InitializerReference(CaptionInitializer.class)
+public @interface CheckBox {
+
+    String caption();
+
+}

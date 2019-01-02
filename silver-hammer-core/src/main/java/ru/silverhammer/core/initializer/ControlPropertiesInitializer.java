@@ -25,38 +25,21 @@
  */
 package ru.silverhammer.core.initializer;
 
-import ru.silverhammer.core.control.ICaptionControl;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IEditableControl;
-import ru.silverhammer.core.control.IMultiCaptionControl;
 import ru.silverhammer.core.control.IRowsControl;
 import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValueTypeControl;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
-import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlPropertiesInitializer implements IInitializer<IControl<?>, ControlProperties> {
-
-	private final IStringProcessor processor;
-
-	public ControlPropertiesInitializer(IStringProcessor processor) {
-		this.processor = processor;
-	}
 
 	@Override
 	public void init(IControl<?> control, ControlProperties annotation, Object data, IFieldReflection field) {
 		control.setEnabled(!annotation.readOnly());
 		if (control instanceof IEditableControl) {
 			((IEditableControl<?>) control).setEditable(annotation.editable());
-		}
-		if (control instanceof ICaptionControl && annotation.captions().length > 0) {
-			String caption = annotation.captions()[0];
-			((ICaptionControl<?>) control).setCaption(processor == null ? caption : processor.getString(caption));
-		} else if (control instanceof IMultiCaptionControl && annotation.captions().length > 0) {
-			for (String caption : annotation.captions()) {
-				((IMultiCaptionControl<?>) control).addCaption(processor == null ? caption : processor.getString(caption));
-			}
 		}
 		if (control instanceof IRowsControl && annotation.visibleRows() > 0) {
 			((IRowsControl<?>) control).setVisibleRowCount(annotation.visibleRows());

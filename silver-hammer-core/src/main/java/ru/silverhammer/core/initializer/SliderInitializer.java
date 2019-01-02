@@ -23,21 +23,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.initializer.annotation;
+package ru.silverhammer.core.initializer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ru.silverhammer.core.control.ISliderControl;
+import ru.silverhammer.core.control.annotation.Slider;
+import ru.silverhammer.reflection.IFieldReflection;
 
-import ru.silverhammer.core.InitializerReference;
-import ru.silverhammer.core.initializer.AnnotatedCaptionsInitializer;
+public class SliderInitializer implements IInitializer<ISliderControl, Slider> {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@InitializerReference(AnnotatedCaptionsInitializer.class)
-public @interface AnnotatedCaptions {
-	
-	Class<?> value();
-
+	@Override
+	public void init(ISliderControl control, Slider annotation, Object data, IFieldReflection field) {
+		control.setMinimum(annotation.min());
+		control.setMaximum(annotation.max());
+		control.setMajorTicks(annotation.majorTicks());
+		control.setMinorTicks(annotation.minorTicks());
+		control.setTicks(annotation.ticks());
+		control.setLabels(annotation.labels());
+	}
 }
