@@ -40,7 +40,6 @@ public class ButtonGroupControl
 
 	private final List<Object> data = new ArrayList<>(); 
 	private final Map<Object, AbstractButton> buttons = new HashMap<>();
-	private final ButtonGroup group = new ButtonGroup();
 	private SelectionType selectionType = SelectionType.Single; // TODO: support interval selection limitations
 
 	public ButtonGroupControl() {
@@ -125,9 +124,16 @@ public class ButtonGroupControl
 		button.setText(item.toString());
 		button.addActionListener(l -> fireValueChanged());
 		if (selectionType == SelectionType.Single) {
-			group.add(button);
+			button.addActionListener(l -> clearSelection(button));
 		}
 		return button;
+	}
+
+	private void clearSelection(AbstractButton button) {
+		for (Object item : data) {
+			AbstractButton btn = getButton(item);
+			btn.setSelected(Objects.equals(button, btn));
+		}
 	}
 	
 	private AbstractButton getButton(Object item) {
@@ -190,11 +196,6 @@ public class ButtonGroupControl
 
 	@Override
 	public void clearItems() {
-		if (selectionType == SelectionType.Single) {
-			for (Object item : data) {
-				group.remove(getButton(item));
-			}
-		}
 		getComponent().removeAll();
 		buttons.clear();
 		data.clear();
@@ -213,9 +214,6 @@ public class ButtonGroupControl
 
 	@Override
 	public void removeItem(Object item) {
-		if (selectionType == SelectionType.Single) {
-			group.remove(getButton(item));
-		}
 		AbstractButton button = getButton(item);
 		if (button != null) {
 			getComponent().remove(button);
@@ -251,12 +249,7 @@ public class ButtonGroupControl
 		return data.get(i);
 	}
 	
-	protected void rebuild() {
-		if (selectionType == SelectionType.Single) {
-			for (Object item : data) {
-				group.remove(getButton(item));
-			}
-		}
+	private void rebuild() {
 		getComponent().removeAll();
 		for (Object o : data) {
 			AbstractButton button = createButton(o);
