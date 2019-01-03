@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
 
-public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
+public class ColorChooserControl extends ValidatableControl<Integer, JPanel> {
 	
 	private static final long serialVersionUID = -3000952254597666980L;
 
@@ -158,20 +158,19 @@ public class ColorChooserControl extends ValidatableControl<Color, JPanel> {
 	}
 	
 	@Override
-	public Color getValue() {
-		return value;
+	public Integer getValue() {
+		return value.getRGB();
 	}
 
 	@Override
-	public void setValue(Color value) {
-		if (value == null) {
-			value = Color.BLACK;
-		}
-		this.value = value;
-		red.setValue(value.getRed());
-		green.setValue(value.getGreen());
-		blue.setValue(value.getBlue());
-		alpha.setValue(value.getAlpha());
+	public void setValue(Integer value) {
+		Color tmp = value == null ? Color.BLACK : new Color(value, true);
+		red.setValue(tmp.getRed());
+		green.setValue(tmp.getGreen());
+		blue.setValue(tmp.getBlue());
+		alpha.setValue(tmp.getAlpha());
+		this.value = tmp;
+		fireValueChanged();
 	}
 	
 	@Override

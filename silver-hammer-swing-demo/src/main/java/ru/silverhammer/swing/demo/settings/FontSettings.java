@@ -37,7 +37,6 @@ import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
-import ru.silverhammer.swing.converter.annotation.IntegerToColor;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
 
 public class FontSettings {
@@ -91,6 +90,5 @@ public class FontSettings {
 	@ColorChooser
 	@GroupId("font")
 	@Caption(value = "Color:", location = Location.Top)
-	@IntegerToColor
 	private int color = Color.GREEN.darker().darker().getRGB();
 }
