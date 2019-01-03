@@ -31,9 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.Location;
+import ru.silverhammer.core.*;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValidatableControl;
@@ -79,7 +77,7 @@ public class Environment {
 	@ButtonBarAddon(value = {
 			@Button(caption = "Add", icon = "/add.png", pressedMethod = "addPressed"),
 			@Button(caption = "Delete", icon = "/delete.png", pressedMethod = "deletePressed", enabledMethod = "updateDelete")
-	}, location = Location.Right)
+	}, location = Location.Right, verticalAlignment = VerticalAlignment.Top)
 	private Map<String, Object> properties;
 	
 	@Tree

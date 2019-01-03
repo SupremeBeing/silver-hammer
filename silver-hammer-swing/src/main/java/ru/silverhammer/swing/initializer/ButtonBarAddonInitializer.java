@@ -25,9 +25,7 @@
  */
 package ru.silverhammer.swing.initializer;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -35,7 +33,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import ru.silverhammer.core.HorizontalAlignment;
 import ru.silverhammer.core.Location;
+import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
@@ -61,10 +61,11 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 		JPanel stub = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
-			panel.setLayout(new GridLayout(1, 0, 5, 0));
+			panel.setLayout(new GridBagLayout());
 		} else {
-			panel.setLayout(new GridLayout(0, 1, 0, 5));
+			panel.setLayout(new GridBagLayout());
 		}
+		int i = 0;
 		for (Button b : annotation.value()) {
 			String caption = processor.getString(b.caption());
 			JButton button = new JButton();
@@ -90,24 +91,66 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 					button.setEnabled(enabled);
 				});
 			}
-			panel.add(button);
+			if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
+				panel.add(button, createHorizontalConstraints(i++));
+			} else {
+				panel.add(button, createVerticalConstraints(i++));
+			}
 		}
+
+		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
+			if (annotation.horizontalAlignment() == HorizontalAlignment.Left) {
+				stub.add(panel, BorderLayout.WEST);
+			} else if (annotation.horizontalAlignment() == HorizontalAlignment.Center) {
+				stub.add(panel, BorderLayout.CENTER);
+			} else if (annotation.horizontalAlignment() == HorizontalAlignment.Right) {
+				stub.add(panel, BorderLayout.EAST);
+			}
+		} else {
+			if (annotation.verticalAlignment() == VerticalAlignment.Top) {
+				stub.add(panel, BorderLayout.NORTH);
+			} else if (annotation.verticalAlignment() == VerticalAlignment.Center) {
+				stub.add(panel, BorderLayout.CENTER);
+			} else if (annotation.verticalAlignment() == VerticalAlignment.Bottom) {
+				stub.add(panel, BorderLayout.SOUTH);
+			}
+		}
+
 		if (annotation.location() == Location.Bottom) {
-			stub.add(panel, BorderLayout.EAST);
 			panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 			control.add(stub, BorderLayout.SOUTH);
 		} else if (annotation.location() == Location.Top) {
-			stub.add(panel, BorderLayout.EAST);
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 			control.add(stub, BorderLayout.NORTH);
 		} else if (annotation.location() == Location.Left) {
-			stub.add(panel, BorderLayout.NORTH);
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 			control.add(stub, BorderLayout.WEST);
 		} else if (annotation.location() == Location.Right) {
-			stub.add(panel, BorderLayout.NORTH);
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 			control.add(stub, BorderLayout.EAST);
 		}
 	}
+
+	private GridBagConstraints createVerticalConstraints(int y) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = GridBagConstraints.RELATIVE;
+		gbc.gridy = y;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(y == 0 ? 0 : 5, 0, 0, 0);
+		gbc.gridwidth = 1;
+		gbc.weightx = 1;
+		return gbc;
+	}
+
+	private GridBagConstraints createHorizontalConstraints(int x) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = x;
+		gbc.gridy = GridBagConstraints.RELATIVE;
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.insets = new Insets(0, x == 0 ? 0 : 5, 0, 0);
+		gbc.gridheight = 1;
+		gbc.weighty = 1;
+		return gbc;
+	}
+
 }
