@@ -67,7 +67,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		for (int i = 0; i < fields.size(); i++) {
 			IFieldReflection field = fields.get(i);
 			Object value = field.getValue(o);
-			item[i] = annotation.annotated() ? fieldProcessor.getControlValue(value, field) : value;
+			item[i] = annotation.annotatedOnly() ? fieldProcessor.getControlValue(value, field) : value;
 		}
 		return item;
 	}
@@ -97,7 +97,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		for (int i = 0; i < fields.size(); i++) {
 			IFieldReflection field = fields.get(i);
 			Object value = item[i];
-			if (annotation.annotated()) {
+			if (annotation.annotatedOnly()) {
 				value = fieldProcessor.getFieldValue(value, field);
 			}
 			field.setValue(result, value);
@@ -109,7 +109,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		List<IFieldReflection> result = new ArrayList<>();
 		ClassReflection<?> reflection = new ClassReflection<>(cls);
 		for (IFieldReflection fr : reflection.getFields()) {
-			if (!annotation.annotated() || controlResolver.hasControlAnnotation(fr)) {
+			if (!annotation.annotatedOnly() || controlResolver.hasControlAnnotation(fr)) {
 				result.add(fr);
 			}
 		}

@@ -41,8 +41,6 @@ public interface IMultiCaptionControl<Value> extends IControl<Value> {
 	
 	String getCaption(int i);
 
-	String[] getCaptions();
-	
 	void clearCaptions();
 	
 }

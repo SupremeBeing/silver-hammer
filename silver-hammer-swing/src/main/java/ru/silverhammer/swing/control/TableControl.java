@@ -90,14 +90,11 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 			@Override
 			protected void search(String search) {
 				for (int i = 0; i < data.size(); i++) {
-					Object item = data.get(i);
-					if (item != null) {
-						for (int j = 0; j < captions.size(); j++) {
-							Object val = getModel().getValueAt(i, j);
-							if (val != null && val.toString().contains(search)) {
-								getComponent().setRowSelectionInterval(i, i);
-								break;
-							}
+					for (int j = 0; j < captions.size(); j++) {
+						Object val = getModel().getValueAt(i, j);
+						if (val != null && val.toString().contains(search)) {
+							getComponent().setRowSelectionInterval(i, i);
+							break;
 						}
 					}
 				}
@@ -254,11 +251,6 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		if (captions.remove(caption)) {
 			getModel().fireTableStructureChanged();
 		}
-	}
-
-	@Override
-	public String[] getCaptions() {
-		return captions.toArray(new String[captions.size()]);
 	}
 
 	@Override
