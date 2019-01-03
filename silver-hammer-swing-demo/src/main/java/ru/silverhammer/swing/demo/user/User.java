@@ -57,7 +57,7 @@ import ru.silverhammer.core.validator.annotation.NotNullable;
 import ru.silverhammer.core.validator.annotation.StringFormat;
 import ru.silverhammer.swing.control.TextControl;
 import ru.silverhammer.swing.demo.user.UserGroup.Type;
-import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
+import ru.silverhammer.swing.initializer.annotation.FileChooser;
 
 @Category(caption = "user.tab", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {
 		@Group("user"),
@@ -112,7 +112,7 @@ public class User {
 	@Text
 	@GroupId("user")
 	@Caption("user.avatar")
-	@FileChooserAddon(approveCaption = "Select image", filters = {"JPG | jpg, jpeg", "PNG | png"})
+	@FileChooser(approveCaption = "Select image", filters = {"JPG | jpg, jpeg", "PNG | png"})
 	@ControlProperties(readOnly = true)
 	@FileExists(message = "File doesn't exist")
 	@FileToString

@@ -34,12 +34,12 @@ import ru.silverhammer.core.HorizontalAlignment;
 import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.swing.initializer.ButtonBarAddonInitializer;
+import ru.silverhammer.swing.initializer.ButtonBarInitializer;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@InitializerReference(ButtonBarAddonInitializer.class)
-public @interface ButtonBarAddon {
+@InitializerReference(ButtonBarInitializer.class)
+public @interface ButtonBar {
 
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)

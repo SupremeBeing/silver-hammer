@@ -43,21 +43,21 @@ import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.swing.control.Control;
-import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
-import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
+import ru.silverhammer.swing.initializer.annotation.ButtonBar;
+import ru.silverhammer.swing.initializer.annotation.ButtonBar.Button;
 
-public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, ButtonBarAddon> {
+public class ButtonBarInitializer implements IInitializer<Control<?, ?>, ButtonBar> {
 
 	private final IStringProcessor processor;
 	private final IInjector injector;
 	
-	public ButtonBarAddonInitializer(IStringProcessor processor, IInjector injector) {
+	public ButtonBarInitializer(IStringProcessor processor, IInjector injector) {
 		this.processor = processor;
 		this.injector = injector;
 	}
 
 	@Override
-	public void init(Control<?, ?> control, ButtonBarAddon annotation, Object data, IFieldReflection field) {
+	public void init(Control<?, ?> control, ButtonBar annotation, Object data, IFieldReflection field) {
 		JPanel stub = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {

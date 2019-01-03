@@ -31,12 +31,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.InitializerReference;
-import ru.silverhammer.swing.initializer.FileChooserAddonInitializer;
+import ru.silverhammer.swing.initializer.FileChooserInitializer;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@InitializerReference(FileChooserAddonInitializer.class)
-public @interface FileChooserAddon {
+@InitializerReference(FileChooserInitializer.class)
+public @interface FileChooser {
 
 	String[] filters() default {};
 	

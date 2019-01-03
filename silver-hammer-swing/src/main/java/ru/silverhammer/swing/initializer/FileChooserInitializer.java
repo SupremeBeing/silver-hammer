@@ -31,32 +31,31 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.swing.control.Control;
-import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
+import ru.silverhammer.swing.initializer.annotation.FileChooser;
 
-public class FileChooserAddonInitializer implements IInitializer<Control<String, JTextField>, FileChooserAddon> {
+public class FileChooserInitializer implements IInitializer<Control<String, ?>, FileChooser> {
 
 	private final IStringProcessor processor;
 
-	public FileChooserAddonInitializer(IStringProcessor processor) {
+	public FileChooserInitializer(IStringProcessor processor) {
 		this.processor = processor;
 	}
 
 	@Override
-	public void init(Control<String, JTextField> control, FileChooserAddon annotation, Object data, IFieldReflection field) {
+	public void init(Control<String, ?> control, FileChooser annotation, Object data, IFieldReflection field) {
 		JButton button = new JButton(processor.getString(annotation.buttonCaption()));
 		button.setMargin(new Insets(0, 5, 0, 5));
 		control.add(button, BorderLayout.EAST);
 		button.addActionListener(e -> showDialog(annotation, control));
 	}
 
-	private void showDialog(FileChooserAddon annotation, Control<String, JTextField> control) {
+	private void showDialog(FileChooser annotation, Control<String, ?> control) {
 		JFileChooser dlg = new JFileChooser();
 		dlg.setFileSelectionMode(annotation.allowDirectories() ? JFileChooser.FILES_AND_DIRECTORIES : JFileChooser.FILES_ONLY);
 		dlg.setDragEnabled(false);

@@ -49,8 +49,8 @@ import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.swing.dialog.GenerationDialog;
-import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon;
-import ru.silverhammer.swing.initializer.annotation.ButtonBarAddon.Button;
+import ru.silverhammer.swing.initializer.annotation.ButtonBar;
+import ru.silverhammer.swing.initializer.annotation.ButtonBar.Button;
 
 @Category(caption = "Environment", mnemonic = 'e', groups = {
 		@Group(value = "env")
@@ -74,7 +74,7 @@ public class Environment {
 	@GroupId("env")
 	@ControlProperties(value = ValueType.Content, visibleRows = 10)
 	@MapToList(LinkedHashMap.class)
-	@ButtonBarAddon(value = {
+	@ButtonBar(value = {
 			@Button(caption = "Add", icon = "/add.png", pressedMethod = "addPressed"),
 			@Button(caption = "Delete", icon = "/delete.png", pressedMethod = "deletePressed", enabledMethod = "updateDelete")
 	}, location = Location.Right, verticalAlignment = VerticalAlignment.Top)
