@@ -40,9 +40,11 @@ import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
+import ru.silverhammer.core.initializer.annotation.ControlEvent;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.StringItems;
+import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
@@ -53,6 +55,7 @@ import ru.silverhammer.core.validator.annotation.MinDate;
 import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.validator.annotation.NotNullable;
 import ru.silverhammer.core.validator.annotation.StringFormat;
+import ru.silverhammer.swing.control.TextControl;
 import ru.silverhammer.swing.demo.user.UserGroup.Type;
 import ru.silverhammer.swing.initializer.annotation.FileChooserAddon;
 
@@ -77,6 +80,7 @@ public class User {
 	private char[] password;
 
 	@Text
+	@ControlEvent("setEmail")
 	@GroupId("user")
 	@Caption("user.email")
 	@StringFormat(format = EMAIL, message = "Invalid e-mail")
@@ -159,4 +163,15 @@ public class User {
 			new Achievement("Failed to close the application ten times in a row."),
 			new Achievement("Made a mistake in a word \"pneumonoultramicroscopicsilicovolcanoconiosis\".")
 	};
+
+	@SuppressWarnings("unused")
+	private void setEmail(UiMetadata metadata) {
+		TextControl emailControl = metadata.findControl(this, "email");
+		TextControl nameControl = metadata.findControl(this, "name");
+		String email = emailControl.getValue();
+		String name = nameControl.getValue();
+		if (email != null && (name == null || name.length() == 0 || email.startsWith(name))) {
+			nameControl.setValue(email);
+		}
+	}
 }
