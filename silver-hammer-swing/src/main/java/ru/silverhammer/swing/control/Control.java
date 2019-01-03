@@ -67,7 +67,7 @@ public abstract class Control<Value, C extends Component> extends JPanel impleme
 	private final boolean scrollable;
 	private final Collection<IControlListener> listeners = new ArrayList<>();
 	
-	public Control(boolean scrollable) {
+	protected Control(boolean scrollable) {
 		this.component = createComponent();
 		this.scrollable = scrollable;
 		setLayout(new BorderLayout());
@@ -100,7 +100,7 @@ public abstract class Control<Value, C extends Component> extends JPanel impleme
 
 	protected abstract C createComponent();
 	
-	public C getComponent() {
+	protected C getComponent() {
 		return component;
 	}
 	

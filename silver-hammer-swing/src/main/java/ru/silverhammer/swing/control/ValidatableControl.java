@@ -38,7 +38,7 @@ public abstract class ValidatableControl<Value, C extends JComponent> extends Co
 	private Color normalBackground;
 	private Color invalidBackground = Color.RED;
 
-	public ValidatableControl(boolean scrollable) {
+	protected ValidatableControl(boolean scrollable) {
 		super(scrollable);
 		normalBackground = getComponent().getBackground();
 	}
