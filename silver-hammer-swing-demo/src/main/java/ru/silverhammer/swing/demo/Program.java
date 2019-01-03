@@ -34,7 +34,7 @@ import ru.silverhammer.swing.dialog.GenerationDialog;
 
 public class Program {
 
-	public static void main(String... args) throws Exception {
+	public static void main(String... args) {
 		Environment env = new Environment();
 		Settings settings = new Settings();
 		User user = new User();

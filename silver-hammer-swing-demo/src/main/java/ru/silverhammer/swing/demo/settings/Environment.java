@@ -77,8 +77,8 @@ public class Environment {
 	@ControlProperties(value = ValueType.Content, visibleRows = 10)
 	@MapToList(LinkedHashMap.class)
 	@ButtonBarAddon(value = {
-			@Button(caption = "Add", icon = "/add.png", methodName = "addPressed"), 
-			@Button(caption = "Delete", icon = "/delete.png", methodName = "deletePressed") 
+			@Button(caption = "Add", icon = "/add.png", pressedMethod = "addPressed"),
+			@Button(caption = "Delete", icon = "/delete.png", pressedMethod = "deletePressed", enabledMethod = "updateDelete")
 	}, location = Location.Right)
 	private Map<String, Object> properties;
 	
@@ -88,7 +88,8 @@ public class Environment {
 	@ControlProperties(visibleRows = 10)
 	@FileTreeItems(".")
 	private File root;
-	
+
+	@SuppressWarnings("unused")
 	@InitializerMethod
 	private void initializeTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
@@ -97,9 +98,10 @@ public class Environment {
 		table.addItem(new Object[] {"timeout.interval", 100});
 		table.addItem(new Object[] {"Current date", new Date()});
 	}
-	
+
+	@SuppressWarnings("unused")
 	@ValidatorMethod
-	private boolean validateTable(UiMetadata metadata) {
+	private void validateTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
 		if (table instanceof IValidatableControl) {
 			IValidatableControl<?> control = (IValidatableControl<?>) table;
@@ -107,7 +109,6 @@ public class Environment {
 				control.setValidationMessage("Missing required property \"required.key\"");
 			}
 		}
-		return true;
 	}
 	
 	private boolean hasProperty(ICollectionControl<Object[], Object> table, String key) {
@@ -140,5 +141,14 @@ public class Environment {
 		if (sel != null) {
 			table.removeItem(sel);
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private boolean updateDelete(UiMetadata metadata) {
+		if (metadata != null) {
+			ISelectionControl<Object[], Object> selection = metadata.findControl(this, "properties");
+			return selection.getSingleSelection() != null;
+		}
+		return false;
 	}
 }

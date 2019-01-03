@@ -49,11 +49,7 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 	public ListControl() {
 		super(true);
 		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getComponent().getSelectionModel().addListSelectionListener(e -> {
-			if (valueType == ValueType.Selection) {
-				fireValueChanged();
-			}
-		});
+		getComponent().getSelectionModel().addListSelectionListener(e -> fireValueChanged());
 		getComponent().addKeyListener(new SearchAdapter() {
 			@Override
 			protected void search(String search) {

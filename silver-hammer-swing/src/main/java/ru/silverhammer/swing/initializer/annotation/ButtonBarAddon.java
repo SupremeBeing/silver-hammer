@@ -47,7 +47,9 @@ public @interface ButtonBarAddon {
 
 		String icon() default "";
 
-		String methodName();
+		String pressedMethod();
+
+		String enabledMethod() default "";
 	}
 	
 	Button[] value();

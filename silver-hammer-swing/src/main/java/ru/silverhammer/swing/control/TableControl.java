@@ -85,11 +85,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 	public TableControl() {
 		super(true);
 		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getComponent().getSelectionModel().addListSelectionListener(e -> {
-			if (valueType == ValueType.Selection) {
-				fireValueChanged();
-			}
-		});
+		getComponent().getSelectionModel().addListSelectionListener(e -> fireValueChanged());
 		getComponent().addKeyListener(new SearchAdapter() {
 			@Override
 			protected void search(String search) {
@@ -150,6 +146,7 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 					}
 				}
 			}
+			fireValueChanged();
 		} else if (getValueType() == ValueType.Content) {
 			data.clear();
 			if (value instanceof Collection) {

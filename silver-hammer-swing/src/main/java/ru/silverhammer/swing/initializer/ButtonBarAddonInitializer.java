@@ -79,9 +79,17 @@ public class ButtonBarAddonInitializer implements IInitializer<Control<?, ?>, Bu
 				button.setText(caption);
 			}
 			button.addActionListener(e -> {
-				IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.methodName());
+				IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.pressedMethod());
 				injector.invoke(data, method);
 			});
+			if (b.enabledMethod().length() > 0) {
+				control.addControlListener(c -> {
+					IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.enabledMethod());
+					Object result = injector.invoke(data, method);
+					boolean enabled = result instanceof Boolean ? (Boolean) result : true;
+					button.setEnabled(enabled);
+				});
+			}
 			panel.add(button);
 		}
 		if (annotation.location() == Location.Bottom) {

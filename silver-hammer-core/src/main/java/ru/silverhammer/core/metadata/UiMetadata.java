@@ -211,7 +211,7 @@ public class UiMetadata {
 	}
 
 	public boolean isValid() {
-		return findControlAttributes(ca -> !isControlValid(ca.getControl())) == null && validateMethods();		
+		return findControlAttributes(ca -> !isControlValid(ca.getControl())) == null;
 	}
 	
 	private boolean isControlValid(IControl<?> control) {
@@ -244,15 +244,10 @@ public class UiMetadata {
 		}
 	}
 	
-	private boolean validateMethods() {
-		boolean result = true;
+	private void validateMethods() {
 		for (MethodAttributes ma : getValidators()) {
-			Object valid = injector.invoke(ma.getData(), ma.getMethodReflection());
-			if (valid instanceof Boolean) {
-				result &= (Boolean) valid;
-			}
+			injector.invoke(ma.getData(), ma.getMethodReflection());
 		}
-		return result;
 	}
 	
 	private void initializeMethods() {
