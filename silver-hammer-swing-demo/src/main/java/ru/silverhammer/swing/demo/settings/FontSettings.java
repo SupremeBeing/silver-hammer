@@ -80,7 +80,7 @@ public class FontSettings {
 	@ButtonGroup
 	@GroupId("font")
 	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
-	@EnumerationItems(Style.class)
+	@EnumerationItems
 	@ArrayToList(Style.class)
 	private Style[] style = {Style.Bold, Style.Strikeout};
 		

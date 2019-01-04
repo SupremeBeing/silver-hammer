@@ -27,13 +27,30 @@ package ru.silverhammer.core.initializer;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
+import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
+
+import java.util.Collection;
+import java.util.List;
 
 public class EnumerationItemsInitializer implements IInitializer<ICollectionControl<Object, ?, ?>, EnumerationItems> {
 
 	@Override
 	public void init(ICollectionControl<Object, ?, ?> control, EnumerationItems annotation, Object data, IFieldReflection field) {
-		Class<?> cl = annotation.value() == Void.class ? field.getType() : annotation.value();
+		Class<?> cl;
+		if (annotation.value() == Void.class) {
+			Class<?> fieldClass = field.getType();
+			if (fieldClass.isArray()) {
+				cl = fieldClass.getComponentType();
+			} else if (Collection.class.isAssignableFrom(fieldClass)) {
+				List<ClassReflection<?>> cls = field.getGenericClasses();
+				cl = cls.isEmpty() ? Object.class : cls.get(0).getType();
+			} else {
+				cl = fieldClass;
+			}
+		} else {
+			cl = annotation.value();
+		}
 		for (Object e : cl.getEnumConstants()) {
 			control.addItem(e);
 		}
