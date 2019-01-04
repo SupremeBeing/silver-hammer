@@ -43,10 +43,9 @@ import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.reflection.IReflection;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
-public class ControlFieldProcessor implements IProcessor {
+public class ControlFieldProcessor implements IProcessor<IFieldReflection, Annotation> {
 
 	private final IStringProcessor stringProcessor;
 	private final IInjector injector;
@@ -61,15 +60,12 @@ public class ControlFieldProcessor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
+	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, Annotation annotation) {
 		Class<? extends IControl<?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
 			IControl<?> control = injector.instantiate(controlClass);
-			if (reflection instanceof IFieldReflection) {
-				IFieldReflection field = (IFieldReflection) reflection;
-				addControlAttributes(metadata, field.getAnnotation(GroupId.class), createControlAttributes(control, data, field));
-				initializeControl(control, data, field);
-			}
+			addControlAttributes(metadata, reflection.getAnnotation(GroupId.class), createControlAttributes(control, data, reflection));
+			initializeControl(control, data, reflection);
 		}
 	}
 

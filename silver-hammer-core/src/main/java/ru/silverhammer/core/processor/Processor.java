@@ -34,7 +34,7 @@ import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.*;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
-public class Processor implements IProcessor {
+public class Processor<R extends IReflection, A extends Annotation> implements IProcessor<R, A> {
 
 	private final IInjector injector;
 	
@@ -43,7 +43,7 @@ public class Processor implements IProcessor {
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation unused) {
+	public void process(UiMetadata metadata, Object data, R reflection, A unused) {
 		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
 		for (ClassReflection<?> cl : cr.getHierarchy()) {
 			processAnnotations(metadata, data, cl);
@@ -55,7 +55,8 @@ public class Processor implements IProcessor {
 			processAnnotations(metadata, data, field);
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private void processAnnotations(UiMetadata metadata, Object data, IReflection reflection) {
 		List<MarkedAnnotation<ProcessorReference>> marked = reflection.getMarkedAnnotations(ProcessorReference.class);
 		for (MarkedAnnotation<ProcessorReference> ma : marked) {

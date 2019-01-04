@@ -25,38 +25,34 @@
  */
 package ru.silverhammer.core.processor;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.reflection.IReflection;
 
-public class GeneratableFieldProcessor extends Processor {
+public class GeneratableFieldProcessor extends Processor<IFieldReflection, GeneratableField> {
 
 	public GeneratableFieldProcessor(IInjector injector) {
 		super(injector);
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
-		if (reflection instanceof IFieldReflection) {
-			IFieldReflection field = (IFieldReflection) reflection;
-			Object val = field.getValue(data);
-			if (field.getType().isArray()) {
-				int length = Array.getLength(val);
-				for (int i = 0; i < length; i++) {
-					super.process(metadata, Array.get(val, i), field, annotation);
-				}
-			} else if (Collection.class.isAssignableFrom(field.getType())) {
-				for (Object o : (Collection<?>) val) {
-					super.process(metadata, o, field, annotation);
-				}
-			} else {
-				super.process(metadata, val, field, annotation);
+	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, GeneratableField annotation) {
+		Object val = reflection.getValue(data);
+		if (reflection.getType().isArray()) {
+			int length = Array.getLength(val);
+			for (int i = 0; i < length; i++) {
+				super.process(metadata, Array.get(val, i), reflection, annotation);
 			}
+		} else if (Collection.class.isAssignableFrom(reflection.getType())) {
+			for (Object o : (Collection<?>) val) {
+				super.process(metadata, o, reflection, annotation);
+			}
+		} else {
+			super.process(metadata, val, reflection, annotation);
 		}
 	}
 }

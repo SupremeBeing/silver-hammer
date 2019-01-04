@@ -36,6 +36,6 @@ import ru.silverhammer.core.processor.IProcessor;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProcessorReference {
 	
-	Class<? extends IProcessor> value();
+	Class<? extends IProcessor<?, ?>> value();
 
 }

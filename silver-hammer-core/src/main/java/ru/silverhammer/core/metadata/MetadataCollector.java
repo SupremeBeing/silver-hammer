@@ -51,7 +51,7 @@ public final class MetadataCollector {
 	public UiMetadata collect(Object... data) {
 		IInjector injector = new Injector();
 		FieldProcessor fieldProcessor = new FieldProcessor(injector);
-		IProcessor processor = new Processor(injector);
+		IProcessor<?, ?> processor = new Processor<>(injector);
 
 		injector.bind(IStringProcessor.class, stringProcessor);
 		injector.bind(IControlResolver.class, controlResolver);

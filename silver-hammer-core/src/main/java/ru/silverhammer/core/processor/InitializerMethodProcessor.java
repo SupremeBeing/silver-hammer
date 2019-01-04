@@ -25,19 +25,15 @@
  */
 package ru.silverhammer.core.processor;
 
-import java.lang.annotation.Annotation;
-
 import ru.silverhammer.core.metadata.MethodAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.reflection.IMethodReflection;
-import ru.silverhammer.reflection.IReflection;
 
-public class InitializerMethodProcessor implements IProcessor {
+public class InitializerMethodProcessor implements IProcessor<IMethodReflection, InitializerMethod> {
 
 	@Override
-	public void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation) {
-		if (reflection instanceof IMethodReflection) {
-			metadata.addInitializer(new MethodAttributes(data, (IMethodReflection) reflection));
-		}
+	public void process(UiMetadata metadata, Object data, IMethodReflection reflection, InitializerMethod annotation) {
+		metadata.addInitializer(new MethodAttributes(data, reflection));
 	}
 }

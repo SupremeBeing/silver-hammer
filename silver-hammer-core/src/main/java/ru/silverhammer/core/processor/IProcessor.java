@@ -30,8 +30,8 @@ import java.lang.annotation.Annotation;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.reflection.IReflection;
 
-public interface IProcessor {
+public interface IProcessor<R extends IReflection, A extends Annotation> {
 
-	void process(UiMetadata metadata, Object data, IReflection reflection, Annotation annotation);
+	void process(UiMetadata metadata, Object data, R reflection, A annotation);
 	
 }
