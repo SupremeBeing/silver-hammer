@@ -33,6 +33,7 @@ import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.IFieldReflection;
 
+// TODO: consider ignoring structure information or creating separate structure for each instance
 public class GeneratableFieldProcessor extends Processor<IFieldReflection, GeneratableField> {
 
 	public GeneratableFieldProcessor(IInjector injector) {

@@ -38,6 +38,7 @@ import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.List;
 
+// TODO: disable internal first key navigation
 public class ListControl extends ValidatableControl<Object, List, JList<Object>>
 	implements ICollectionControl<Object, Object, List> {
 

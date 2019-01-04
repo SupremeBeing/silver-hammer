@@ -48,6 +48,7 @@ public final class MetadataCollector {
 		this.stringProcessor = stringProcessor;
 	}
 
+	// TODO: consider adding error log
 	public UiMetadata collect(Object... data) {
 		IInjector injector = new Injector();
 		FieldProcessor fieldProcessor = new FieldProcessor(injector);

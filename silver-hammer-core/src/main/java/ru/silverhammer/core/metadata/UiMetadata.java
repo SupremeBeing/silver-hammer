@@ -235,6 +235,7 @@ public class UiMetadata {
 		});
 	}
 
+	// TODO: consider exposing full data validation method
 	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
 		if (control instanceof IValidatableControl) {
 			Object value = control.getValue();

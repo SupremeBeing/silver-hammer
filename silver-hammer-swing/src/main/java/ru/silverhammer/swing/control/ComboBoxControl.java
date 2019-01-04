@@ -33,6 +33,7 @@ import javax.swing.JComboBox;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.annotation.ComboBox;
 
+// TODO: disable internal first key navigation
 public class ComboBoxControl extends ValidatableControl<Object, ComboBox, JComboBox<Object>>
 	implements ICollectionControl<Object, Object, ComboBox> {
 

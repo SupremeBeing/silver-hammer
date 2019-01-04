@@ -39,6 +39,7 @@ import ru.silverhammer.core.decorator.annotation.FileChooser;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.swing.control.Control;
 
+// TODO: consider implementing button control
 public class FileChooserDecorator implements IDecorator<IControl<String, ?>, FileChooser> {
 
 	private final IStringProcessor processor;

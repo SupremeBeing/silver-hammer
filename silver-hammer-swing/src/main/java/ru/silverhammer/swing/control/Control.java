@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IControlListener;
 
+// TODO: consider adding control renderers
 public abstract class Control<Value, A extends Annotation, C extends Component> extends JPanel implements IControl<Value, A> {
 
 	protected abstract class SearchAdapter extends KeyAdapter {

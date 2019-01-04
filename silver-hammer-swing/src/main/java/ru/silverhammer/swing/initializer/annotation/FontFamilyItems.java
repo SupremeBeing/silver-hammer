@@ -36,4 +36,5 @@ import ru.silverhammer.swing.initializer.FontFamilyItemsInitializer;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @InitializerReference(FontFamilyItemsInitializer.class)
+// TODO: consider moving to core
 public @interface FontFamilyItems {}

@@ -31,6 +31,7 @@ import javax.swing.event.DocumentListener;
 
 import ru.silverhammer.core.control.annotation.Text;
 
+// TODO: add pattern for formatted input
 public class TextControl extends ValidatableControl<String, Text, JTextField> {
 
 	private static final long serialVersionUID = -2398089634039989572L;

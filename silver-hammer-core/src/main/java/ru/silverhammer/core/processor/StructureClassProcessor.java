@@ -38,6 +38,7 @@ import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.reflection.ClassReflection;
 
+// TODO: consider adding groups based on their occurrence in class fields
 public class StructureClassProcessor implements IProcessor<ClassReflection<?>, Annotation> {
 
 	private final IStringProcessor stringProcessor;

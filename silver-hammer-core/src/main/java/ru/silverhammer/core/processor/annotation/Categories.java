@@ -53,7 +53,8 @@ public @interface Categories {
 		String icon() default "";
 		
 		char mnemonic() default 0;
-		
+
+		// TODO: consider a mechanism for placing groups into categories via reference
 		Group[] groups() default {};
 		
 	}

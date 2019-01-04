@@ -40,7 +40,8 @@ import ru.silverhammer.core.validator.NumberFormatValidator;
 @ValidatorReference(NumberFormatValidator.class)
 @ConverterReference(NumberToStringConverter.class)
 public @interface NumberFormat {
-	
+
+	// TODO: consider using field type as default number type
 	Class<? extends Number> type();
 
 	String format();

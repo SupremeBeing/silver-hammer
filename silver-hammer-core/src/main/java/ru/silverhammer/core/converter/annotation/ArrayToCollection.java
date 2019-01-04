@@ -38,6 +38,7 @@ import ru.silverhammer.core.converter.ArrayToCollectionConverter;
 @ConverterReference(ArrayToCollectionConverter.class)
 public @interface ArrayToCollection {
 
-	Class<?> value();
+	// TODO: consider using field type as default type
+	Class<?> value() default Object.class;
 	
 }

@@ -42,6 +42,8 @@ import ru.silverhammer.core.control.IHierarchyControl;
 import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.control.annotation.Tree;
 
+// TODO: consider adding isLeaf
+// TODO: disable internal first key navigation
 public class TreeControl extends ValidatableControl<Object, Tree, JTree> implements IHierarchyControl<Object, Object, Tree> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
@@ -58,6 +60,7 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 		getComponent().setRootVisible(false);
 		getComponent().addKeyListener(new SearchAdapter() {
 			@Override
+			// TODO: consider searching starting from current node
 			protected void search(String search) {
 				DefaultMutableTreeNode node = findMatchingObject(root, search);
 				if (node != null) {
