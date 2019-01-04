@@ -23,24 +23,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.html;
+package ru.silverhammer.html.control;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import ru.silverhammer.core.control.annotation.CheckBox;
+import ru.silverhammer.core.string.IStringProcessor;
 
-@WebServlet("/Controller")
-public class Controller extends HttpServlet {
+public class CheckBoxControl extends ValidatableControl<Boolean, CheckBox> {
 
-    private static final long serialVersionUID = 4567101886797769009L;
+	private final IStringProcessor stringProcessor;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        out.println("Test output");
-    }
+	private String caption;
+
+	public CheckBoxControl(IStringProcessor stringProcessor) {
+		super(false);
+		this.stringProcessor = stringProcessor;
+	}
+
+	public String getCaption() {
+		return caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+
+	@Override
+	public void init(CheckBox annotation) {
+		setEnabled(!annotation.readOnly());
+		String caption = annotation.caption();
+		setCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
+	}
 }

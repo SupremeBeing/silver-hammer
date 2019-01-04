@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,100 +21,48 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.control;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+package ru.silverhammer.html.control;
 
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValueListener;
 
-// TODO: consider adding control renderers
-public abstract class Control<Value, A extends Annotation, C extends Component> extends JPanel implements IControl<Value, A> {
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
 
-	protected abstract class SearchAdapter extends KeyAdapter {
-		
-		private long accessTime;
-		private String search = "";
-		
-		@Override
-		public final void keyTyped(KeyEvent e) {
-			char ch = e.getKeyChar();
-			if (accessTime + 1000 < System.currentTimeMillis()) {
-				search = "";
-			}
-			accessTime = System.currentTimeMillis();
-			search += ch;
+public abstract class Control<Value, A extends Annotation> implements IControl<Value, A> {
 
-			search(search);
-		}
-		
-		protected abstract void search(String search);
-	}
-
-	private static final long serialVersionUID = 6368631261236160508L;
-
-	private final C component;
 	private final boolean scrollable;
 	private final Collection<IValueListener> listeners = new ArrayList<>();
-	
+	private Value value;
+
+	private boolean enabled;
+
 	protected Control(boolean scrollable) {
-		this.component = createComponent();
 		this.scrollable = scrollable;
-		setLayout(new BorderLayout());
-		if (scrollable) {
-			JScrollPane scroll = new JScrollPane(component);
-			add(scroll, BorderLayout.CENTER);
-		} else {
-			add(component, BorderLayout.CENTER);
-		}
 	}
 
 	@Override
-	public boolean isEnabled() {
-		return component.isEnabled();
+	public final boolean isEnabled() {
+		return enabled;
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		component.setEnabled(enabled);
+	public final void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	@Override
-	public Dimension getMinimumSize() {
-		if (scrollable) {
-			return getPreferredSize();
-		} else {
-			return super.getMinimumSize();
-		}
-	}
-
-	protected abstract C createComponent();
-	
-	protected C getComponent() {
-		return component;
-	}
-	
-	@Override
-	public void addValueListener(IValueListener listener) {
+	public final void addValueListener(IValueListener listener) {
 		if (listener != null) {
 			listeners.add(listener);
 		}
 	}
 
 	@Override
-	public void removeValueListener(IValueListener listener) {
+	public final void removeValueListener(IValueListener listener) {
 		listeners.remove(listener);
 	}
 	
@@ -122,5 +70,16 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 		for (IValueListener l : listeners) {
 			l.changed(this);
 		}
+	}
+
+	@Override
+	public final Value getValue() {
+		return value;
+	}
+
+	@Override
+	public final void setValue(Value value) {
+		this.value = value;
+		fireValueChanged();
 	}
 }
