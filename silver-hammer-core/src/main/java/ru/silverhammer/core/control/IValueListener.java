@@ -27,8 +27,8 @@ package ru.silverhammer.core.control;
 
 import java.util.EventListener;
 
-public interface IControlListener extends EventListener {
+public interface IValueListener extends EventListener {
 
-	void valueChanged(IControl<?, ?> control);
+	void changed(IControl<?, ?> control);
 
 }

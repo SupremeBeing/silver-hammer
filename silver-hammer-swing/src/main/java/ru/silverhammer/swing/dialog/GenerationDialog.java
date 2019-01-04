@@ -29,7 +29,7 @@ import java.awt.Container;
 import java.awt.Window;
 
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.IControlListener;
+import ru.silverhammer.core.control.IValueListener;
 import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.IStringProcessor;
@@ -37,7 +37,7 @@ import ru.silverhammer.core.string.SimpleStringProcessor;
 import ru.silverhammer.swing.SwingControlResolver;
 import ru.silverhammer.swing.SwingUiBuilder;
 
-public class GenerationDialog extends StandardDialog implements IControlListener {
+public class GenerationDialog extends StandardDialog implements IValueListener {
 
 	private static final long serialVersionUID = 414732643695055693L;
 
@@ -54,13 +54,13 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 		SwingUiBuilder builder = new SwingUiBuilder();
 		Container container = builder.buildUi(metadata);
 		setCanAccept(metadata.isValid());
-		metadata.visitControlAttributes(ca -> ca.getControl().addControlListener(this));
+		metadata.visitControlAttributes(ca -> ca.getControl().addValueListener(this));
 		setContent(container);
 		setLocationRelativeTo(owner);
 	}
 	
 	@Override
-	public void valueChanged(IControl<?, ?> control) {
+	public void changed(IControl<?, ?> control) {
 		setCanAccept(metadata.isValid());
 	}
 	

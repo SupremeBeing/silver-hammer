@@ -42,7 +42,7 @@ public class ControlEventInitializer implements IInitializer<IControl<?, ?>, Con
 
 	@Override
 	public void init(IControl<?, ?> control, ControlEvent annotation, Object data, IFieldReflection field) {
-		control.addControlListener(c -> {
+		control.addValueListener(c -> {
 			IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(annotation.value());
 			injector.invoke(data, method);
 		});

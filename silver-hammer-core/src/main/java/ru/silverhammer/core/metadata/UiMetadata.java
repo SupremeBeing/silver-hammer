@@ -229,7 +229,7 @@ public class UiMetadata {
 
 	private void init(IControl<?, ?> control, IFieldReflection field) {
 		validateControl(control, field);	
-		control.addControlListener(c -> {
+		control.addValueListener(c -> {
 			validateControl(control, field);	
 			validateMethods();
 		});

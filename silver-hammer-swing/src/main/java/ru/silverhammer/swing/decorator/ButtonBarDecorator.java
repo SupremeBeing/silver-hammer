@@ -137,7 +137,7 @@ public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar>
 		this.control = control;
 		for (Button b : annotation.value()) {
 			if (b.enabledMethod().length() > 0) {
-				control.addControlListener(c -> {
+				control.addValueListener(c -> {
 					IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.enabledMethod());
 					Object result = injector.invoke(data, method);
 					boolean enabled = result instanceof Boolean ? (Boolean) result : true;

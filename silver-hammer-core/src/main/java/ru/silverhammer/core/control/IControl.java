@@ -33,9 +33,9 @@ public interface IControl<Value, A extends Annotation> {
 	
 	void setValue(Value value);
 
-	void addControlListener(IControlListener listener);
+	void addValueListener(IValueListener listener);
 
-	void removeControlListener(IControlListener listener);
+	void removeValueListener(IValueListener listener);
 
 	boolean isEnabled();
 	

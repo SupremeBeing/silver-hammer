@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.IControlListener;
+import ru.silverhammer.core.control.IValueListener;
 
 // TODO: consider adding control renderers
 public abstract class Control<Value, A extends Annotation, C extends Component> extends JPanel implements IControl<Value, A> {
@@ -67,7 +67,7 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 
 	private final C component;
 	private final boolean scrollable;
-	private final Collection<IControlListener> listeners = new ArrayList<>();
+	private final Collection<IValueListener> listeners = new ArrayList<>();
 	
 	protected Control(boolean scrollable) {
 		this.component = createComponent();
@@ -107,20 +107,20 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 	}
 	
 	@Override
-	public void addControlListener(IControlListener listener) {
+	public void addValueListener(IValueListener listener) {
 		if (listener != null) {
 			listeners.add(listener);
 		}
 	}
 
 	@Override
-	public void removeControlListener(IControlListener listener) {
+	public void removeValueListener(IValueListener listener) {
 		listeners.remove(listener);
 	}
 	
 	protected void fireValueChanged() {
-		for (IControlListener l : listeners) {
-			l.valueChanged(this);
+		for (IValueListener l : listeners) {
+			l.changed(this);
 		}
 	}
 }
