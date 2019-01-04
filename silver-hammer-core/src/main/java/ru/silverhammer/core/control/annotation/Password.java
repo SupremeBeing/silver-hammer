@@ -40,4 +40,6 @@ public @interface Password {
 
     boolean readOnly() default false;
 
+    boolean editable() default true;
+
 }

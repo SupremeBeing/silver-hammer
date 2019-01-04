@@ -26,46 +26,20 @@
 package ru.silverhammer.swing.control;
 
 import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import ru.silverhammer.core.control.annotation.TextArea;
 
-public class TextAreaControl extends ValidatableControl<String, TextArea, JTextArea> {
+public class TextAreaControl extends BaseTextControl<String, TextArea, JTextArea> {
 
 	private static final long serialVersionUID = -2398089634039989572L;
 
 	public TextAreaControl() {
 		super(true);
-		getComponent().getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-			
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-			
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-		});
 	}
 
 	@Override
 	protected JTextArea createComponent() {
 		return new JTextArea();
-	}
-
-	public boolean isEditable() {
-		return getComponent().isEditable();
-	}
-
-	public void setEditable(boolean editable) {
-		getComponent().setEditable(editable);
 	}
 
 	public int getVisibleRowCount() {

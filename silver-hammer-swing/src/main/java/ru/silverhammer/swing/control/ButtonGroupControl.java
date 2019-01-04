@@ -33,8 +33,7 @@ import javax.swing.*;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.annotation.ButtonGroup;
 
-public class ButtonGroupControl
-	extends ValidatableControl<Object, ButtonGroup, JPanel> implements ICollectionControl<Object, Object, ButtonGroup> {
+public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, JPanel> implements ICollectionControl<Object, Object, ButtonGroup> {
 
 	private static final long serialVersionUID = 7058197271259148125L;
 
@@ -92,8 +91,7 @@ public class ButtonGroupControl
 	@Override
 	public void setValidationMessage(String message) {
 		for (AbstractButton c : buttons.values()) {
-			c.setToolTipText(message);
-			c.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
+			setValidationMessage(c, message);
 		}
 	}
 

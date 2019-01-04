@@ -17,6 +17,11 @@
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>ru.silverhammer</groupId>
+			<artifactId>silver-hammer-injection</artifactId>
+			<version>1.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
             <groupId>ru.silverhammer</groupId>
             <artifactId>silver-hammer-core</artifactId>
 			<version>1.0.4-SNAPSHOT</version>

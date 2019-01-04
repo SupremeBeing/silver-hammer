@@ -94,16 +94,18 @@ public class User {
 	@NotNullable(message = "Date of birth must be specified")
 	private Date birthDate;
 
-	@ComboBox
+	@ComboBox(editable = false)
 	@GroupId("user")
 	@Caption("user.sex")
 	@EnumerationItems
-	private Sex sex = Sex.Male;
+	@NotNullable(message = "Please select sex")
+	private Sex sex = null;
 
 	@ComboBox
 	@GroupId("user")
 	@Caption("user.city")
 	@StringItems({"Paris", "New York", "Saint Petersburg", "Prague"})
+	@MinSize(value = 1, message = "Please specify city")
 	private String city = "Saint Petersburg";	
 
 	@Text(readOnly = true)

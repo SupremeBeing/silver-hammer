@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,59 +21,45 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.swing.control;
 
-import java.awt.Color;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import java.lang.annotation.Annotation;
 
-import javax.swing.JComponent;
+public abstract class BaseTextControl<Value, A extends Annotation, C extends JTextComponent> extends ValidatableControl<Value, A, C> {
 
-import ru.silverhammer.core.control.IValidatableControl;
+    private static final long serialVersionUID = -4413975001619284798L;
 
-public abstract class ValidatableControl<Value, A extends Annotation, C extends JComponent> extends Control<Value, A, C>
-		implements IValidatableControl<Value, A> {
+    protected BaseTextControl(boolean scrollable) {
+        super(scrollable);
+        getComponent().getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fireValueChanged();
+            }
 
-	private static final long serialVersionUID = 7813353790197108681L;
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fireValueChanged();
+            }
 
-	private Color normalBackground;
-	private Color invalidBackground = Color.RED;
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fireValueChanged();
+            }
+        });
+    }
 
-	protected ValidatableControl(boolean scrollable) {
-		super(scrollable);
-		normalBackground = getComponent().getBackground();
-	}
+    public boolean isEditable() {
+        return getComponent().isEditable();
+    }
 
-	protected Color getInvalidBackground() {
-		return invalidBackground;
-	}
+    public void setEditable(boolean editable) {
+        getComponent().setEditable(editable);
+    }
 
-	protected void setNormalBackground(Color normalBackground) {
-		this.normalBackground = normalBackground;
-	}
-
-	protected Color getNormalBackground() {
-		return normalBackground;
-	}
-
-	@Override
-	public void setValidationMessage(String message) {
-		setValidationMessage(getComponent(), message);
-	}
-
-	protected void setValidationMessage(JComponent component, String message) {
-		component.setToolTipText(message);
-		component.setBackground(message == null ? normalBackground : invalidBackground);
-	}
-
-	@Override
-	public String getValidationMessage() {
-		return getComponent().getToolTipText();
-	}
-
-	@Override
-	public boolean isControlValid() {
-		return getValidationMessage() == null;
-	}
 }

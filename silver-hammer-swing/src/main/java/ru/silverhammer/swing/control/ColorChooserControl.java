@@ -110,14 +110,10 @@ public class ColorChooserControl extends ValidatableControl<Integer, ColorChoose
 	@Override
 	public void setValidationMessage(String message) {
 		super.setValidationMessage(message);
-		red.setToolTipText(message);
-		red.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
-		green.setToolTipText(message);
-		green.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
-		blue.setToolTipText(message);
-		blue.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
-		alpha.setToolTipText(message);
-		alpha.setBackground(message == null ? getNormalBackground() : getInvalidBackground());
+		setValidationMessage(red, message);
+		setValidationMessage(green, message);
+		setValidationMessage(blue, message);
+		setValidationMessage(alpha, message);
 	}
 
 	private GridBagConstraints createLabelConstraints(int gridY) {

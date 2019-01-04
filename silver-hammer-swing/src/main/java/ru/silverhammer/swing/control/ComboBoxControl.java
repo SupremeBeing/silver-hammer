@@ -34,8 +34,7 @@ import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.annotation.ComboBox;
 
 // TODO: disable internal first key navigation
-public class ComboBoxControl extends ValidatableControl<Object, ComboBox, JComboBox<Object>>
-	implements ICollectionControl<Object, Object, ComboBox> {
+public class ComboBoxControl extends ValidatableControl<Object, ComboBox, JComboBox<Object>> implements ICollectionControl<Object, Object, ComboBox> {
 
 	private static final long serialVersionUID = 1465641213860936391L;
 
@@ -102,6 +101,7 @@ public class ComboBoxControl extends ValidatableControl<Object, ComboBox, JCombo
 		if (isEditable()) {
 			getComponent().getEditor().setItem(value);
 		} else {
+			getComponent().setSelectedIndex(-1);
 			if (value != null) {
 				for (int i = 0; i < getComponent().getItemCount(); i++) {
 					if (value.equals(getComponent().getItemAt(i))) {

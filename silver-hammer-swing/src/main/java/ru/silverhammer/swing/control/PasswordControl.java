@@ -28,31 +28,13 @@ package ru.silverhammer.swing.control;
 import ru.silverhammer.core.control.annotation.Password;
 
 import javax.swing.JPasswordField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-public class PasswordControl extends ValidatableControl<char[], Password, JPasswordField> {
+public class PasswordControl extends BaseTextControl<char[], Password, JPasswordField> {
 
 	private static final long serialVersionUID = -2398089634039989572L;
 
 	public PasswordControl() {
 		super(false);
-		getComponent().getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-			
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-			
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				fireValueChanged();
-			}
-		});
 	}
 
 	@Override
@@ -77,5 +59,6 @@ public class PasswordControl extends ValidatableControl<char[], Password, JPassw
 	@Override
 	public void init(Password annotation) {
 		setEnabled(!annotation.readOnly());
+		setEditable(annotation.editable());
 	}
 }
