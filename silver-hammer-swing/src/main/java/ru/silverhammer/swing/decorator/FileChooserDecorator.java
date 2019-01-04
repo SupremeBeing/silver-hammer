@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,9 +21,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.initializer;
+package ru.silverhammer.swing.decorator;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
@@ -33,29 +33,42 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ru.silverhammer.core.initializer.IInitializer;
+import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.decorator.IDecorator;
+import ru.silverhammer.core.decorator.annotation.FileChooser;
 import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.swing.control.Control;
-import ru.silverhammer.swing.initializer.annotation.FileChooser;
 
-public class FileChooserInitializer implements IInitializer<Control<String, ?>, FileChooser> {
+public class FileChooserDecorator implements IDecorator<IControl<String>, FileChooser> {
 
 	private final IStringProcessor processor;
 
-	public FileChooserInitializer(IStringProcessor processor) {
+	private IControl<String> control;
+	private JButton button;
+
+	public FileChooserDecorator(IStringProcessor processor) {
 		this.processor = processor;
 	}
 
 	@Override
-	public void init(Control<String, ?> control, FileChooser annotation, Object data, IFieldReflection field) {
-		JButton button = new JButton(processor.getString(annotation.buttonCaption()));
+	public void init(FileChooser annotation, Object data) {
+		button = new JButton(processor.getString(annotation.buttonCaption()));
 		button.setMargin(new Insets(0, 5, 0, 5));
-		control.add(button, BorderLayout.EAST);
-		button.addActionListener(e -> showDialog(annotation, control));
+		button.addActionListener(e -> showDialog(annotation));
 	}
 
-	private void showDialog(FileChooser annotation, Control<String, ?> control) {
+	@Override
+	public void setControl(IControl<String> control) {
+		this.control = control;
+		((Control<?, ?>) control).add(button, BorderLayout.EAST);
+	}
+
+	@Override
+	public IControl<String> getControl() {
+		return control;
+	}
+
+	private void showDialog(FileChooser annotation) {
 		JFileChooser dlg = new JFileChooser();
 		dlg.setFileSelectionMode(annotation.allowDirectories() ? JFileChooser.FILES_AND_DIRECTORIES : JFileChooser.FILES_ONLY);
 		dlg.setDragEnabled(false);
@@ -84,7 +97,7 @@ public class FileChooserInitializer implements IInitializer<Control<String, ?>, 
 		}
 
 		String approveCaption = processor.getString(annotation.approveCaption());
-		if (dlg.showDialog(control, approveCaption) == JFileChooser.APPROVE_OPTION) {
+		if (dlg.showDialog(((Control<?, ?>) control), approveCaption) == JFileChooser.APPROVE_OPTION) {
 			String file = dlg.getSelectedFile().getPath();
 			if (dlg.getFileFilter() instanceof FileNameExtensionFilter) {
 				file = checkExtension(file, (FileNameExtensionFilter) dlg.getFileFilter());

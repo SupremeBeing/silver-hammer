@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,12 +21,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.initializer;
+package ru.silverhammer.swing.decorator;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -36,29 +38,39 @@ import javax.swing.JPanel;
 import ru.silverhammer.core.HorizontalAlignment;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.core.initializer.IInitializer;
+import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.decorator.IDecorator;
+import ru.silverhammer.core.decorator.annotation.ButtonBar;
+import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.swing.control.Control;
-import ru.silverhammer.swing.initializer.annotation.ButtonBar;
-import ru.silverhammer.swing.initializer.annotation.ButtonBar.Button;
 
-public class ButtonBarInitializer implements IInitializer<Control<?, ?>, ButtonBar> {
+public class ButtonBarDecorator implements IDecorator<IControl<?>, ButtonBar> {
 
 	private final IStringProcessor processor;
 	private final IInjector injector;
+
+	private IControl<?> control;
+	private JPanel stub;
+	private ButtonBar annotation;
+	private Object data;
+	private final Map<Button, JButton> buttons = new HashMap<>();
 	
-	public ButtonBarInitializer(IStringProcessor processor, IInjector injector) {
+	public ButtonBarDecorator(IStringProcessor processor, IInjector injector) {
 		this.processor = processor;
 		this.injector = injector;
 	}
 
 	@Override
-	public void init(Control<?, ?> control, ButtonBar annotation, Object data, IFieldReflection field) {
-		JPanel stub = new JPanel(new BorderLayout());
+	public void init(ButtonBar annotation, Object data) {
+		this.annotation = annotation;
+		this.data = data;
+		buttons.clear();
+
+		stub = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
 			panel.setLayout(new GridBagLayout());
@@ -83,19 +95,12 @@ public class ButtonBarInitializer implements IInitializer<Control<?, ?>, ButtonB
 				IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.pressedMethod());
 				injector.invoke(data, method);
 			});
-			if (b.enabledMethod().length() > 0) {
-				control.addControlListener(c -> {
-					IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.enabledMethod());
-					Object result = injector.invoke(data, method);
-					boolean enabled = result instanceof Boolean ? (Boolean) result : true;
-					button.setEnabled(enabled);
-				});
-			}
 			if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
 				panel.add(button, createHorizontalConstraints(i++));
 			} else {
 				panel.add(button, createVerticalConstraints(i++));
 			}
+			buttons.put(b, button);
 		}
 
 		if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
@@ -118,17 +123,42 @@ public class ButtonBarInitializer implements IInitializer<Control<?, ?>, ButtonB
 
 		if (annotation.location() == Location.Bottom) {
 			panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
-			control.add(stub, BorderLayout.SOUTH);
 		} else if (annotation.location() == Location.Top) {
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-			control.add(stub, BorderLayout.NORTH);
 		} else if (annotation.location() == Location.Left) {
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-			control.add(stub, BorderLayout.WEST);
 		} else if (annotation.location() == Location.Right) {
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-			control.add(stub, BorderLayout.EAST);
 		}
+	}
+
+	@Override
+	public void setControl(IControl<?> control) {
+		this.control = control;
+		for (Button b : annotation.value()) {
+			if (b.enabledMethod().length() > 0) {
+				control.addControlListener(c -> {
+					IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.enabledMethod());
+					Object result = injector.invoke(data, method);
+					boolean enabled = result instanceof Boolean ? (Boolean) result : true;
+					buttons.get(b).setEnabled(enabled);
+				});
+			}
+		}
+		if (annotation.location() == Location.Bottom) {
+			((Control<?, ?>) control).add(stub, BorderLayout.SOUTH);
+		} else if (annotation.location() == Location.Top) {
+			((Control<?, ?>) control).add(stub, BorderLayout.NORTH);
+		} else if (annotation.location() == Location.Left) {
+			((Control<?, ?>) control).add(stub, BorderLayout.WEST);
+		} else if (annotation.location() == Location.Right) {
+			((Control<?, ?>) control).add(stub, BorderLayout.EAST);
+		}
+	}
+
+	@Override
+	public IControl<?> getControl() {
+		return control;
 	}
 
 	private GridBagConstraints createVerticalConstraints(int y) {

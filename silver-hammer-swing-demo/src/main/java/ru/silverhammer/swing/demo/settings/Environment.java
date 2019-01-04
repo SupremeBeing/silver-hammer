@@ -40,6 +40,8 @@ import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.Tree;
 import ru.silverhammer.core.converter.annotation.MapToList;
+import ru.silverhammer.core.decorator.annotation.ButtonBar;
+import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
 import ru.silverhammer.core.metadata.UiMetadata;
@@ -49,8 +51,6 @@ import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.swing.dialog.GenerationDialog;
-import ru.silverhammer.swing.initializer.annotation.ButtonBar;
-import ru.silverhammer.swing.initializer.annotation.ButtonBar.Button;
 
 @Category(caption = "Environment", mnemonic = 'e', groups = {
 		@Group(value = "env")

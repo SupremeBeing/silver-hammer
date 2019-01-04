@@ -40,6 +40,7 @@ import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
+import ru.silverhammer.core.decorator.annotation.FileChooser;
 import ru.silverhammer.core.initializer.annotation.ControlEvent;
 import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
@@ -57,7 +58,6 @@ import ru.silverhammer.core.validator.annotation.NotNullable;
 import ru.silverhammer.core.validator.annotation.StringFormat;
 import ru.silverhammer.swing.control.TextControl;
 import ru.silverhammer.swing.demo.user.UserGroup.Type;
-import ru.silverhammer.swing.initializer.annotation.FileChooser;
 
 @Category(caption = "user.tab", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {
 		@Group("user"),

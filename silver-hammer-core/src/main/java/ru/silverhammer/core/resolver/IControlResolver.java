@@ -28,13 +28,18 @@ package ru.silverhammer.core.resolver;
 import java.lang.annotation.Annotation;
 
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.decorator.IDecorator;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public interface IControlResolver {
 
 	Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
-	
-	void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+
+	Class<? extends IDecorator<?, ?>> getDecoratorClass(Class<? extends Annotation> annotationClass);
+
+	void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+
+	void bindDecorator(Class<? extends Annotation> annotationClass, Class<? extends IDecorator<?, ?>> decoratorClass);
 
 	boolean hasControlAnnotation(IFieldReflection fieldReflection);
 }

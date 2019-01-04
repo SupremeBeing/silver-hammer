@@ -35,6 +35,7 @@ import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.decorator.IDecorator;
 import ru.silverhammer.core.initializer.IInitializer;
 import ru.silverhammer.core.metadata.ControlAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;
@@ -64,8 +65,21 @@ public class ControlFieldProcessor implements IProcessor<IFieldReflection, Annot
 		Class<? extends IControl<?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
 			IControl<?> control = injector.instantiate(controlClass);
+			decorateControl(control, data, reflection);
 			addControlAttributes(metadata, reflection.getAnnotation(GroupId.class), createControlAttributes(control, data, reflection));
 			initializeControl(control, data, reflection);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void decorateControl(IControl<?> control, Object data, IFieldReflection field) {
+		for (Annotation a : field.getAnnotations()) {
+			Class<? extends IDecorator<?, ?>> decoratorClass = controlResolver.getDecoratorClass(a.annotationType());
+			if (decoratorClass != null) {
+				IDecorator decorator = injector.instantiate(decoratorClass);
+				decorator.init(a, data);
+				decorator.setControl(control);
+			}
 		}
 	}
 

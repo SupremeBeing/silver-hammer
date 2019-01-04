@@ -30,21 +30,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.decorator.IDecorator;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlResolver implements IControlResolver {
 	
-	private final Map<Class<? extends Annotation>, Class<? extends IControl<?>>> mapping = new HashMap<>();
+	private final Map<Class<? extends Annotation>, Class<? extends IControl<?>>> controlMapping = new HashMap<>();
+	private final Map<Class<? extends Annotation>, Class<? extends IDecorator<?, ?>>> decoratorMapping = new HashMap<>();
 
 	@Override
 	public final Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass) {
-		return mapping.get(annotationClass);
+		return controlMapping.get(annotationClass);
 	}
 
 	@Override
-	public void bind(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass) {
+	public void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass) {
 		if (annotationClass != null && controlClass != null) {
-			mapping.put(annotationClass, controlClass);
+			controlMapping.put(annotationClass, controlClass);
+		}
+	}
+
+	@Override
+	public Class<? extends IDecorator<?, ?>> getDecoratorClass(Class<? extends Annotation> annotationClass) {
+		return decoratorMapping.get(annotationClass);
+	}
+
+	@Override
+	public void bindDecorator(Class<? extends Annotation> annotationClass, Class<? extends IDecorator<?, ?>> decoratorClass) {
+		if (annotationClass != null && decoratorClass != null) {
+			decoratorMapping.put(annotationClass, decoratorClass);
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,30 +21,42 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.initializer.annotation;
+package ru.silverhammer.core.decorator.annotation;
+
+import ru.silverhammer.core.HorizontalAlignment;
+import ru.silverhammer.core.Location;
+import ru.silverhammer.core.VerticalAlignment;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.InitializerReference;
-import ru.silverhammer.swing.initializer.FileChooserInitializer;
-
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@InitializerReference(FileChooserInitializer.class)
-public @interface FileChooser {
+public @interface ButtonBar {
 
-	String[] filters() default {};
-	
-	String initialDirectory() default "";
-	
-	boolean allowDirectories() default false;
-	
-	String approveCaption();
-	
-	String buttonCaption() default "...";
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Button {
+
+        String caption();
+
+        String icon() default "";
+
+        String pressedMethod();
+
+        String enabledMethod() default "";
+    }
+
+    Button[] value();
+
+    Location location() default Location.Bottom;
+
+    HorizontalAlignment horizontalAlignment() default HorizontalAlignment.Right;
+
+    VerticalAlignment verticalAlignment() default VerticalAlignment.Top;
+
 }
