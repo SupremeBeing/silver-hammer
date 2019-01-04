@@ -23,39 +23,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.converter;
+package ru.silverhammer.core.converter.annotation;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
 
-import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.ConverterReference;
+import ru.silverhammer.core.converter.MapToCollectionConverter;
 
-public class ArrayToListConverter implements IConverter<Object, Collection<?>, ArrayToList> {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@ConverterReference(MapToCollectionConverter.class)
+public @interface MapToCollection {
 
-	@Override
-	public Collection<?> convertForward(Object source, ArrayToList annotation) {
-		if (source != null && source.getClass().isArray()) {
-			Collection<Object> result = new ArrayList<>();
-			int length = Array.getLength(source);
-			for (int i = 0; i < length; i++) {
-		        result.add(Array.get(source, i));
-			}
-			return result;
-		}
-		return null;
-	}
+	@SuppressWarnings("rawtypes")
+	Class<? extends Map> value() default HashMap.class;
 
-	@Override
-	public Object convertBackward(Collection<?> destination, ArrayToList annotation) {
-		if (destination != null) {
-			Object array = Array.newInstance(annotation.value(), destination.size());
-			int i = 0;
-		    for (Object o : destination) {
-		    	Array.set(array, i++, o);
-		    }
-		    return array;
-		}
-		return null;
-	}
 }

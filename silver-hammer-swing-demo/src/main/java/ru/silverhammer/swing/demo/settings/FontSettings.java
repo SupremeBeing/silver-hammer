@@ -32,7 +32,7 @@ import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.converter.annotation.ArrayToCollection;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
@@ -81,7 +81,7 @@ public class FontSettings {
 	@GroupId("font")
 	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
 	@EnumerationItems
-	@ArrayToList(Style.class)
+	@ArrayToCollection(Style.class)
 	private Style[] style = {Style.Bold, Style.Strikeout};
 		
 	@ColorChooser

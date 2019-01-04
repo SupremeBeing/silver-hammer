@@ -38,7 +38,7 @@ import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.Tree;
-import ru.silverhammer.core.converter.annotation.MapToList;
+import ru.silverhammer.core.converter.annotation.MapToCollection;
 import ru.silverhammer.core.decorator.annotation.ButtonBar;
 import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
@@ -71,7 +71,7 @@ public class Environment {
 	
 	@Table(captions = {"Key", "Value"}, value = ValueType.Content, visibleRows = 10)
 	@GroupId("env")
-	@MapToList(LinkedHashMap.class)
+	@MapToCollection(LinkedHashMap.class)
 	@ButtonBar(value = {
 			@Button(caption = "Add", icon = "/add.png", pressedMethod = "addPressed"),
 			@Button(caption = "Delete", icon = "/delete.png", pressedMethod = "deletePressed", enabledMethod = "updateDelete")

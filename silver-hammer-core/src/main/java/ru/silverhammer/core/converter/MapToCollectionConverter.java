@@ -23,24 +23,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.converter.annotation;
+package ru.silverhammer.core.converter;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
-import ru.silverhammer.core.ConverterReference;
-import ru.silverhammer.core.converter.MapToListConverter;
+import ru.silverhammer.core.converter.annotation.MapToCollection;
+import ru.silverhammer.reflection.ClassReflection;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ConverterReference(MapToListConverter.class)
-public @interface MapToList {
+public class MapToCollectionConverter implements IConverter<Map<?, ?>, Collection<Object[]>, MapToCollection> {
 
-	@SuppressWarnings("rawtypes")
-	Class<? extends Map> value() default HashMap.class;
+	@Override
+	public Collection<Object[]> convertForward(Map<?, ?> source, MapToCollection annotation) {
+		if (source != null) {
+			Collection<Object[]> result = new ArrayList<>();
+			for (Object key : source.keySet()) {
+				Object value = source.get(key);
+				result.add(new Object[] {key, value});
+			}
+			return result;
+		}
+		return null;
+	}
 
+	@Override
+	public Map<?, ?> convertBackward(Collection<Object[]> destination, MapToCollection annotation) {
+		if (destination != null) {
+			@SuppressWarnings("rawtypes")
+			ClassReflection<? extends Map> cr = new ClassReflection<>(annotation.value());
+			@SuppressWarnings("unchecked")
+			Map<Object, Object> result = cr.instantiate();
+			for (Object[] pair : destination) {
+				result.put(pair[0], pair[1]);
+			}
+			return result;
+		}
+		return null;
+	}
 }

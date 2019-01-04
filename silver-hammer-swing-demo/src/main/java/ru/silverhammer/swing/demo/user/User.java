@@ -36,7 +36,7 @@ import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.converter.annotation.ArrayToList;
+import ru.silverhammer.core.converter.annotation.ArrayToCollection;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.decorator.annotation.FileChooser;
@@ -141,7 +141,7 @@ public class User {
 	@Table(annotationCaptions = UserGroup.class, visibleRows = 3, value = ValueType.Content)
 	@GroupId("groups")
 	@ValueToItems(UserGroup.class)
-	@ArrayToList(UserGroup.class)
+	@ArrayToCollection(UserGroup.class)
 	private UserGroup[] groups = {
 			new UserGroup("Administrator", "Group of system administrators", Type.Admin),
 			new UserGroup("Remote user", "Remote access is granted for this group", Type.RemoteAccess)

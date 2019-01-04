@@ -25,22 +25,21 @@
  */
 package ru.silverhammer.core.converter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
-import ru.silverhammer.core.converter.annotation.MapToList;
-import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.core.converter.annotation.ArrayToCollection;
 
-public class MapToListConverter implements IConverter<Map<?, ?>, Collection<Object[]>, MapToList> {
+public class ArrayToCollectionConverter implements IConverter<Object, Collection<?>, ArrayToCollection> {
 
 	@Override
-	public Collection<Object[]> convertForward(Map<?, ?> source, MapToList annotation) {
-		if (source != null) {
-			Collection<Object[]> result = new ArrayList<>();
-			for (Object key : source.keySet()) {
-				Object value = source.get(key);
-				result.add(new Object[] {key, value});
+	public Collection<?> convertForward(Object source, ArrayToCollection annotation) {
+		if (source != null && source.getClass().isArray()) {
+			Collection<Object> result = new ArrayList<>();
+			int length = Array.getLength(source);
+			for (int i = 0; i < length; i++) {
+		        result.add(Array.get(source, i));
 			}
 			return result;
 		}
@@ -48,16 +47,14 @@ public class MapToListConverter implements IConverter<Map<?, ?>, Collection<Obje
 	}
 
 	@Override
-	public Map<?, ?> convertBackward(Collection<Object[]> destination, MapToList annotation) {
+	public Object convertBackward(Collection<?> destination, ArrayToCollection annotation) {
 		if (destination != null) {
-			@SuppressWarnings("rawtypes")
-			ClassReflection<? extends Map> cr = new ClassReflection<>(annotation.value());
-			@SuppressWarnings("unchecked")
-			Map<Object, Object> result = cr.instantiate();
-			for (Object[] pair : destination) {
-				result.put(pair[0], pair[1]);
-			}
-			return result;
+			Object array = Array.newInstance(annotation.value(), destination.size());
+			int i = 0;
+		    for (Object o : destination) {
+		    	Array.set(array, i++, o);
+		    }
+		    return array;
 		}
 		return null;
 	}

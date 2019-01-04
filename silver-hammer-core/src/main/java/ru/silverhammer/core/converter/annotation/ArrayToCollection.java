@@ -31,12 +31,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ConverterReference;
-import ru.silverhammer.core.converter.ArrayToListConverter;
+import ru.silverhammer.core.converter.ArrayToCollectionConverter;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ConverterReference(ArrayToListConverter.class)
-public @interface ArrayToList {
+@ConverterReference(ArrayToCollectionConverter.class)
+public @interface ArrayToCollection {
 
 	Class<?> value();
 	
