@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,19 +21,12 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.core.control;
 
-public interface IValueTypeControl<Value> extends IControl<Value> {
-
-	enum ValueType {
-		Selection,
-		Content
-	}
-	
-	ValueType getValueType();
-	
-	void setValueType(ValueType type);
-
+public enum SelectionType {
+    Single,
+    Interval,
+    Multi
 }

@@ -25,11 +25,13 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.control.annotation.Password;
+
 import javax.swing.JPasswordField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class PasswordControl extends ValidatableControl<char[], JPasswordField> {
+public class PasswordControl extends ValidatableControl<char[], Password, JPasswordField> {
 
 	private static final long serialVersionUID = -2398089634039989572L;
 
@@ -70,5 +72,10 @@ public class PasswordControl extends ValidatableControl<char[], JPasswordField> 
 		} else {
 			getComponent().setText("");
 		}
+	}
+
+	@Override
+	public void init(Password annotation) {
+		setEnabled(!annotation.readOnly());
 	}
 }

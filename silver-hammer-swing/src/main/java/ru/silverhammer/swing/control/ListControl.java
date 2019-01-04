@@ -27,7 +27,6 @@ package ru.silverhammer.swing.control;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 import javax.swing.DefaultListModel;
@@ -35,12 +34,12 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.IValueTypeControl;
+import ru.silverhammer.core.control.SelectionType;
+import ru.silverhammer.core.control.ValueType;
+import ru.silverhammer.core.control.annotation.List;
 
-public class ListControl extends ValidatableControl<Object, JList<Object>>
-	implements ICollectionControl<Object, Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionControl<Object, Object> {
+public class ListControl extends ValidatableControl<Object, List, JList<Object>>
+	implements ICollectionControl<Object, Object, List> {
 
 	private static final long serialVersionUID = 396462498473332445L;
 
@@ -68,12 +67,10 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		return (DefaultListModel<Object>) getComponent().getModel();
 	}
 
-	@Override
 	public ValueType getValueType() {
 		return valueType;
 	}
 
-	@Override
 	public void setValueType(ValueType mode) {
 		this.valueType = mode;
 	}
@@ -124,17 +121,14 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		}
 	}
 
-	@Override
 	public int getVisibleRowCount() {
 		return getComponent().getVisibleRowCount();
 	}
 
-	@Override
 	public void setVisibleRowCount(int count) {
 		getComponent().setVisibleRowCount(count);
 	}
 
-	@Override
 	public SelectionType getSelectionType() {
 		int mode = getComponent().getSelectionMode();
 		if (mode == ListSelectionModel.SINGLE_SELECTION) {
@@ -147,7 +141,6 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		return null;
 	}
 
-	@Override
 	public void setSelectionType(SelectionType mode) {
 		if (mode == SelectionType.Single) {
 			getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -158,18 +151,15 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		}
 	}
 
-	@Override
 	public Object getSingleSelection() {
 		return getComponent().getSelectedValue();
 	}
 
-	@Override
 	public Object[] getSelection() {
-		List<Object> list = getComponent().getSelectedValuesList();
+		Collection<Object> list = getComponent().getSelectedValuesList();
 		return list.toArray(new Object[list.size()]);
 	}
 
-	@Override
 	public void select(Object value) {
 		int count = getModel().getSize();
 		for (int i = 0; i < count; i++) {
@@ -181,7 +171,6 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 		}
 	}
 
-	@Override
 	public void deselect(Object value) {
 		int count = getModel().getSize();
 		for (int i = 0; i < count; i++) {
@@ -259,5 +248,15 @@ public class ListControl extends ValidatableControl<Object, JList<Object>>
 	@Override
 	public Object getItem(int i) {
 		return getModel().get(i);
+	}
+
+	@Override
+	public void init(List annotation) {
+		setEnabled(!annotation.readOnly());
+		if (annotation.visibleRows() > 0) {
+			setVisibleRowCount(annotation.visibleRows());
+		}
+		setSelectionType(annotation.selection());
+		setValueType(annotation.value());
 	}
 }

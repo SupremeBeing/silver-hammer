@@ -33,7 +33,7 @@ import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlAttributes {
 
-	private final IControl<?> control;
+	private final IControl<?, ?> control;
 	private final Object data;
 	private final IFieldReflection fieldReflection;
 	
@@ -43,13 +43,13 @@ public class ControlAttributes {
 	private HorizontalAlignment horizontalAlignment;
 	private VerticalAlignment verticalAlignment;
 
-	public ControlAttributes(IControl<?> control, Object data, IFieldReflection fieldReflection) {
+	public ControlAttributes(IControl<?, ?> control, Object data, IFieldReflection fieldReflection) {
 		this.control = control;
 		this.data = data;
 		this.fieldReflection = fieldReflection;
 	}
 
-	public IControl<?> getControl() {
+	public IControl<?, ?> getControl() {
 		return control;
 	}
 	

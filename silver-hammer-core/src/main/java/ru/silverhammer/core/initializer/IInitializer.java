@@ -30,7 +30,7 @@ import java.lang.annotation.Annotation;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public interface IInitializer<Control extends IControl<?>, A extends Annotation> {
+public interface IInitializer<Control extends IControl<?, ?>, A extends Annotation> {
 
 	void init(Control control, A annotation, Object data, IFieldReflection fieldReflection);
 	

@@ -34,15 +34,13 @@ import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
-import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.IValueTypeControl.ValueType;
+import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.decorator.annotation.FileChooser;
 import ru.silverhammer.core.initializer.annotation.ControlEvent;
-import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.metadata.UiMetadata;
@@ -105,15 +103,13 @@ public class User {
 	@ComboBox
 	@GroupId("user")
 	@Caption("user.city")
-	@ControlProperties
 	@StringItems({"Paris", "New York", "Saint Petersburg", "Prague"})
 	private String city = "Saint Petersburg";	
 
-	@Text
+	@Text(readOnly = true)
 	@GroupId("user")
 	@Caption("user.avatar")
 	@FileChooser(approveCaption = "Select image", filters = {"JPG | jpg, jpeg", "PNG | png"})
-	@ControlProperties(readOnly = true)
 	@FileExists(message = "File doesn't exist")
 	@FileToString
 	private File file;
@@ -124,15 +120,13 @@ public class User {
 	@DateFormat(format = "dd/MM/yyyy", message = "Creation date should be in %s format")
 	private Date date = new Date(0);
 
-	@TextArea
+	@TextArea(visibleRows = 5)
 	@GroupId("user")
 	@Caption(value = "user.description", location = Location.Top)
 	@Description("<html>A free-form description of the user.<br/>Can contain multiple lines.</html>")
-	@ControlProperties(visibleRows = 5)
 	private String description;
 
 	@ButtonGroup
-	@ControlProperties(selection = ISelectionControl.SelectionType.Multi)
 	@GroupId("langs")
 	@StringItems({"English", "Russian", "Spanish", "German", "Italian"})
 	@MinSize(value = 1, message = "Select at least one language")
@@ -144,9 +138,8 @@ public class User {
 		}
 	};
 
-	@Table(annotationCaptions = UserGroup.class)
+	@Table(annotationCaptions = UserGroup.class, visibleRows = 3, value = ValueType.Content)
 	@GroupId("groups")
-	@ControlProperties(value = ValueType.Content, visibleRows = 3)
 	@ValueToItems(UserGroup.class)
 	@ArrayToList(UserGroup.class)
 	private UserGroup[] groups = {

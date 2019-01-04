@@ -27,9 +27,9 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JSlider;
 
-import ru.silverhammer.core.control.ISliderControl;
+import ru.silverhammer.core.control.annotation.Slider;
 
-public class SliderControl extends ValidatableControl<Integer, JSlider> implements ISliderControl {
+public class SliderControl extends ValidatableControl<Integer, Slider, JSlider> {
 
 	private static final long serialVersionUID = 5915614741825633432L;
 
@@ -43,62 +43,50 @@ public class SliderControl extends ValidatableControl<Integer, JSlider> implemen
 		return new JSlider();
 	}
 
-	@Override
 	public void setMinimum(int min) {
 		getComponent().setMinimum(min);
 	}
 
-	@Override
 	public void setMaximum(int max) {
 		getComponent().setMaximum(max);
 	}
 
-	@Override
 	public void setMinorTicks(int minor) {
 		getComponent().setMinorTickSpacing(minor);
 	}
 
-	@Override
 	public void setMajorTicks(int major) {
 		getComponent().setMajorTickSpacing(major);
 	}
 
-	@Override
 	public void setLabels(boolean labels) {
 		getComponent().setPaintLabels(labels);
 	}
 
-	@Override
 	public void setTicks(boolean ticks) {
 		getComponent().setPaintTicks(ticks);
 	}
 
-	@Override
 	public int getMinimum() {
 		return getComponent().getMinimum();
 	}
 
-	@Override
 	public int getMaximum() {
 		return getComponent().getMaximum();
 	}
 
-	@Override
 	public int getMinorTicks() {
 		return getComponent().getMinorTickSpacing();
 	}
 
-	@Override
 	public int getMajorTicks() {
 		return getComponent().getMajorTickSpacing();
 	}
 
-	@Override
 	public boolean hasLabels() {
 		return getComponent().getPaintLabels();
 	}
 
-	@Override
 	public boolean hasTicks() {
 		return getComponent().getPaintTicks();
 	}
@@ -115,5 +103,16 @@ public class SliderControl extends ValidatableControl<Integer, JSlider> implemen
 		} else {
 			getComponent().setValue(0);
 		}
+	}
+
+	@Override
+	public void init(Slider annotation) {
+		setEnabled(!annotation.readOnly());
+		setMinimum(annotation.min());
+		setMaximum(annotation.max());
+		setMajorTicks(annotation.majorTicks());
+		setMinorTicks(annotation.minorTicks());
+		setTicks(annotation.ticks());
+		setLabels(annotation.labels());
 	}
 }

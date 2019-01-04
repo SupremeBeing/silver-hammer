@@ -27,14 +27,18 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JCheckBox;
 
-import ru.silverhammer.core.control.ICaptionControl;
+import ru.silverhammer.core.control.annotation.CheckBox;
+import ru.silverhammer.core.string.IStringProcessor;
 
-public class CheckBoxControl extends ValidatableControl<Boolean, JCheckBox> implements ICaptionControl<Boolean> {
+public class CheckBoxControl extends ValidatableControl<Boolean, CheckBox, JCheckBox> {
 
 	private static final long serialVersionUID = -7619491028898514149L;
 
-	public CheckBoxControl() {
+	private final IStringProcessor stringProcessor;
+
+	public CheckBoxControl(IStringProcessor stringProcessor) {
 		super(false);
+		this.stringProcessor = stringProcessor;
 		getComponent().getModel().addItemListener(l -> fireValueChanged()); 
 	}
 
@@ -43,12 +47,10 @@ public class CheckBoxControl extends ValidatableControl<Boolean, JCheckBox> impl
 		return new JCheckBox();
 	}
 
-	@Override
 	public String getCaption() {
 		return getComponent().getText();
 	}
 
-	@Override
 	public void setCaption(String caption) {
 		getComponent().setText(caption);
 	}
@@ -61,5 +63,12 @@ public class CheckBoxControl extends ValidatableControl<Boolean, JCheckBox> impl
 	@Override
 	public void setValue(Boolean value) {
 		getComponent().setSelected(value != null && value);
+	}
+
+	@Override
+	public void init(CheckBox annotation) {
+		setEnabled(!annotation.readOnly());
+		String caption = annotation.caption();
+		setCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
 	}
 }

@@ -60,7 +60,7 @@ public class GenerationDialog extends StandardDialog implements IControlListener
 	}
 	
 	@Override
-	public void valueChanged(IControl<?> control) {
+	public void valueChanged(IControl<?, ?> control) {
 		setCanAccept(metadata.isValid());
 	}
 	

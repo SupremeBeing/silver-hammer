@@ -30,7 +30,7 @@ import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?>, StringItems> {
+public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, StringItems> {
 
 	private final IStringProcessor processor;
 
@@ -39,7 +39,7 @@ public class StringItemsInitializer implements IInitializer<ICollectionControl<S
 	}
 
 	@Override
-	public void init(ICollectionControl<String, ?> control, StringItems annotation, Object data, IFieldReflection field) {
+	public void init(ICollectionControl<String, ?, ?> control, StringItems annotation, Object data, IFieldReflection field) {
 		for (String s : annotation.value()) {
 			control.addItem(processor == null ? s : processor.getString(s));
 		}

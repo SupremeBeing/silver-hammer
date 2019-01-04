@@ -35,14 +35,17 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
+import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.IMultiCaptionControl;
-import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.IValueTypeControl;
+import ru.silverhammer.core.control.SelectionType;
+import ru.silverhammer.core.control.ValueType;
+import ru.silverhammer.core.control.annotation.Table;
+import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.IFieldReflection;
 
-public class TableControl extends ValidatableControl<Object, JTable> implements ICollectionControl<Object[], Object>,
-	IMultiCaptionControl<Object>, IValueTypeControl<Object>, IRowsControl<Object>, ISelectionControl<Object[], Object> {
+public class TableControl extends ValidatableControl<Object, Table, JTable> implements ICollectionControl<Object[], Object, Table> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 
@@ -77,13 +80,17 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		}
 	}
 
+	private final IStringProcessor stringProcessor;
+	private final IControlResolver controlResolver;
 	private final List<String> captions = new ArrayList<>();
 	private final ArrayList<Object[]> data = new ArrayList<>();
 
 	private ValueType valueType = ValueType.Selection;
 
-	public TableControl() {
+	public TableControl(IStringProcessor stringProcessor, IControlResolver controlResolver) {
 		super(true);
+		this.stringProcessor = stringProcessor;
+		this.controlResolver = controlResolver;
 		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getComponent().getSelectionModel().addListSelectionListener(e -> fireValueChanged());
 		getComponent().addKeyListener(new SearchAdapter() {
@@ -163,29 +170,24 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		return -1;
 	}
 
-	@Override
 	public ValueType getValueType() {
 		return valueType;
 	}
 
-	@Override
 	public void setValueType(ValueType mode) {
 		this.valueType = mode;
 	}
 
-	@Override
 	public int getVisibleRowCount() {
 		Dimension size = getComponent().getPreferredScrollableViewportSize();
 		return (int) (size.getHeight() / getComponent().getRowHeight());
 	}
 
-	@Override
 	public void setVisibleRowCount(int count) {
 		Dimension size = new Dimension((int) getComponent().getPreferredScrollableViewportSize().getWidth(), count * getComponent().getRowHeight());
 		getComponent().setPreferredScrollableViewportSize(size); 
 	}
 
-	@Override
 	public SelectionType getSelectionType() {
 		int mode = getComponent().getSelectionModel().getSelectionMode();
 		if (mode == ListSelectionModel.SINGLE_SELECTION) {
@@ -198,7 +200,6 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		return null;
 	}
 
-	@Override
 	public void setSelectionType(SelectionType mode) {
 		if (mode == SelectionType.Single) {
 			getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -209,13 +210,11 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		}
 	}
 
-	@Override
 	public Object[] getSingleSelection() {
 		int i = getComponent().getSelectedRow();
 		return i == -1 ? null : data.get(i);
 	}
 
-	@Override
 	public Object[][] getSelection() {
 		List<Object[]> result = new ArrayList<>();
 		for (int i : getComponent().getSelectedRows()) {
@@ -224,7 +223,6 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		return result.toArray(new Object[result.size()][]);
 	}
 
-	@Override
 	public void select(Object[] value) {
 		int i = findRow(value);
 		if (i != -1) {
@@ -232,7 +230,6 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		}
 	}
 
-	@Override
 	public void deselect(Object[] value) {
 		int i = findRow(value);
 		if (i != -1) {
@@ -240,48 +237,40 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 		}
 	}
 
-	@Override
 	public void addCaption(String caption) {
 		captions.add(caption);
 		getModel().fireTableStructureChanged();
 	}
 
-	@Override
 	public void removeCaption(String caption) {
 		if (captions.remove(caption)) {
 			getModel().fireTableStructureChanged();
 		}
 	}
 
-	@Override
 	public void addCaption(int i, String caption) {
 		captions.add(i, caption);
 		getModel().fireTableStructureChanged();
 	}
 
-	@Override
 	public void setCaption(int i, String caption) {
 		captions.set(i, caption);
 		getModel().fireTableStructureChanged();
 	}
 
-	@Override
 	public void removeCaption(int i) {
 		captions.remove(i);
 		getModel().fireTableStructureChanged();
 	}
 
-	@Override
 	public int getCaptionCount() {
 		return captions.size();
 	}
 
-	@Override
 	public String getCaption(int i) {
 		return captions.get(i);
 	}
 
-	@Override
 	public void clearCaptions() {
 		captions.clear();
 		getModel().fireTableStructureChanged();
@@ -363,5 +352,27 @@ public class TableControl extends ValidatableControl<Object, JTable> implements 
 	@Override
 	public Object[] getItem(int i) {
 		return data.get(i);
+	}
+
+	@Override
+	public void init(Table annotation) {
+		setEnabled(!annotation.readOnly());
+		if (annotation.visibleRows() > 0) {
+			setVisibleRowCount(annotation.visibleRows());
+		}
+		setSelectionType(annotation.selection());
+		setValueType(annotation.value());
+		if (annotation.annotationCaptions() != Void.class) {
+			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
+				if (controlResolver.hasControlAnnotation(fr)) {
+					Caption c = fr.getAnnotation(Caption.class);
+					addCaption(c == null ? fr.getName() : (stringProcessor == null ? c.value() : stringProcessor.getString(c.value())));
+				}
+			}
+		} else if (annotation.captions().length > 0) {
+			for (String caption : annotation.captions()) {
+				addCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
+			}
+		}
 	}
 }

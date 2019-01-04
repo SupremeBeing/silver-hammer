@@ -29,7 +29,7 @@ import ru.silverhammer.core.control.IControl;
 
 import java.lang.annotation.Annotation;
 
-public interface IDecorator<C extends IControl<?>, A extends Annotation> {
+public interface IDecorator<C extends IControl<?, ?>, A extends Annotation> {
 
     void init(A annotation, Object data);
 

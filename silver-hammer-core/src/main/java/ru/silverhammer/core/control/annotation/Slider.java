@@ -30,16 +30,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.initializer.SliderInitializer;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-@InitializerReference(SliderInitializer.class)
 public @interface Slider {
+
+    boolean readOnly() default false;
 
     int min();
 

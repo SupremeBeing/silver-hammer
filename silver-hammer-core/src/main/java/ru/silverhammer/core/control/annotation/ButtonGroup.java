@@ -36,4 +36,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface ButtonGroup {}
+public @interface ButtonGroup {
+
+    boolean readOnly() default false;
+
+    boolean multiSelection() default true;
+
+}

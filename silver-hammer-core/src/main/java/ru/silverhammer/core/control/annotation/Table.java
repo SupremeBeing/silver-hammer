@@ -30,16 +30,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.InitializerReference;
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.initializer.CaptionsInitializer;
+import ru.silverhammer.core.control.SelectionType;
+import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-@InitializerReference(CaptionsInitializer.class)
 public @interface Table {
+
+    boolean readOnly() default false;
+
+    int visibleRows() default 0;
+
+    SelectionType selection() default SelectionType.Single;
+
+    ValueType value() default ValueType.Selection;
 
     String[] captions() default {};
 

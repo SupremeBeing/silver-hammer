@@ -31,10 +31,10 @@ import java.awt.event.KeyListener;
 import javax.swing.JComboBox;
 
 import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.IEditableControl;
+import ru.silverhammer.core.control.annotation.ComboBox;
 
-public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object>>
-	implements ICollectionControl<Object, Object>, IEditableControl<Object> {
+public class ComboBoxControl extends ValidatableControl<Object, ComboBox, JComboBox<Object>>
+	implements ICollectionControl<Object, Object, ComboBox> {
 
 	private static final long serialVersionUID = 1465641213860936391L;
 
@@ -112,12 +112,10 @@ public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object
 		}
 	}
 
-	@Override
 	public boolean isEditable() {
 		return getComponent().isEditable();
 	}
 
-	@Override
 	public void setEditable(boolean editable) {
 		setNormalBackground(editable ? getComponent().getEditor().getEditorComponent().getBackground() : getComponent().getBackground());
 		getComponent().setEditable(editable);
@@ -166,5 +164,11 @@ public class ComboBoxControl extends ValidatableControl<Object, JComboBox<Object
 	@Override
 	public Object getItem(int i) {
 		return getComponent().getItemAt(i);
+	}
+
+	@Override
+	public void init(ComboBox annotation) {
+		setEnabled(!annotation.readOnly());
+		setEditable(annotation.editable());
 	}
 }

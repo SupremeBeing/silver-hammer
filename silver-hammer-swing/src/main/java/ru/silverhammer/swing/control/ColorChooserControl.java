@@ -25,6 +25,8 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.control.annotation.ColorChooser;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -37,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
 
-public class ColorChooserControl extends ValidatableControl<Integer, JPanel> {
+public class ColorChooserControl extends ValidatableControl<Integer, ColorChooser, JPanel> {
 	
 	private static final long serialVersionUID = -3000952254597666980L;
 
@@ -184,5 +186,10 @@ public class ColorChooserControl extends ValidatableControl<Integer, JPanel> {
 		green.setEnabled(enabled);
 		blue.setEnabled(enabled);
 		alpha.setEnabled(enabled);
+	}
+
+	@Override
+	public void init(ColorChooser annotation) {
+		setEnabled(!annotation.readOnly());
 	}
 }

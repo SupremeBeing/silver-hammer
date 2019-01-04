@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -39,7 +40,7 @@ import javax.swing.JScrollPane;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IControlListener;
 
-public abstract class Control<Value, C extends Component> extends JPanel implements IControl<Value> {
+public abstract class Control<Value, A extends Annotation, C extends Component> extends JPanel implements IControl<Value, A> {
 
 	protected abstract class SearchAdapter extends KeyAdapter {
 		

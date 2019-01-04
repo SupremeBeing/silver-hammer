@@ -25,7 +25,9 @@
  */
 package ru.silverhammer.core.control;
 
-public interface ICollectionControl<Item, Value> extends IControl<Value> {
+import java.lang.annotation.Annotation;
+
+public interface ICollectionControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
 	
 	void addItem(Item item);
 	

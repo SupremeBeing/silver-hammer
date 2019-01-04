@@ -29,10 +29,10 @@ import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.NumberItems;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class NumberItemsInitializer implements IInitializer<ICollectionControl<Number, ?>, NumberItems> {
+public class NumberItemsInitializer implements IInitializer<ICollectionControl<Number, ?, ?>, NumberItems> {
 
 	@Override
-	public void init(ICollectionControl<Number, ?> control, NumberItems annotation, Object data, IFieldReflection field) {
+	public void init(ICollectionControl<Number, ?, ?> control, NumberItems annotation, Object data, IFieldReflection field) {
 		for (double s : annotation.value()) {
 			control.addItem(s);
 		}

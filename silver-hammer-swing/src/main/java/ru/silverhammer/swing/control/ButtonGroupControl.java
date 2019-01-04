@@ -31,16 +31,16 @@ import java.util.*;
 import javax.swing.*;
 
 import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.core.control.annotation.ButtonGroup;
 
 public class ButtonGroupControl
-	extends ValidatableControl<Object, JPanel> implements ICollectionControl<Object, Object>, ISelectionControl<Object, Object> {
+	extends ValidatableControl<Object, ButtonGroup, JPanel> implements ICollectionControl<Object, Object, ButtonGroup> {
 
 	private static final long serialVersionUID = 7058197271259148125L;
 
 	private final List<Object> data = new ArrayList<>(); 
 	private final Map<Object, AbstractButton> buttons = new HashMap<>();
-	private SelectionType selectionType = SelectionType.Single; // TODO: support interval selection limitations
+	private boolean multiSelection = true;
 
 	public ButtonGroupControl() {
 		super(false);
@@ -52,17 +52,6 @@ public class ButtonGroupControl
 		return new JPanel(new GridLayout(0, 1, 0, 0));
 	}
 
-	@Override
-	public void setSelectionType(SelectionType type) {
-		selectionType = type;
-	}
-
-	@Override
-	public SelectionType getSelectionType() {
-		return selectionType;
-	}
-
-	@Override
 	public Object getSingleSelection() {
 		for (Object item : data) {
 			AbstractButton btn = getButton(item);
@@ -73,7 +62,6 @@ public class ButtonGroupControl
 		return null;
 	}
 
-	@Override
 	public Object[] getSelection() {
 		List<Object> result = new ArrayList<>();
 		for (Object item : data) {
@@ -85,7 +73,6 @@ public class ButtonGroupControl
 		return result.toArray(new Object[result.size()]);
 	}
 
-	@Override
 	public void select(Object value) {
 		AbstractButton button = getButton(value);
 		if (button != null && !button.isSelected()) {
@@ -94,7 +81,6 @@ public class ButtonGroupControl
 		}
 	}
 
-	@Override
 	public void deselect(Object value) {
 		AbstractButton button = getButton(value);
 		if (button != null && button.isSelected()) {
@@ -112,7 +98,7 @@ public class ButtonGroupControl
 	}
 
 	private AbstractButton createButton() {
-		if (selectionType == SelectionType.Single) {
+		if (!multiSelection) {
 			return new JRadioButton();
 		} else {
 			return new JCheckBox();
@@ -123,7 +109,7 @@ public class ButtonGroupControl
 		AbstractButton button = createButton();
 		button.setText(item.toString());
 		button.addActionListener(l -> fireValueChanged());
-		if (selectionType == SelectionType.Single) {
+		if (!multiSelection) {
 			button.addActionListener(l -> clearSelection(button));
 		}
 		return button;
@@ -142,7 +128,7 @@ public class ButtonGroupControl
 	
 	@Override
 	public Object getValue() {
-		if (selectionType == SelectionType.Single) {
+		if (!multiSelection) {
 			for (Object item : data) {
 				AbstractButton btn = getButton(item);
 				if (btn.isSelected()) {
@@ -164,7 +150,7 @@ public class ButtonGroupControl
 
 	@Override
 	public void setValue(Object value) {
-		if (selectionType == SelectionType.Single) {
+		if (!multiSelection) {
 			AbstractButton button = getButton(value);
 			if (button != null) {
 				button.setSelected(true);
@@ -258,5 +244,11 @@ public class ButtonGroupControl
 			buttons.put(o, button);
 		}
 		fireValueChanged();
+	}
+
+	@Override
+	public void init(ButtonGroup annotation) {
+		setEnabled(!annotation.readOnly());
+		multiSelection = annotation.multiSelection();
 	}
 }

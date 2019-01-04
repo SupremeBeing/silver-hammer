@@ -25,9 +25,11 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.control.annotation.Label;
+
 import javax.swing.JLabel;
 
-public class LabelControl extends Control<String, JLabel> {
+public class LabelControl extends Control<String, Label, JLabel> {
 
 	private static final long serialVersionUID = -8638431887174679228L;
 
@@ -49,5 +51,10 @@ public class LabelControl extends Control<String, JLabel> {
 	@Override
 	protected JLabel createComponent() {
 		return new JLabel();
+	}
+
+	@Override
+	public void init(Label annotation) {
+		setEnabled(!annotation.readOnly());
 	}
 }

@@ -29,9 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import ru.silverhammer.core.control.IEditableControl;
+import ru.silverhammer.core.control.annotation.Text;
 
-public class TextControl extends ValidatableControl<String, JTextField> implements IEditableControl<String> {
+public class TextControl extends ValidatableControl<String, Text, JTextField> {
 
 	private static final long serialVersionUID = -2398089634039989572L;
 
@@ -60,12 +60,10 @@ public class TextControl extends ValidatableControl<String, JTextField> implemen
 		return new JTextField();
 	}
 
-	@Override
 	public boolean isEditable() {
 		return getComponent().isEditable();
 	}
 
-	@Override
 	public void setEditable(boolean editable) {
 		getComponent().setEditable(editable);
 	}
@@ -78,5 +76,11 @@ public class TextControl extends ValidatableControl<String, JTextField> implemen
 	@Override
 	public void setValue(String value) {
 		getComponent().setText(value);
+	}
+
+	@Override
+	public void init(Text annotation) {
+		setEnabled(!annotation.readOnly());
+		setEditable(annotation.editable());
 	}
 }

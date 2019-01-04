@@ -33,16 +33,14 @@ import java.util.Objects;
 
 import ru.silverhammer.core.*;
 import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValidatableControl;
-import ru.silverhammer.core.control.IValueTypeControl.ValueType;
+import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.Tree;
 import ru.silverhammer.core.converter.annotation.MapToList;
 import ru.silverhammer.core.decorator.annotation.ButtonBar;
 import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
-import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
@@ -50,6 +48,7 @@ import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.validator.annotation.MinSize;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.swing.control.TableControl;
 import ru.silverhammer.swing.dialog.GenerationDialog;
 
 @Category(caption = "Environment", mnemonic = 'e', groups = {
@@ -70,9 +69,8 @@ public class Environment {
 
 	}
 	
-	@Table(captions = {"Key", "Value"})
+	@Table(captions = {"Key", "Value"}, value = ValueType.Content, visibleRows = 10)
 	@GroupId("env")
-	@ControlProperties(value = ValueType.Content, visibleRows = 10)
 	@MapToList(LinkedHashMap.class)
 	@ButtonBar(value = {
 			@Button(caption = "Add", icon = "/add.png", pressedMethod = "addPressed"),
@@ -80,17 +78,16 @@ public class Environment {
 	}, location = Location.Right, verticalAlignment = VerticalAlignment.Top)
 	private Map<String, Object> properties;
 	
-	@Tree
+	@Tree(visibleRows = 10)
 	@GroupId("env")
 	@Caption(value = "Current directory:", location = Location.Top)
-	@ControlProperties(visibleRows = 10)
 	@FileTreeItems(".")
 	private File root;
 
 	@SuppressWarnings("unused")
 	@InitializerMethod
 	private void initializeTable(UiMetadata metadata) {
-		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
+		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		table.addItem(new Object[] {"maven.test.skip", true});
 		table.addItem(new Object[] {"JDK version", "1.8.0"});
 		table.addItem(new Object[] {"timeout.interval", 100});
@@ -100,16 +97,16 @@ public class Environment {
 	@SuppressWarnings("unused")
 	@ValidatorMethod
 	private void validateTable(UiMetadata metadata) {
-		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
+		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		if (table instanceof IValidatableControl) {
-			IValidatableControl<?> control = (IValidatableControl<?>) table;
+			IValidatableControl<?, ?> control = (IValidatableControl<?, ?>) table;
 			if (control.isControlValid() && !hasProperty(table, "required.key")) {
 				control.setValidationMessage("Missing required property \"required.key\"");
 			}
 		}
 	}
 	
-	private boolean hasProperty(ICollectionControl<Object[], Object> table, String key) {
+	private boolean hasProperty(ICollectionControl<Object[], Object, ?> table, String key) {
 		for (int i = 0; i < table.getItemCount(); i++) {
 			Object[] row = table.getItem(i);
 			if (row.length > 0 && Objects.equals(row[0], key)) {
@@ -121,7 +118,7 @@ public class Environment {
 
 	@SuppressWarnings("unused")
 	private void addPressed(UiMetadata metadata) {
-		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
+		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		KeyValue val = new KeyValue();
 		GenerationDialog dialog = new GenerationDialog(null, val);
 		dialog.setTitle("Add property");
@@ -133,9 +130,8 @@ public class Environment {
 
 	@SuppressWarnings("unused")
 	private void deletePressed(UiMetadata metadata) {
-		ICollectionControl<Object[], Object> table = metadata.findControl(this, "properties");
-		ISelectionControl<Object[], Object> selection = metadata.findControl(this, "properties");
-		Object[] sel = selection.getSingleSelection();
+		TableControl table = metadata.findControl(this, "properties");
+		Object[] sel = table.getSingleSelection();
 		if (sel != null) {
 			table.removeItem(sel);
 		}
@@ -144,8 +140,8 @@ public class Environment {
 	@SuppressWarnings("unused")
 	private boolean updateDelete(UiMetadata metadata) {
 		if (metadata != null) {
-			ISelectionControl<Object[], Object> selection = metadata.findControl(this, "properties");
-			return selection.getSingleSelection() != null;
+			TableControl control = metadata.findControl(this, "properties");
+			return control.getSingleSelection() != null;
 		}
 		return false;
 	}

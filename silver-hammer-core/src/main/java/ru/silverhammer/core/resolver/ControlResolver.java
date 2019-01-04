@@ -35,16 +35,16 @@ import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlResolver implements IControlResolver {
 	
-	private final Map<Class<? extends Annotation>, Class<? extends IControl<?>>> controlMapping = new HashMap<>();
+	private final Map<Class<? extends Annotation>, Class<? extends IControl<?, ?>>> controlMapping = new HashMap<>();
 	private final Map<Class<? extends Annotation>, Class<? extends IDecorator<?, ?>>> decoratorMapping = new HashMap<>();
 
 	@Override
-	public final Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass) {
+	public final Class<? extends IControl<?, ?>> getControlClass(Class<? extends Annotation> annotationClass) {
 		return controlMapping.get(annotationClass);
 	}
 
 	@Override
-	public void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass) {
+	public void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?, ?>> controlClass) {
 		if (annotationClass != null && controlClass != null) {
 			controlMapping.put(annotationClass, controlClass);
 		}
@@ -65,7 +65,7 @@ public class ControlResolver implements IControlResolver {
 	@Override
 	public boolean hasControlAnnotation(IFieldReflection fieldReflection) {
 		for (Annotation annotation : fieldReflection.getAnnotations()) {
-			Class<? extends IControl<?>> controlClass = getControlClass(annotation.annotationType());
+			Class<? extends IControl<?, ?>> controlClass = getControlClass(annotation.annotationType());
 			if (controlClass != null) {
 				return true;
 			}

@@ -29,10 +29,10 @@ import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class EnumerationItemsInitializer implements IInitializer<ICollectionControl<Object, ?>, EnumerationItems> {
+public class EnumerationItemsInitializer implements IInitializer<ICollectionControl<Object, ?, ?>, EnumerationItems> {
 
 	@Override
-	public void init(ICollectionControl<Object, ?> control, EnumerationItems annotation, Object data, IFieldReflection field) {
+	public void init(ICollectionControl<Object, ?, ?> control, EnumerationItems annotation, Object data, IFieldReflection field) {
 		Class<?> cl = annotation.value() == Void.class ? field.getType() : annotation.value();
 		for (Object e : cl.getEnumConstants()) {
 			control.addItem(e);

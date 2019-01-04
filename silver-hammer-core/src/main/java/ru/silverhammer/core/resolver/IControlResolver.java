@@ -33,11 +33,11 @@ import ru.silverhammer.reflection.IFieldReflection;
 
 public interface IControlResolver {
 
-	Class<? extends IControl<?>> getControlClass(Class<? extends Annotation> annotationClass);
+	Class<? extends IControl<?, ?>> getControlClass(Class<? extends Annotation> annotationClass);
 
 	Class<? extends IDecorator<?, ?>> getDecoratorClass(Class<? extends Annotation> annotationClass);
 
-	void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?>> controlClass);
+	void bindControl(Class<? extends Annotation> annotationClass, Class<? extends IControl<?, ?>> controlClass);
 
 	void bindDecorator(Class<? extends Annotation> annotationClass, Class<? extends IDecorator<?, ?>> decoratorClass);
 

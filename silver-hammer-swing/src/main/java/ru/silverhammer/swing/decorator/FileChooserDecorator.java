@@ -39,11 +39,11 @@ import ru.silverhammer.core.decorator.annotation.FileChooser;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.swing.control.Control;
 
-public class FileChooserDecorator implements IDecorator<IControl<String>, FileChooser> {
+public class FileChooserDecorator implements IDecorator<IControl<String, ?>, FileChooser> {
 
 	private final IStringProcessor processor;
 
-	private IControl<String> control;
+	private IControl<String, ?> control;
 	private JButton button;
 
 	public FileChooserDecorator(IStringProcessor processor) {
@@ -58,13 +58,13 @@ public class FileChooserDecorator implements IDecorator<IControl<String>, FileCh
 	}
 
 	@Override
-	public void setControl(IControl<String> control) {
+	public void setControl(IControl<String, ?> control) {
 		this.control = control;
-		((Control<?, ?>) control).add(button, BorderLayout.EAST);
+		((Control<?, ?, ?>) control).add(button, BorderLayout.EAST);
 	}
 
 	@Override
-	public IControl<String> getControl() {
+	public IControl<String, ?> getControl() {
 		return control;
 	}
 
@@ -97,7 +97,7 @@ public class FileChooserDecorator implements IDecorator<IControl<String>, FileCh
 		}
 
 		String approveCaption = processor.getString(annotation.approveCaption());
-		if (dlg.showDialog(((Control<?, ?>) control), approveCaption) == JFileChooser.APPROVE_OPTION) {
+		if (dlg.showDialog(((Control<?, ?, ?>) control), approveCaption) == JFileChooser.APPROVE_OPTION) {
 			String file = dlg.getSelectedFile().getPath();
 			if (dlg.getFileFilter() instanceof FileNameExtensionFilter) {
 				file = checkExtension(file, (FileNameExtensionFilter) dlg.getFileFilter());

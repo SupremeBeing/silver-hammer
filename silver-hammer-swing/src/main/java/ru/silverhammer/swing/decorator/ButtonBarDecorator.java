@@ -48,12 +48,12 @@ import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.swing.control.Control;
 
-public class ButtonBarDecorator implements IDecorator<IControl<?>, ButtonBar> {
+public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar> {
 
 	private final IStringProcessor processor;
 	private final IInjector injector;
 
-	private IControl<?> control;
+	private IControl<?, ?> control;
 	private JPanel stub;
 	private ButtonBar annotation;
 	private Object data;
@@ -133,7 +133,7 @@ public class ButtonBarDecorator implements IDecorator<IControl<?>, ButtonBar> {
 	}
 
 	@Override
-	public void setControl(IControl<?> control) {
+	public void setControl(IControl<?, ?> control) {
 		this.control = control;
 		for (Button b : annotation.value()) {
 			if (b.enabledMethod().length() > 0) {
@@ -146,18 +146,18 @@ public class ButtonBarDecorator implements IDecorator<IControl<?>, ButtonBar> {
 			}
 		}
 		if (annotation.location() == Location.Bottom) {
-			((Control<?, ?>) control).add(stub, BorderLayout.SOUTH);
+			((Control<?, ?, ?>) control).add(stub, BorderLayout.SOUTH);
 		} else if (annotation.location() == Location.Top) {
-			((Control<?, ?>) control).add(stub, BorderLayout.NORTH);
+			((Control<?, ?, ?>) control).add(stub, BorderLayout.NORTH);
 		} else if (annotation.location() == Location.Left) {
-			((Control<?, ?>) control).add(stub, BorderLayout.WEST);
+			((Control<?, ?, ?>) control).add(stub, BorderLayout.WEST);
 		} else if (annotation.location() == Location.Right) {
-			((Control<?, ?>) control).add(stub, BorderLayout.EAST);
+			((Control<?, ?, ?>) control).add(stub, BorderLayout.EAST);
 		}
 	}
 
 	@Override
-	public IControl<?> getControl() {
+	public IControl<?, ?> getControl() {
 		return control;
 	}
 

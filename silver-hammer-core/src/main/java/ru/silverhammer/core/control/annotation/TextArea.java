@@ -36,4 +36,12 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface TextArea {}
+public @interface TextArea {
+
+    boolean readOnly() default false;
+
+    boolean editable() default true;
+
+    int visibleRows() default 0;
+
+}

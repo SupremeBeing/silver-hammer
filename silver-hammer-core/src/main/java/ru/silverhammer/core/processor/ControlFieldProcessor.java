@@ -60,19 +60,21 @@ public class ControlFieldProcessor implements IProcessor<IFieldReflection, Annot
 		this.fieldProcessor = fieldProcessor;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, Annotation annotation) {
-		Class<? extends IControl<?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
+		Class<? extends IControl<?, ?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
-			IControl<?> control = injector.instantiate(controlClass);
+			IControl control = injector.instantiate(controlClass);
 			decorateControl(control, data, reflection);
 			addControlAttributes(metadata, reflection.getAnnotation(GroupId.class), createControlAttributes(control, data, reflection));
+			control.init(annotation);
 			initializeControl(control, data, reflection);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void decorateControl(IControl<?> control, Object data, IFieldReflection field) {
+	private void decorateControl(IControl<?, ?> control, Object data, IFieldReflection field) {
 		for (Annotation a : field.getAnnotations()) {
 			Class<? extends IDecorator<?, ?>> decoratorClass = controlResolver.getDecoratorClass(a.annotationType());
 			if (decoratorClass != null) {
@@ -84,15 +86,15 @@ public class ControlFieldProcessor implements IProcessor<IFieldReflection, Annot
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initializeControl(IControl<?> control, Object data, IFieldReflection field) {
+	private void initializeControl(IControl<?, ?> control, Object data, IFieldReflection field) {
 		List<MarkedAnnotation<InitializerReference>> marked = field.getMarkedAnnotations(InitializerReference.class);
 		for (MarkedAnnotation<InitializerReference> ma : marked) {
-			IInitializer<IControl<?>, Annotation> initializer = (IInitializer<IControl<?>, Annotation>) injector.instantiate(ma.getMarker().value());
+			IInitializer<IControl<?, ?>, Annotation> initializer = (IInitializer<IControl<?, ?>, Annotation>) injector.instantiate(ma.getMarker().value());
 			initializer.init(control, ma.getAnnotation(), data, field);
 		}
 		Object value = field.getValue(data);
 		value = fieldProcessor.getControlValue(value, field);
-		((IControl<Object>) control).setValue(value);
+		((IControl<Object, ?>) control).setValue(value);
 	}
 
 	private void addControlAttributes(UiMetadata metadata, GroupId gi, ControlAttributes attributes) {
@@ -105,7 +107,7 @@ public class ControlFieldProcessor implements IProcessor<IFieldReflection, Annot
 		group.addControlAttributes(attributes);
 	}
 	
-	private ControlAttributes createControlAttributes(IControl<?> control, Object data, IFieldReflection field) {
+	private ControlAttributes createControlAttributes(IControl<?, ?> control, Object data, IFieldReflection field) {
 		ControlAttributes result = new ControlAttributes(control, data, field);
 		Caption caption = field.getAnnotation(Caption.class);
 		Description description = field.getAnnotation(Description.class);

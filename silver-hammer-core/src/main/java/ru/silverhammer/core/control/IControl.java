@@ -25,7 +25,9 @@
  */
 package ru.silverhammer.core.control;
 
-public interface IControl<Value> {
+import java.lang.annotation.Annotation;
+
+public interface IControl<Value, A extends Annotation> {
 
 	Value getValue();
 	
@@ -38,5 +40,7 @@ public interface IControl<Value> {
 	boolean isEnabled();
 	
 	void setEnabled(boolean enabled);
+
+	void init(A annotation);
 
 }

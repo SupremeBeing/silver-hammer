@@ -36,4 +36,8 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface Label {}
+public @interface Label {
+
+    boolean readOnly() default false;
+
+}

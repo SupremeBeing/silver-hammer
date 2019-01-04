@@ -186,7 +186,7 @@ public class UiMetadata {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends IControl<?>> T findControl(Object data, Class<?> type, String fieldName) {
+	public <T extends IControl<?, ?>> T findControl(Object data, Class<?> type, String fieldName) {
 		IFieldReflection field = new ClassReflection<>(type).findField(fieldName);
 		if (field != null) {
 			ControlAttributes attrs = findControlAttributes(ca -> ca.getFieldReflection().equals(field) && ca.getData().equals(data));
@@ -197,7 +197,7 @@ public class UiMetadata {
 		return null;
 	}
 	
-	public <T extends IControl<?>> T findControl(Object data, String fieldName) {
+	public <T extends IControl<?, ?>> T findControl(Object data, String fieldName) {
 		return findControl(data, data.getClass(), fieldName);
 	}
 	
@@ -205,7 +205,7 @@ public class UiMetadata {
 		visitControlAttributes(c -> commit(c.getData(), c.getFieldReflection(), c.getControl()));
 	}
 
-	private void commit(Object data, IFieldReflection field, IControl<?> control) {
+	private void commit(Object data, IFieldReflection field, IControl<?, ?> control) {
 		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
 		field.setValue(data, value);
 	}
@@ -214,9 +214,9 @@ public class UiMetadata {
 		return findControlAttributes(ca -> !isControlValid(ca.getControl())) == null;
 	}
 	
-	private boolean isControlValid(IControl<?> control) {
+	private boolean isControlValid(IControl<?, ?> control) {
 		if (control instanceof IValidatableControl) {
-			return ((IValidatableControl<?>) control).isControlValid();
+			return ((IValidatableControl<?, ?>) control).isControlValid();
 		}
 		return true;
 	}
@@ -227,7 +227,7 @@ public class UiMetadata {
 		validateMethods();	
 	}
 
-	private void init(IControl<?> control, IFieldReflection field) {
+	private void init(IControl<?, ?> control, IFieldReflection field) {
 		validateControl(control, field);	
 		control.addControlListener(c -> {
 			validateControl(control, field);	
@@ -235,12 +235,12 @@ public class UiMetadata {
 		});
 	}
 
-	private void validateControl(IControl<?> control, IFieldReflection field) {
+	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
 		if (control instanceof IValidatableControl) {
 			Object value = control.getValue();
 			Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
 			String msg = getValidationMessage(invalidAnnotation);
-			((IValidatableControl<?>) control).setValidationMessage(msg);
+			((IValidatableControl<?, ?>) control).setValidationMessage(msg);
 		}
 	}
 	

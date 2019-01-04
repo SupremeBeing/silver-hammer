@@ -31,10 +31,8 @@ import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToList;
-import ru.silverhammer.core.initializer.annotation.ControlProperties;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.validator.annotation.NumberFormat;
 import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
@@ -80,7 +78,6 @@ public class FontSettings {
 	private int size = 12;
 
 	@ButtonGroup
-	@ControlProperties(selection = ISelectionControl.SelectionType.Multi)
 	@GroupId("font")
 	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
 	@EnumerationItems(Style.class)

@@ -38,6 +38,6 @@ import ru.silverhammer.core.initializer.IInitializer;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InitializerReference {
 
-	Class<? extends IInitializer<? extends IControl<?>, ? extends Annotation>> value();
+	Class<? extends IInitializer<? extends IControl<?, ?>, ? extends Annotation>> value();
 	
 }

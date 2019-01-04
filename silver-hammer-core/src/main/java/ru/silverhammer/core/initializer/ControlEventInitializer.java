@@ -32,7 +32,7 @@ import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
 
-public class ControlEventInitializer implements IInitializer<IControl<?>, ControlEvent> {
+public class ControlEventInitializer implements IInitializer<IControl<?, ?>, ControlEvent> {
 
 	private final IInjector injector;
 
@@ -41,7 +41,7 @@ public class ControlEventInitializer implements IInitializer<IControl<?>, Contro
 	}
 
 	@Override
-	public void init(IControl<?> control, ControlEvent annotation, Object data, IFieldReflection field) {
+	public void init(IControl<?, ?> control, ControlEvent annotation, Object data, IFieldReflection field) {
 		control.addControlListener(c -> {
 			IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(annotation.value());
 			injector.invoke(data, method);

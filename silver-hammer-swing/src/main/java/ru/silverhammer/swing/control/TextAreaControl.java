@@ -29,10 +29,9 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import ru.silverhammer.core.control.IEditableControl;
-import ru.silverhammer.core.control.IRowsControl;
+import ru.silverhammer.core.control.annotation.TextArea;
 
-public class TextAreaControl extends ValidatableControl<String, JTextArea> implements IRowsControl<String>, IEditableControl<String> {
+public class TextAreaControl extends ValidatableControl<String, TextArea, JTextArea> {
 
 	private static final long serialVersionUID = -2398089634039989572L;
 
@@ -61,22 +60,18 @@ public class TextAreaControl extends ValidatableControl<String, JTextArea> imple
 		return new JTextArea();
 	}
 
-	@Override
 	public boolean isEditable() {
 		return getComponent().isEditable();
 	}
 
-	@Override
 	public void setEditable(boolean editable) {
 		getComponent().setEditable(editable);
 	}
 
-	@Override
 	public int getVisibleRowCount() {
 		return getComponent().getRows();
 	}
 
-	@Override
 	public void setVisibleRowCount(int count) {
 		getComponent().setRows(count);
 	}
@@ -89,5 +84,14 @@ public class TextAreaControl extends ValidatableControl<String, JTextArea> imple
 	@Override
 	public void setValue(String value) {
 		getComponent().setText(value);
+	}
+
+	@Override
+	public void init(TextArea annotation) {
+		setEnabled(!annotation.readOnly());
+		setEditable(annotation.editable());
+		if (annotation.visibleRows() > 0) {
+			setVisibleRowCount(annotation.visibleRows());
+		}
 	}
 }

@@ -26,12 +26,14 @@
 package ru.silverhammer.swing.control;
 
 import java.awt.Color;
+import java.lang.annotation.Annotation;
 
 import javax.swing.JComponent;
 
 import ru.silverhammer.core.control.IValidatableControl;
 
-public abstract class ValidatableControl<Value, C extends JComponent> extends Control<Value, C> implements IValidatableControl<Value> {
+public abstract class ValidatableControl<Value, A extends Annotation, C extends JComponent>
+		extends Control<Value, A, C> implements IValidatableControl<Value, A> {
 
 	private static final long serialVersionUID = 7813353790197108681L;
 

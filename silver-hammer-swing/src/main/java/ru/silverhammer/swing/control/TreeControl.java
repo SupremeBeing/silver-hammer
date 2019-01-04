@@ -39,11 +39,10 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import ru.silverhammer.core.control.IHierarchyControl;
-import ru.silverhammer.core.control.IRowsControl;
-import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.core.control.SelectionType;
+import ru.silverhammer.core.control.annotation.Tree;
 
-public class TreeControl extends ValidatableControl<Object, JTree>
-	implements IHierarchyControl<Object, Object>, IRowsControl<Object>, ISelectionControl<Object, Object> {
+public class TreeControl extends ValidatableControl<Object, Tree, JTree> implements IHierarchyControl<Object, Object, Tree> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 
@@ -132,17 +131,14 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		}
 	}
 
-	@Override
 	public int getVisibleRowCount() {
 		return getComponent().getVisibleRowCount();
 	}
 
-	@Override
 	public void setVisibleRowCount(int count) {
 		getComponent().setVisibleRowCount(count);
 	}
 
-	@Override
 	public SelectionType getSelectionType() {
 		int mode = getComponent().getSelectionModel().getSelectionMode();
 		if (mode == TreeSelectionModel.SINGLE_TREE_SELECTION) {
@@ -155,7 +151,6 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		return null;
 	}
 
-	@Override
 	public void setSelectionType(SelectionType mode) {
 		if (mode == SelectionType.Single) {
 			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -166,7 +161,6 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		}
 	}
 
-	@Override
 	public Object getSingleSelection() {
 		TreePath path = getComponent().getSelectionPath();
 		if (path != null) {
@@ -175,7 +169,6 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		return null;
 	}
 
-	@Override
 	public Object[] getSelection() {
 		List<Object> result = new ArrayList<>();
 		TreePath[] paths = getComponent().getSelectionPaths();
@@ -187,7 +180,6 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		return result.toArray(new Object[result.size()]);
 	}
 
-	@Override
 	public void select(Object value) {
 		DefaultMutableTreeNode node = nodes.get(value);
 		if (node != null) {
@@ -196,7 +188,6 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 		}
 	}
 
-	@Override
 	public void deselect(Object value) {
 		DefaultMutableTreeNode node = nodes.get(value);
 		if (node != null) {
@@ -311,5 +302,14 @@ public class TreeControl extends ValidatableControl<Object, JTree>
 	public Object getParent(Object child) {
 		DefaultMutableTreeNode childNode = nodes.get(child);
 		return ((DefaultMutableTreeNode) childNode.getParent()).getUserObject();
+	}
+
+	@Override
+	public void init(Tree annotation) {
+		setEnabled(!annotation.readOnly());
+		if (annotation.visibleRows() > 0) {
+			setVisibleRowCount(annotation.visibleRows());
+		}
+		setSelectionType(annotation.selection());
 	}
 }
