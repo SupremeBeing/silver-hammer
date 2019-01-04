@@ -40,6 +40,7 @@ import ru.silverhammer.core.converter.ValueToItemsConverter;
 @ConverterReference(ValueToItemsConverter.class)
 public @interface ValueToItems {
 
+	// TODO: consider using type of input data as default type
 	Class<?> value();
 	
 	boolean annotatedOnly() default false;

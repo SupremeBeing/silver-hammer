@@ -49,6 +49,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	public Object convertForward(Object source, ValueToItems annotation) {
 		if (source != null) {
 			List<IFieldReflection> fields = collectFields(annotation.value(), annotation);
+			// TODO: consider adding array support
 			if (source instanceof Collection) {
 				Collection<Object[]> result = new ArrayList<>();
 				for (Object o : (Collection<?>) source) {
