@@ -35,4 +35,8 @@ public class HtmlUiBuilder implements IUiBuilder<String> {
         return "";
     }
 
+    @Override
+    public boolean showDialog(String title, Object... data) {
+        return false;
+    }
 }

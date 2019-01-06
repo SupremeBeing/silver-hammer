@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,17 +21,29 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core;
+package ru.silverhammer.demo.settings;
 
-import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.annotation.ButtonGroup;
+import ru.silverhammer.core.initializer.annotation.StringItems;
+import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.GeneratableField;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
 
-public interface IUiBuilder<Container> {
+@Category(caption = "Settings", mnemonic = 's', groups = {
+		@Group(value = "lang", caption = "Programming language"),
+		@Group(value = "font", caption = "Font")
+})
+public class Settings {
 
-	Container buildUi(UiMetadata metadata);
+	@ButtonGroup
+	@GroupId("lang")
+	@StringItems({"Java", "C#", "C++", "Python", "JavaScript", "PHP"})
+	private String language = "Java";
 
-	// TODO: revisit
-	boolean showDialog(String title, Object... data);
-
+	@GeneratableField
+	private FontSettings fontSettings = new FontSettings();
+	
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,19 +21,15 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.demo.user;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+package ru.silverhammer.demo.user;
 
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
+import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToCollection;
@@ -44,18 +40,16 @@ import ru.silverhammer.core.initializer.annotation.ControlEvent;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.core.validator.annotation.DateFormat;
-import ru.silverhammer.core.validator.annotation.FileExists;
-import ru.silverhammer.core.validator.annotation.MaxDate;
-import ru.silverhammer.core.validator.annotation.MinDate;
-import ru.silverhammer.core.validator.annotation.MinSize;
-import ru.silverhammer.core.validator.annotation.NotNullable;
-import ru.silverhammer.core.validator.annotation.StringFormat;
-import ru.silverhammer.swing.control.TextControl;
-import ru.silverhammer.swing.demo.user.UserGroup.Type;
+import ru.silverhammer.core.validator.annotation.*;
+import ru.silverhammer.demo.user.UserGroup.Type;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 @Category(caption = "user.tab", description = "User personal information", icon = "/user.png", mnemonic = 'u', groups = {
 		@Group("user"),
@@ -161,8 +155,8 @@ public class User {
 
 	@SuppressWarnings("unused")
 	private void setEmail(UiMetadata metadata) {
-		TextControl emailControl = metadata.findControl(this, "email");
-		TextControl nameControl = metadata.findControl(this, "name");
+		IControl<String, ?> emailControl = metadata.findControl(this, "email");
+		IControl<String, ?> nameControl = metadata.findControl(this, "name");
 		String email = emailControl.getValue();
 		String name = nameControl.getValue();
 		if (email != null && (name == null || name.length() == 0 || email.startsWith(name))) {

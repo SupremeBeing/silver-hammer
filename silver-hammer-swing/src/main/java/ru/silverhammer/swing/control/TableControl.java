@@ -37,6 +37,7 @@ import javax.swing.table.AbstractTableModel;
 
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
@@ -45,7 +46,8 @@ import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class TableControl extends ValidatableControl<Object, Table, JTable> implements ICollectionControl<Object[], Object, Table> {
+public class TableControl extends ValidatableControl<Object, Table, JTable>
+		implements ICollectionControl<Object[], Object, Table>, ISelectionControl<Object[], Object, Table> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 
@@ -210,11 +212,13 @@ public class TableControl extends ValidatableControl<Object, Table, JTable> impl
 		}
 	}
 
+	@Override
 	public Object[] getSingleSelection() {
 		int i = getComponent().getSelectedRow();
 		return i == -1 ? null : data.get(i);
 	}
 
+	@Override
 	public Object[][] getSelection() {
 		List<Object[]> result = new ArrayList<>();
 		for (int i : getComponent().getSelectedRows()) {
@@ -223,6 +227,7 @@ public class TableControl extends ValidatableControl<Object, Table, JTable> impl
 		return result.toArray(new Object[result.size()][]);
 	}
 
+	@Override
 	public void select(Object[] value) {
 		int i = findRow(value);
 		if (i != -1) {
@@ -230,6 +235,7 @@ public class TableControl extends ValidatableControl<Object, Table, JTable> impl
 		}
 	}
 
+	@Override
 	public void deselect(Object[] value) {
 		int i = findRow(value);
 		if (i != -1) {

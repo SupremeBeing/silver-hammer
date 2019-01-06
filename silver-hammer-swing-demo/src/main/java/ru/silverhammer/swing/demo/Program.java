@@ -27,9 +27,9 @@ package ru.silverhammer.swing.demo;
 
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.MultilingualStringProcessor;
-import ru.silverhammer.swing.demo.settings.Environment;
-import ru.silverhammer.swing.demo.settings.Settings;
-import ru.silverhammer.swing.demo.user.User;
+import ru.silverhammer.demo.settings.Environment;
+import ru.silverhammer.demo.settings.Settings;
+import ru.silverhammer.demo.user.User;
 import ru.silverhammer.swing.dialog.GenerationDialog;
 
 public class Program {

@@ -28,6 +28,7 @@ package ru.silverhammer.swing.dialog;
 import java.awt.Container;
 import java.awt.Window;
 
+import ru.silverhammer.core.IUiBuilder;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValueListener;
 import ru.silverhammer.core.metadata.MetadataCollector;
@@ -52,6 +53,8 @@ public class GenerationDialog extends StandardDialog implements IValueListener {
 		MetadataCollector collector = new MetadataCollector(new SwingControlResolver(), stringProcessor);
 		metadata = collector.collect(data);
 		SwingUiBuilder builder = new SwingUiBuilder();
+		// TODO: revisit
+		metadata.getInjector().bind(IUiBuilder.class, builder);
 		Container container = builder.buildUi(metadata);
 		setCanAccept(metadata.isValid());
 		metadata.visitControlAttributes(ca -> ca.getControl().addValueListener(this));

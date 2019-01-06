@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,24 +21,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.initializer;
+package ru.silverhammer.demo.user;
 
-import java.awt.GraphicsEnvironment;
+import ru.silverhammer.core.GroupId;
+import ru.silverhammer.core.control.annotation.Label;
+import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
 
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.initializer.IInitializer;
-import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.swing.initializer.annotation.FontFamilyItems;
+@Category(caption = "Achievements", mnemonic = 'a', groups = {
+		@Group("list")
+})
+public class Achievement {
 
-public class FontFamilyItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, FontFamilyItems> {
-
-	@Override
-	public void init(ICollectionControl<String, ?, ?> control, FontFamilyItems annotation, Object data, IFieldReflection field) {
-		for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-			control.addItem(name);
-		}
+	@Label
+	@GroupId("list")
+	private String name;
+	
+	public Achievement(String name) {
+		this.name = name;
 	}
-
 }

@@ -55,6 +55,11 @@ public class UiMetadata {
 		this.stringProcessor = stringProcessor;
 	}
 
+	// TODO: remove
+	public IInjector getInjector() {
+		return injector;
+	}
+
 	public void addInitializer(MethodAttributes attributes) {
 		if (attributes != null) {
 			initializers.add(attributes);

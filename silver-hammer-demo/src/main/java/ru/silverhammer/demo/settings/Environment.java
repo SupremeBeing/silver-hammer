@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,18 +21,13 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.demo.settings;
-
-import java.io.File;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+package ru.silverhammer.demo.settings;
 
 import ru.silverhammer.core.*;
 import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.Table;
@@ -43,13 +38,17 @@ import ru.silverhammer.core.decorator.annotation.ButtonBar;
 import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.processor.annotation.Categories.Category;
+import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
 import ru.silverhammer.core.validator.annotation.MinSize;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.swing.control.TableControl;
-import ru.silverhammer.swing.dialog.GenerationDialog;
+
+import java.io.File;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Category(caption = "Environment", mnemonic = 'e', groups = {
 		@Group(value = "env")
@@ -117,30 +116,28 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private void addPressed(UiMetadata metadata) {
+	private void addPressed(UiMetadata metadata, IUiBuilder<?> builder) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		KeyValue val = new KeyValue();
-		GenerationDialog dialog = new GenerationDialog(null, val);
-		dialog.setTitle("Add property");
-		dialog.setVisible(true);
-		if (dialog.isAccepted()) {
+		if (builder.showDialog("Add property", val)) {
 			table.addItem(new Object[] {val.key, val.value});
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private void deletePressed(UiMetadata metadata) {
-		TableControl table = metadata.findControl(this, "properties");
-		Object[] sel = table.getSingleSelection();
+		ISelectionControl<Object[], ?, ?> sc = metadata.findControl(this, "properties");
+		Object[] sel = sc.getSingleSelection();
 		if (sel != null) {
-			table.removeItem(sel);
+			ICollectionControl<Object[], ?, ?> cc = metadata.findControl(this, "properties");
+			cc.removeItem(sel);
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private boolean updateDelete(UiMetadata metadata) {
 		if (metadata != null) {
-			TableControl control = metadata.findControl(this, "properties");
+			ISelectionControl<?, ?, ?> control = metadata.findControl(this, "properties");
 			return control.getSingleSelection() != null;
 		}
 		return false;
