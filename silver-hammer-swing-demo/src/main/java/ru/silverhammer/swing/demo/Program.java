@@ -25,12 +25,17 @@
  */
 package ru.silverhammer.swing.demo;
 
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.core.IUiBuilder;
+import ru.silverhammer.core.metadata.MetadataCollector;
+import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.MultilingualStringProcessor;
 import ru.silverhammer.demo.settings.Environment;
 import ru.silverhammer.demo.settings.Settings;
 import ru.silverhammer.demo.user.User;
-import ru.silverhammer.swing.dialog.GenerationDialog;
+import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.injection.Injector;
+import ru.silverhammer.swing.SwingControlResolver;
+import ru.silverhammer.swing.SwingUiBuilder;
 
 public class Program {
 
@@ -38,10 +43,14 @@ public class Program {
 		Environment env = new Environment();
 		Settings settings = new Settings();
 		User user = new User();
-		IStringProcessor stringProcessor = new MultilingualStringProcessor("messages");
-		GenerationDialog dialog = new GenerationDialog(null, stringProcessor, user, env, settings);
-		dialog.setTitle("Silver Hammer Demo");
-		dialog.setVisible(true);
+
+		IInjector injector = new Injector();
+		MetadataCollector collector = new MetadataCollector(new SwingControlResolver(), new MultilingualStringProcessor("messages"), injector);
+		UiMetadata metadata = collector.collect(user, env, settings);
+		SwingUiBuilder builder = new SwingUiBuilder();
+		injector.bind(IUiBuilder.class, builder);
+
+		builder.showDialog("Silver Hammer Demo", metadata);
 	}
 
 }

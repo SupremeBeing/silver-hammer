@@ -37,11 +37,13 @@ import ru.silverhammer.core.converter.annotation.MapToCollection;
 import ru.silverhammer.core.decorator.annotation.ButtonBar;
 import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
+import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.processor.annotation.InitializerMethod;
 import ru.silverhammer.core.processor.annotation.ValidatorMethod;
+import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.validator.annotation.MinSize;
 
 import java.io.File;
@@ -116,10 +118,11 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private void addPressed(UiMetadata metadata, IUiBuilder<?> builder) {
+	private void addPressed(UiMetadata metadata, IUiBuilder<?> builder, IControlResolver resolver) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		KeyValue val = new KeyValue();
-		if (builder.showDialog("Add property", val)) {
+		MetadataCollector collector = new MetadataCollector(resolver);
+		if (builder.showDialog("Add property", collector.collect(val))) {
 			table.addItem(new Object[] {val.key, val.value});
 		}
 	}

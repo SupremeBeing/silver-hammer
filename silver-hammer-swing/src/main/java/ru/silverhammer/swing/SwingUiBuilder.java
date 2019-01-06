@@ -202,8 +202,8 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 	}
 
 	@Override
-	public boolean showDialog(String title, Object... data) {
-		GenerationDialog dialog = new GenerationDialog(null, data);
+	public boolean showDialog(String title, UiMetadata metadata) {
+		GenerationDialog dialog = new GenerationDialog(null, this, metadata);
 		dialog.setTitle(title);
 		dialog.setVisible(true);
 		return dialog.isAccepted();

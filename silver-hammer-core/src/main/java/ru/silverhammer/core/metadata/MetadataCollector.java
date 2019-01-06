@@ -37,27 +37,27 @@ import ru.silverhammer.injection.Injector;
 public final class MetadataCollector {
 	
 	private final IStringProcessor stringProcessor;
-	private final IControlResolver controlResolver;
+	private final IInjector injector;
+	private final FieldProcessor fieldProcessor;
+	private final IProcessor<?, ?> processor;
 
 	public MetadataCollector(IControlResolver controlResolver) {
-		this(controlResolver, new SimpleStringProcessor());
+		this(controlResolver, new SimpleStringProcessor(), new Injector());
 	}
 	
-	public MetadataCollector(IControlResolver controlResolver, IStringProcessor stringProcessor) {
-		this.controlResolver = controlResolver;
+	public MetadataCollector(IControlResolver controlResolver, IStringProcessor stringProcessor, IInjector injector) {
 		this.stringProcessor = stringProcessor;
-	}
-
-	// TODO: consider adding error log
-	public UiMetadata collect(Object... data) {
-		IInjector injector = new Injector();
-		FieldProcessor fieldProcessor = new FieldProcessor(injector);
-		IProcessor<?, ?> processor = new Processor<>(injector);
+		this.injector = injector;
+		fieldProcessor = new FieldProcessor(injector);
+		processor = new Processor<>(injector);
 
 		injector.bind(IStringProcessor.class, stringProcessor);
 		injector.bind(IControlResolver.class, controlResolver);
 		injector.bind(FieldProcessor.class, fieldProcessor);
-		
+	}
+
+	// TODO: consider adding error log
+	public UiMetadata collect(Object... data) {
 		UiMetadata metadata = new UiMetadata(injector, fieldProcessor, stringProcessor);
 		for (Object o : data) {
 			if (o != null) {

@@ -31,12 +31,7 @@ import java.awt.Window;
 import ru.silverhammer.core.IUiBuilder;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValueListener;
-import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.core.string.SimpleStringProcessor;
-import ru.silverhammer.swing.SwingControlResolver;
-import ru.silverhammer.swing.SwingUiBuilder;
 
 public class GenerationDialog extends StandardDialog implements IValueListener {
 
@@ -44,21 +39,12 @@ public class GenerationDialog extends StandardDialog implements IValueListener {
 
 	private final UiMetadata metadata;
 
-	public GenerationDialog(Window owner, Object... data) {
-		this(owner, new SimpleStringProcessor(), data);
-	}
-
-	public GenerationDialog(Window owner, IStringProcessor stringProcessor, Object... data) {
+	public GenerationDialog(Window owner, IUiBuilder<Container> builder, UiMetadata metadata) {
 		super(owner);
-		MetadataCollector collector = new MetadataCollector(new SwingControlResolver(), stringProcessor);
-		metadata = collector.collect(data);
-		SwingUiBuilder builder = new SwingUiBuilder();
-		// TODO: revisit
-		metadata.getInjector().bind(IUiBuilder.class, builder);
-		Container container = builder.buildUi(metadata);
+		this.metadata = metadata;
 		setCanAccept(metadata.isValid());
 		metadata.visitControlAttributes(ca -> ca.getControl().addValueListener(this));
-		setContent(container);
+		setContent(builder.buildUi(metadata));
 		setLocationRelativeTo(owner);
 	}
 	

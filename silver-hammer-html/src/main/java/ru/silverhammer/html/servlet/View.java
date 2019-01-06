@@ -25,11 +25,14 @@
  */
 package ru.silverhammer.html.servlet;
 
+import ru.silverhammer.core.IUiBuilder;
 import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.html.HtmlControlResolver;
 import ru.silverhammer.html.HtmlUiBuilder;
+import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.injection.Injector;
 
 import javax.servlet.http.HttpServlet;
 
@@ -38,9 +41,11 @@ public abstract class View extends HttpServlet {
     private static final long serialVersionUID = -6539765437025975167L;
 
     protected String generate(IStringProcessor stringProcessor, Object... data) {
-        MetadataCollector collector = new MetadataCollector(new HtmlControlResolver(), stringProcessor);
+        IInjector injector = new Injector();
+        MetadataCollector collector = new MetadataCollector(new HtmlControlResolver(), stringProcessor, injector);
         UiMetadata metadata = collector.collect(data);
         HtmlUiBuilder builder = new HtmlUiBuilder();
+        injector.bind(IUiBuilder.class, builder);
         return builder.buildUi(metadata);
     }
 }
