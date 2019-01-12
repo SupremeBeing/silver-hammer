@@ -25,7 +25,6 @@
 		<module>silver-hammer-demo</module>
 		<module>silver-hammer-swing</module>
 		<module>silver-hammer-swing-demo</module>
-        <module>silver-hammer-html</module>
     </modules>
 	
 	<dependencies>
