@@ -31,9 +31,11 @@ import java.util.*;
 import javax.swing.*;
 
 import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.annotation.ButtonGroup;
 
-public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, JPanel> implements ICollectionControl<Object, Object, ButtonGroup> {
+public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, JPanel>
+		implements ICollectionControl<Object, Object, ButtonGroup>, ISelectionControl<Object, Object, ButtonGroup> {
 
 	private static final long serialVersionUID = 7058197271259148125L;
 
@@ -51,6 +53,7 @@ public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, 
 		return new JPanel(new GridLayout(0, 1, 0, 0));
 	}
 
+	@Override
 	public Object getSingleSelection() {
 		for (Object item : data) {
 			AbstractButton btn = getButton(item);
@@ -61,6 +64,7 @@ public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, 
 		return null;
 	}
 
+	@Override
 	public Object[] getSelection() {
 		List<Object> result = new ArrayList<>();
 		for (Object item : data) {
@@ -72,6 +76,7 @@ public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, 
 		return result.toArray(new Object[result.size()]);
 	}
 
+	@Override
 	public void select(Object value) {
 		AbstractButton button = getButton(value);
 		if (button != null && !button.isSelected()) {
@@ -80,6 +85,7 @@ public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, 
 		}
 	}
 
+	@Override
 	public void deselect(Object value) {
 		AbstractButton button = getButton(value);
 		if (button != null && button.isSelected()) {

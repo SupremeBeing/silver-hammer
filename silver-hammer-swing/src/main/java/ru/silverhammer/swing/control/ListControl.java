@@ -34,12 +34,14 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.core.control.ISelectionControl;
 import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.List;
 
 // TODO: disable internal first key navigation
-public class ListControl extends ValidatableControl<Object, List, JList<Object>> implements ICollectionControl<Object, Object, List> {
+public class ListControl extends ValidatableControl<Object, List, JList<Object>>
+		implements ICollectionControl<Object, Object, List>, ISelectionControl<Object, Object, List> {
 
 	private static final long serialVersionUID = 396462498473332445L;
 
@@ -151,15 +153,18 @@ public class ListControl extends ValidatableControl<Object, List, JList<Object>>
 		}
 	}
 
+	@Override
 	public Object getSingleSelection() {
 		return getComponent().getSelectedValue();
 	}
 
+	@Override
 	public Object[] getSelection() {
 		Collection<Object> list = getComponent().getSelectedValuesList();
 		return list.toArray(new Object[list.size()]);
 	}
 
+	@Override
 	public void select(Object value) {
 		int count = getModel().getSize();
 		for (int i = 0; i < count; i++) {
@@ -171,6 +176,7 @@ public class ListControl extends ValidatableControl<Object, List, JList<Object>>
 		}
 	}
 
+	@Override
 	public void deselect(Object value) {
 		int count = getModel().getSize();
 		for (int i = 0; i < count; i++) {

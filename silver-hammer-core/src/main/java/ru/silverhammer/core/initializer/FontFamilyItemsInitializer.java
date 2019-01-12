@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,30 +21,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.demo.settings;
+package ru.silverhammer.core.initializer;
 
-import ru.silverhammer.core.control.annotation.ButtonGroup;
-import ru.silverhammer.core.processor.annotation.GeneratableField;
+import java.awt.GraphicsEnvironment;
 
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.core.control.ICollectionControl;
+import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.core.initializer.annotation.FontFamilyItems;
 
-@Category(caption = "Settings", mnemonic = 's', groups = {
-		@Group(value = "lang", caption = "Programming language"),
-		@Group(value = "font", caption = "Font")
-})
-public class Settings {
+public class FontFamilyItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, FontFamilyItems> {
 
-	@ButtonGroup
-	@GroupId("lang")
-	@StringItems({"Java", "C#", "C++", "Python", "JavaScript", "PHP"})
-	private String language = "Java";
+	@Override
+	public void init(ICollectionControl<String, ?, ?> control, FontFamilyItems annotation, Object data, IFieldReflection field) {
+		// TODO: revisit this implementation
+		for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+			control.addItem(name);
+		}
+	}
 
-	@GeneratableField
-	private FontSettings fontSettings = new FontSettings();
-	
 }

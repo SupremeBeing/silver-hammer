@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,52 +21,20 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.demo.user;
+package ru.silverhammer.core.initializer.annotation;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.control.annotation.Text;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class UserGroup {
-	
-	public enum Type {
-		Admin,
-		Guest,
-		User,
-		Operator,
-		RemoteAccess
-	}
+import ru.silverhammer.core.InitializerReference;
+import ru.silverhammer.core.initializer.FontFamilyItemsInitializer;
 
-	@Text
-	@Caption("Name")
-	private String name;
-	
-	@Text
-	@Caption("Description")
-	private String description;
-
-	@Text
-	@Caption("Type")
-	private Type type;
-	
-	public UserGroup() {}
-	
-	public UserGroup(String name, String description, Type type) {
-		this.name = name;
-		this.description = description;
-		this.type = type;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public Type getType() {
-		return type;
-	}
-}
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@InitializerReference(FontFamilyItemsInitializer.class)
+// TODO: consider moving to core
+public @interface FontFamilyItems {}

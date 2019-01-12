@@ -31,4 +31,7 @@ public interface IUiBuilder<Container> {
 
 	Container buildUi(UiMetadata metadata);
 
+	// TODO: revisit
+	boolean showDialog(String title, UiMetadata metadata);
+
 }

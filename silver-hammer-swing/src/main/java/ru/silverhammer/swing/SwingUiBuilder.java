@@ -49,6 +49,7 @@ import ru.silverhammer.core.metadata.CategoryAttributes;
 import ru.silverhammer.core.metadata.ControlAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.swing.dialog.GenerationDialog;
 
 public class SwingUiBuilder implements IUiBuilder<Container> {
 
@@ -198,5 +199,13 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 		gbc.gridwidth = 1;
 		gbc.weightx = 1;
 		return gbc;
+	}
+
+	@Override
+	public boolean showDialog(String title, UiMetadata metadata) {
+		GenerationDialog dialog = new GenerationDialog(null, this, metadata);
+		dialog.setTitle(title);
+		dialog.setVisible(true);
+		return dialog.isAccepted();
 	}
 }

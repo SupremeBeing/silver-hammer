@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,25 +21,52 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.swing.demo.user;
+package ru.silverhammer.demo.user;
 
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.control.annotation.Label;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.core.Caption;
+import ru.silverhammer.core.control.annotation.Text;
 
-@Category(caption = "Achievements", mnemonic = 'a', groups = {
-		@Group("list")
-})
-public class Achievement {
+public class UserGroup {
+	
+	public enum Type {
+		Admin,
+		Guest,
+		User,
+		Operator,
+		RemoteAccess
+	}
 
-	@Label
-	@GroupId("list")
+	@Text
+	@Caption("Name")
 	private String name;
 	
-	public Achievement(String name) {
+	@Text
+	@Caption("Description")
+	private String description;
+
+	@Text
+	@Caption("Type")
+	private Type type;
+	
+	public UserGroup() {}
+	
+	public UserGroup(String name, String description, Type type) {
 		this.name = name;
+		this.description = description;
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Type getType() {
+		return type;
 	}
 }

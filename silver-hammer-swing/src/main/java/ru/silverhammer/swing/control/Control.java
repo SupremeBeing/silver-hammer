@@ -83,12 +83,12 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 
 	@Override
 	public boolean isEnabled() {
-		return getComponent().isEnabled();
+		return component.isEnabled();
 	}
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		getComponent().setEnabled(enabled);
+		component.setEnabled(enabled);
 	}
 
 	@Override
