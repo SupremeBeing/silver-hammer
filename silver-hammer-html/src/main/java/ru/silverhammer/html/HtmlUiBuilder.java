@@ -26,13 +26,44 @@
 package ru.silverhammer.html;
 
 import ru.silverhammer.core.IUiBuilder;
+import ru.silverhammer.core.metadata.CategoryAttributes;
+import ru.silverhammer.core.metadata.ControlAttributes;
+import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.html.control.Control;
 
 public class HtmlUiBuilder implements IUiBuilder<String> {
 
     @Override
     public String buildUi(UiMetadata metadata) {
-        return "";
+        StringBuilder builder = new StringBuilder();
+        if (metadata.hasCategories()) {
+            for (CategoryAttributes ca : metadata.getCategories()) {
+                if (!ca.isEmpty()) {
+                    createGroups(ca, builder);
+                }
+            }
+        } else {
+            createGroups(metadata.getGroups(), builder);
+        }
+        return builder.toString();
+    }
+
+    private void createGroups(Iterable<GroupAttributes> groups, StringBuilder builder) {
+        for (GroupAttributes ga : groups) {
+            if (!ga.isEmpty()) {
+                for (ControlAttributes ca : ga) {
+                    placeControl(ca, builder);
+                }
+            }
+        }
+    }
+
+    private void placeControl(ControlAttributes attributes, StringBuilder builder) {
+        if (attributes.getCaption() != null) {
+            builder.append(attributes.getCaption());
+            builder.append(((Control<?, ?>) attributes.getControl()).render(attributes.getCaption()));
+        }
     }
 
     @Override

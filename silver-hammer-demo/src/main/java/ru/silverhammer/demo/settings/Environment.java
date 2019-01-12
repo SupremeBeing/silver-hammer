@@ -82,7 +82,7 @@ public class Environment {
 	@Tree(visibleRows = 10)
 	@GroupId("env")
 	@Caption(value = "Current directory:", location = Location.Top)
-	@FileTreeItems(".")
+	//@FileTreeItems(".")
 	private File root;
 
 	@SuppressWarnings("unused")

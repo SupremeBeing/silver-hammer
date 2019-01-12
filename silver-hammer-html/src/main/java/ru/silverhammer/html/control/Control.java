@@ -82,4 +82,8 @@ public abstract class Control<Value, A extends Annotation> implements IControl<V
 		this.value = value;
 		fireValueChanged();
 	}
+
+	public String render(String name) {
+		return "";
+	}
 }

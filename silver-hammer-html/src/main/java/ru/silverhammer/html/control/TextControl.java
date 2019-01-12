@@ -29,8 +29,6 @@ import ru.silverhammer.core.control.annotation.Text;
 
 public class TextControl extends BaseTextControl<String, Text> {
 
-	private static final long serialVersionUID = -2398089634039989572L;
-
 	public TextControl() {
 		super(false);
 	}
@@ -39,5 +37,10 @@ public class TextControl extends BaseTextControl<String, Text> {
 	public void init(Text annotation) {
 		setEnabled(!annotation.readOnly());
 		setEditable(annotation.editable());
+	}
+
+	@Override
+	public String render(String name) {
+		return String.format("<input type=\"text\" name=\"%s\" value=\"%s\" />", name, getValue());
 	}
 }

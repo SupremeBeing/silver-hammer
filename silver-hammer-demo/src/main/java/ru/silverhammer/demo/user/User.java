@@ -155,12 +155,14 @@ public class User {
 
 	@SuppressWarnings("unused")
 	private void setEmail(UiMetadata metadata) {
-		IControl<String, ?> emailControl = metadata.findControl(this, "email");
-		IControl<String, ?> nameControl = metadata.findControl(this, "name");
-		String email = emailControl.getValue();
-		String name = nameControl.getValue();
-		if (email != null && (name == null || name.length() == 0 || email.startsWith(name))) {
-			nameControl.setValue(email);
+		if (metadata != null) {
+			IControl<String, ?> emailControl = metadata.findControl(this, "email");
+			IControl<String, ?> nameControl = metadata.findControl(this, "name");
+			String email = emailControl.getValue();
+			String name = nameControl.getValue();
+			if (email != null && (name == null || name.length() == 0 || email.startsWith(name))) {
+				nameControl.setValue(email);
+			}
 		}
 	}
 }

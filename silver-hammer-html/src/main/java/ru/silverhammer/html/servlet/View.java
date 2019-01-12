@@ -29,16 +29,37 @@ import ru.silverhammer.core.IUiBuilder;
 import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.core.string.SimpleStringProcessor;
+import ru.silverhammer.demo.settings.Environment;
+import ru.silverhammer.demo.settings.Settings;
+import ru.silverhammer.demo.user.User;
 import ru.silverhammer.html.HtmlControlResolver;
 import ru.silverhammer.html.HtmlUiBuilder;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Injector;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-public abstract class View extends HttpServlet {
+@WebServlet("/View")
+public class View extends HttpServlet {
 
     private static final long serialVersionUID = -6539765437025975167L;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Environment env = new Environment();
+        Settings settings = new Settings();
+        User user = new User();
+
+        PrintWriter out = resp.getWriter();
+        out.println(generate(new SimpleStringProcessor(), user, env, settings));
+    }
 
     protected String generate(IStringProcessor stringProcessor, Object... data) {
         IInjector injector = new Injector();
