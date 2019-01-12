@@ -26,7 +26,7 @@
 package ru.silverhammer.demo.settings;
 
 import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.control.annotation.ButtonGroup;
+import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.GeneratableField;
@@ -38,7 +38,7 @@ import ru.silverhammer.core.processor.annotation.Groups.Group;
 })
 public class Settings {
 
-	@ButtonGroup
+	@CheckBoxGroup
 	@GroupId("lang")
 	@StringItems({"Java", "C#", "C++", "Python", "JavaScript", "PHP"})
 	private String language = "Java";

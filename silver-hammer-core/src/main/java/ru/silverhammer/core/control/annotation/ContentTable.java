@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,32 +21,26 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.core.control.annotation;
+
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.control.SelectionType;
-import ru.silverhammer.core.control.ValueType;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
-
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface Table {
-
-    boolean readOnly() default false;
+public @interface ContentTable {
 
     int visibleRows() default 0;
 
-    SelectionType selection() default SelectionType.Single;
-
-    ValueType value() default ValueType.Selection;
+    boolean multiSelection() default false;
 
     String[] captions() default {};
 

@@ -25,55 +25,48 @@
  */
 package ru.silverhammer.swing.control;
 
-import java.awt.Color;
-import java.lang.annotation.Annotation;
+import java.util.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
-import ru.silverhammer.core.control.IValidatableControl;
+import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 
-public abstract class ValidatableControl<Value, A extends Annotation, C extends JComponent> extends Control<Value, A, C>
-		implements IValidatableControl<Value, A> {
+public class CheckBoxGroupControl extends ButtonGroupControl<CheckBoxGroup> {
 
-	private static final long serialVersionUID = 7813353790197108681L;
+	private static final long serialVersionUID = 7058197271259148125L;
 
-	private Color normalBackground;
-	private Color invalidBackground = Color.RED;
-
-	protected ValidatableControl(boolean scrollable) {
-		super(scrollable);
-		normalBackground = getComponent().getBackground();
-	}
-
-	protected Color getInvalidBackground() {
-		return invalidBackground;
-	}
-
-	protected void setNormalBackground(Color normalBackground) {
-		this.normalBackground = normalBackground;
-	}
-
-	protected Color getNormalBackground() {
-		return normalBackground;
+	protected AbstractButton createButton() {
+		return new JCheckBox();
 	}
 
 	@Override
-	public void setValidationMessage(String message) {
-		setValidationMessage(getComponent(), message);
-	}
-
-	protected void setValidationMessage(JComponent component, String message) {
-		component.setToolTipText(message);
-		component.setBackground(message == null ? normalBackground : invalidBackground);
-	}
-
-	@Override
-	public String getValidationMessage() {
-		return getComponent().getToolTipText();
+	protected AbstractButton createButton(Object item) {
+		AbstractButton button = createButton();
+		button.setText(item.toString());
+		button.addActionListener(l -> fireValueChanged());
+		return button;
 	}
 
 	@Override
-	public boolean isControlValid() {
-		return getValidationMessage() == null;
+	public Object getValue() {
+		List<Object> result = new ArrayList<>();
+		for (Object o : data) {
+			AbstractButton button = getButton(o);
+			if (button.isSelected()) {
+				result.add(o);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void setValue(Object value) {
+		if (value instanceof Collection) {
+			for (Object o : data) {
+				AbstractButton button = getButton(o);
+				button.setSelected(((Collection<?>) value).contains(o));
+			}
+			fireValueChanged();
+		}
 	}
 }

@@ -23,9 +23,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.core.control;
+package ru.silverhammer.swing.control;
 
-public enum ValueType {
-    Selection,
-    Content
+import ru.silverhammer.core.control.annotation.RadioButtonGroup;
+
+import javax.swing.*;
+import java.util.*;
+
+public class RadioButtonGroupControl extends ButtonGroupControl<RadioButtonGroup> {
+
+	private static final long serialVersionUID = 7058197271259148125L;
+
+	@Override
+	protected AbstractButton createButton() {
+		return new JRadioButton();
+	}
+
+	@Override
+	protected AbstractButton createButton(Object item) {
+		AbstractButton button = createButton();
+		button.setText(item.toString());
+		button.addActionListener(l -> {
+			clearSelection(button);
+			fireValueChanged();
+		});
+		return button;
+	}
+
+	private void clearSelection(AbstractButton button) {
+		for (Object item : data) {
+			AbstractButton btn = getButton(item);
+			btn.setSelected(Objects.equals(button, btn));
+		}
+	}
+
+	@Override
+	public Object getValue() {
+		for (Object item : data) {
+			AbstractButton btn = getButton(item);
+			if (btn.isSelected()) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void setValue(Object value) {
+		AbstractButton button = getButton(value);
+		if (button != null) {
+			button.setSelected(true);
+			fireValueChanged();
+		}
+	}
 }

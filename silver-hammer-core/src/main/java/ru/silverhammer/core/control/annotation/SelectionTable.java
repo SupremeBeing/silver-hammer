@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Dmitriy Shchekotin
+ * Copyright (c) 2017, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,12 +21,29 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  */
-package ru.silverhammer.core.control;
+package ru.silverhammer.core.control.annotation;
 
-public enum SelectionType {
-    Single,
-    Interval,
-    Multi
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.ControlFieldProcessor;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@ProcessorReference(ControlFieldProcessor.class)
+public @interface SelectionTable {
+
+    int visibleRows() default 0;
+
+    boolean multiSelection() default false;
+
+    String[] captions() default {};
+
+    Class<?> annotationCaptions() default Void.class;
+
 }

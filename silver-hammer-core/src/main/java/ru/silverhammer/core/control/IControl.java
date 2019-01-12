@@ -43,4 +43,10 @@ public interface IControl<Value, A extends Annotation> {
 
 	void init(A annotation);
 
+	boolean isControlValid();
+
+	void setValidationMessage(String message);
+
+	String getValidationMessage();
+
 }

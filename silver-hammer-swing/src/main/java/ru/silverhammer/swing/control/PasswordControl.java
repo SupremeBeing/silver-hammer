@@ -58,7 +58,6 @@ public class PasswordControl extends BaseTextControl<char[], Password, JPassword
 
 	@Override
 	public void init(Password annotation) {
-		setEnabled(!annotation.readOnly());
 		setEditable(annotation.editable());
 	}
 }

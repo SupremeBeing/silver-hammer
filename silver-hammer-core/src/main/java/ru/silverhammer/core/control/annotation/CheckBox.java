@@ -40,6 +40,4 @@ public @interface CheckBox {
 
     String caption();
 
-    boolean readOnly() default false;
-
 }

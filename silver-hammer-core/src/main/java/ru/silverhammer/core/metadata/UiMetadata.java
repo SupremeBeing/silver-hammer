@@ -33,7 +33,6 @@ import java.util.function.Predicate;
 
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.IValidatableControl;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.*;
@@ -211,16 +210,9 @@ public class UiMetadata {
 	}
 
 	public boolean isValid() {
-		return findControlAttributes(ca -> !isControlValid(ca.getControl())) == null;
+		return findControlAttributes(ca -> !ca.getControl().isControlValid()) == null;
 	}
 	
-	private boolean isControlValid(IControl<?, ?> control) {
-		if (control instanceof IValidatableControl) {
-			return ((IValidatableControl<?, ?>) control).isControlValid();
-		}
-		return true;
-	}
-
 	void initialize() {
 		initializeMethods();
 		visitControlAttributes(ca -> init(ca.getControl(), ca.getFieldReflection()));
@@ -237,12 +229,10 @@ public class UiMetadata {
 
 	// TODO: consider exposing full data validation method
 	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
-		if (control instanceof IValidatableControl) {
-			Object value = control.getValue();
-			Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
-			String msg = getValidationMessage(invalidAnnotation);
-			((IValidatableControl<?, ?>) control).setValidationMessage(msg);
-		}
+		Object value = control.getValue();
+		Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
+		String msg = getValidationMessage(invalidAnnotation);
+		control.setValidationMessage(msg);
 	}
 	
 	private void validateMethods() {

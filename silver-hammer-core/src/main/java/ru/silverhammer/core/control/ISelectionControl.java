@@ -29,12 +29,14 @@ import java.lang.annotation.Annotation;
 
 public interface ISelectionControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
 
-    Item getSingleSelection();
+    int getSelectionCount();
 
-    Item[] getSelection();
+    Item getSelectedItem(int i);
 
-    void select(Item value);
+    void select(Item item);
 
-    void deselect(Item value);
+    void deselect(Item item);
+
+    void clearSelection();
 
 }

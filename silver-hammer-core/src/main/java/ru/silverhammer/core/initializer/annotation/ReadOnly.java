@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,10 +23,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.initializer.annotation;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
+import ru.silverhammer.core.InitializerReference;
+import ru.silverhammer.core.initializer.NumberItemsInitializer;
+import ru.silverhammer.core.initializer.ReadOnlyInitializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,11 +36,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlFieldProcessor.class)
-public @interface ButtonGroup {
+@InitializerReference(ReadOnlyInitializer.class)
+public @interface ReadOnly {
 
-    boolean readOnly() default false;
-
-    boolean multiSelection() default true;
+    boolean value();
 
 }

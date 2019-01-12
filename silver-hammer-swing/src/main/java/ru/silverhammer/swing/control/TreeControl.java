@@ -39,12 +39,11 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import ru.silverhammer.core.control.IHierarchyControl;
-import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.control.annotation.Tree;
 
 // TODO: consider adding isLeaf
 // TODO: disable internal first key navigation
-public class TreeControl extends ValidatableControl<Object, Tree, JTree> implements IHierarchyControl<Object, Object, Tree> {
+public class TreeControl extends Control<Object, Tree, JTree> implements IHierarchyControl<Object, Object, Tree> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 
@@ -96,7 +95,7 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 
 	@Override
 	public Object getValue() {
-		if (getSelectionType() == SelectionType.Single) {
+		if (!isMultiSelection()) {
 			TreePath path = getComponent().getSelectionPath();
 			if (path != null) {
 				return ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
@@ -118,7 +117,7 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 	public void setValue(Object value) {
 		getComponent().clearSelection();
 		if (value != null) {
-			if (getSelectionType() == SelectionType.Single) {
+			if (!isMultiSelection()) {
 				DefaultMutableTreeNode node = nodes.get(value);
 				if (node != null) {
 					TreeNode[] path = getModel().getPathToRoot(node);
@@ -142,25 +141,19 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 		getComponent().setVisibleRowCount(count);
 	}
 
-	public SelectionType getSelectionType() {
+	public boolean isMultiSelection() {
 		int mode = getComponent().getSelectionModel().getSelectionMode();
 		if (mode == TreeSelectionModel.SINGLE_TREE_SELECTION) {
-			return SelectionType.Single;
-		} else if (mode == TreeSelectionModel.CONTIGUOUS_TREE_SELECTION) {
-			return SelectionType.Interval;
-		} else if (mode == TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION) {
-			return SelectionType.Multi;
+			return false;
 		}
-		return null;
+		return true;
 	}
 
-	public void setSelectionType(SelectionType mode) {
-		if (mode == SelectionType.Single) {
-			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		} else if (mode == SelectionType.Interval) {
-			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-		} else if (mode == SelectionType.Multi) {
+	public void setSelectionType(boolean multiSelection) {
+		if (multiSelection) {
 			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+		} else {
+			getComponent().getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		}
 	}
 
@@ -287,14 +280,12 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 		getModel().nodeStructureChanged(root);
 	}
 
-	@Override
 	public void expand(Object value) {
 		DefaultMutableTreeNode node = getNode(value);
 		TreeNode[] path = getModel().getPathToRoot(node);
 		getComponent().expandPath(new TreePath(path));
 	}
 
-	@Override
 	public void collapse(Object value) {
 		DefaultMutableTreeNode node = getNode(value);
 		TreeNode[] path = getModel().getPathToRoot(node);
@@ -309,10 +300,9 @@ public class TreeControl extends ValidatableControl<Object, Tree, JTree> impleme
 
 	@Override
 	public void init(Tree annotation) {
-		setEnabled(!annotation.readOnly());
 		if (annotation.visibleRows() > 0) {
 			setVisibleRowCount(annotation.visibleRows());
 		}
-		setSelectionType(annotation.selection());
+		setSelectionType(annotation.multiSelection());
 	}
 }

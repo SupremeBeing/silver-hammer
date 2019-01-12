@@ -54,7 +54,5 @@ public class LabelControl extends Control<String, Label, JLabel> {
 	}
 
 	@Override
-	public void init(Label annotation) {
-		setEnabled(!annotation.readOnly());
-	}
+	public void init(Label annotation) {}
 }

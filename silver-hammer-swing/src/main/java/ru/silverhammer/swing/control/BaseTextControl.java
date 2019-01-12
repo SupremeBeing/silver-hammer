@@ -30,7 +30,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.lang.annotation.Annotation;
 
-public abstract class BaseTextControl<Value, A extends Annotation, C extends JTextComponent> extends ValidatableControl<Value, A, C> {
+public abstract class BaseTextControl<Value, A extends Annotation, C extends JTextComponent> extends Control<Value, A, C> {
 
     private static final long serialVersionUID = -4413975001619284798L;
 

@@ -28,9 +28,7 @@ package ru.silverhammer.demo.settings;
 import ru.silverhammer.core.*;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.IValidatableControl;
-import ru.silverhammer.core.control.ValueType;
-import ru.silverhammer.core.control.annotation.Table;
+import ru.silverhammer.core.control.annotation.ContentTable;
 import ru.silverhammer.core.control.annotation.Text;
 import ru.silverhammer.core.control.annotation.Tree;
 import ru.silverhammer.core.converter.annotation.MapToCollection;
@@ -70,7 +68,7 @@ public class Environment {
 
 	}
 	
-	@Table(captions = {"Key", "Value"}, value = ValueType.Content, visibleRows = 10)
+	@ContentTable(captions = {"Key", "Value"}, visibleRows = 10)
 	@GroupId("env")
 	@MapToCollection(LinkedHashMap.class)
 	@ButtonBar(value = {
@@ -99,11 +97,8 @@ public class Environment {
 	@ValidatorMethod
 	private void validateTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
-		if (table instanceof IValidatableControl) {
-			IValidatableControl<?, ?> control = (IValidatableControl<?, ?>) table;
-			if (control.isControlValid() && !hasProperty(table, "required.key")) {
-				control.setValidationMessage("Missing required property \"required.key\"");
-			}
+		if (table.isControlValid() && !hasProperty(table, "required.key")) {
+			table.setValidationMessage("Missing required property \"required.key\"");
 		}
 	}
 	
@@ -130,10 +125,9 @@ public class Environment {
 	@SuppressWarnings("unused")
 	private void deletePressed(UiMetadata metadata) {
 		ISelectionControl<Object[], ?, ?> sc = metadata.findControl(this, "properties");
-		Object[] sel = sc.getSingleSelection();
-		if (sel != null) {
+		if (sc.getSelectionCount() > 0) {
 			ICollectionControl<Object[], ?, ?> cc = metadata.findControl(this, "properties");
-			cc.removeItem(sel);
+			cc.removeItem(sc.getSelectedItem(0));
 		}
 	}
 
@@ -141,7 +135,7 @@ public class Environment {
 	private boolean updateDelete(UiMetadata metadata) {
 		if (metadata != null) {
 			ISelectionControl<?, ?, ?> control = metadata.findControl(this, "properties");
-			return control.getSingleSelection() != null;
+			return control.getSelectionCount() > 0;
 		}
 		return false;
 	}

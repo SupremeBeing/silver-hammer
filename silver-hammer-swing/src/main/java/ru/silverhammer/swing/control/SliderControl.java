@@ -29,7 +29,7 @@ import javax.swing.JSlider;
 
 import ru.silverhammer.core.control.annotation.Slider;
 
-public class SliderControl extends ValidatableControl<Integer, Slider, JSlider> {
+public class SliderControl extends Control<Integer, Slider, JSlider> {
 
 	private static final long serialVersionUID = 5915614741825633432L;
 
@@ -107,7 +107,6 @@ public class SliderControl extends ValidatableControl<Integer, Slider, JSlider> 
 
 	@Override
 	public void init(Slider annotation) {
-		setEnabled(!annotation.readOnly());
 		setMinimum(annotation.min());
 		setMaximum(annotation.max());
 		setMajorTicks(annotation.majorTicks());

@@ -25,23 +25,20 @@
  */
 package ru.silverhammer.swing.control;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.control.IValueListener;
 
 // TODO: consider adding control renderers
-public abstract class Control<Value, A extends Annotation, C extends Component> extends JPanel implements IControl<Value, A> {
+public abstract class Control<Value, A extends Annotation, C extends JComponent> extends JPanel implements IControl<Value, A> {
 
 	protected abstract class SearchAdapter extends KeyAdapter {
 		
@@ -68,7 +65,10 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 	private final C component;
 	private final boolean scrollable;
 	private final Collection<IValueListener> listeners = new ArrayList<>();
-	
+
+	private Color normalBackground;
+	private Color invalidBackground = Color.RED;
+
 	protected Control(boolean scrollable) {
 		this.component = createComponent();
 		this.scrollable = scrollable;
@@ -79,7 +79,41 @@ public abstract class Control<Value, A extends Annotation, C extends Component> 
 		} else {
 			add(component, BorderLayout.CENTER);
 		}
+		normalBackground = component.getBackground();
 	}
+
+	protected Color getInvalidBackground() {
+		return invalidBackground;
+	}
+
+	protected void setNormalBackground(Color normalBackground) {
+		this.normalBackground = normalBackground;
+	}
+
+	protected Color getNormalBackground() {
+		return normalBackground;
+	}
+
+	@Override
+	public void setValidationMessage(String message) {
+		setValidationMessage(component, message);
+	}
+
+	protected void setValidationMessage(JComponent component, String message) {
+		component.setToolTipText(message);
+		component.setBackground(message == null ? normalBackground : invalidBackground);
+	}
+
+	@Override
+	public String getValidationMessage() {
+		return component.getToolTipText();
+	}
+
+	@Override
+	public boolean isControlValid() {
+		return getValidationMessage() == null;
+	}
+
 
 	@Override
 	public boolean isEnabled() {

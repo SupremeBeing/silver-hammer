@@ -45,10 +45,6 @@ public interface IHierarchyControl<Item, Value, A extends Annotation> extends IC
 	
 	void clearItems();
 
-	void expand(Item item);
-	
-	void collapse(Item item);
-	
 	Item getParent(Item item);
 
 }

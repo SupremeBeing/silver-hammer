@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,23 +21,19 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.initializer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ru.silverhammer.core.control.IControl;
+import ru.silverhammer.core.initializer.annotation.ReadOnly;
+import ru.silverhammer.reflection.IFieldReflection;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
+public class ReadOnlyInitializer implements IInitializer<IControl<?, ?>, ReadOnly> {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlFieldProcessor.class)
-public @interface ComboBox {
-
-    boolean editable() default true;
+    @Override
+    public void init(IControl<?, ?> control, ReadOnly annotation, Object data, IFieldReflection fieldReflection) {
+        control.setEnabled(!annotation.value());
+    }
 
 }

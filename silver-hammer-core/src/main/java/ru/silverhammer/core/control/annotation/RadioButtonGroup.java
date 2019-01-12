@@ -23,29 +23,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.core.initializer;
+package ru.silverhammer.core.control.annotation;
 
-import ru.silverhammer.core.control.*;
-import ru.silverhammer.core.initializer.annotation.ControlEvent;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.reflection.IMethodReflection;
+import ru.silverhammer.core.ProcessorReference;
+import ru.silverhammer.core.processor.ControlFieldProcessor;
 
-public class ControlEventInitializer implements IInitializer<IControl<?, ?>, ControlEvent> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	private final IInjector injector;
-
-	public ControlEventInitializer(IInjector injector) {
-		this.injector = injector;
-	}
-
-	@Override
-	public void init(IControl<?, ?> control, ControlEvent annotation, Object data, IFieldReflection field) {
-		control.addValueListener(c -> {
-			IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(annotation.value());
-			injector.invoke(data, method);
-		});
-	}
-
-}
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@ProcessorReference(ControlFieldProcessor.class)
+public @interface RadioButtonGroup {}

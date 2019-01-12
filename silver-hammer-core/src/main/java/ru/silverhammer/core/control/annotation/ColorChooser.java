@@ -36,8 +36,4 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface ColorChooser {
-
-    boolean readOnly() default false;
-
-}
+public @interface ColorChooser {}

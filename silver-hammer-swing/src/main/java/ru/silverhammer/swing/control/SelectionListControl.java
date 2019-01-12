@@ -23,21 +23,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.swing.control;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Collection;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
+import ru.silverhammer.core.control.annotation.SelectionList;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlFieldProcessor.class)
-public @interface ComboBox {
+public class SelectionListControl extends ListControl<SelectionList> {
 
-    boolean editable() default true;
+	private static final long serialVersionUID = 396462498473332445L;
 
+	@Override
+	public Object getValue() {
+		if (!isMultiSelection()) {
+			return getComponent().getSelectedValue();
+		} else {
+			return getComponent().getSelectedValuesList();
+		}
+	}
+
+	@Override
+	public void setValue(Object value) {
+		if (!isMultiSelection()) {
+			getComponent().setSelectedValue(value, true);
+		} else {
+			getComponent().clearSelection();
+			if (value instanceof Collection) {
+				int count = getModel().getSize();
+				for (int i = 0; i < count; i++) {
+					Object val = getModel().get(i);
+					if (((Collection<?>) value).contains(val)) {
+						getComponent().addSelectionInterval(i, i);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void init(SelectionList annotation) {
+		if (annotation.visibleRows() > 0) {
+			setVisibleRowCount(annotation.visibleRows());
+		}
+	}
 }

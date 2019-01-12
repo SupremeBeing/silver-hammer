@@ -55,7 +55,6 @@ public class TextControl extends BaseTextControl<String, Text, JTextField> {
 
 	@Override
 	public void init(Text annotation) {
-		setEnabled(!annotation.readOnly());
 		setEditable(annotation.editable());
 	}
 }

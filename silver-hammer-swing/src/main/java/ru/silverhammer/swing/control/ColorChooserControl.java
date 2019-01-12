@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
 
-public class ColorChooserControl extends ValidatableControl<Integer, ColorChooser, JPanel> {
+public class ColorChooserControl extends Control<Integer, ColorChooser, JPanel> {
 	
 	private static final long serialVersionUID = -3000952254597666980L;
 
@@ -185,7 +185,5 @@ public class ColorChooserControl extends ValidatableControl<Integer, ColorChoose
 	}
 
 	@Override
-	public void init(ColorChooser annotation) {
-		setEnabled(!annotation.readOnly());
-	}
+	public void init(ColorChooser annotation) {}
 }

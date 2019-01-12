@@ -30,7 +30,7 @@ import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
 import ru.silverhammer.core.VerticalAlignment;
 import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.control.annotation.List;
+import ru.silverhammer.core.control.annotation.SelectionList;
 import ru.silverhammer.core.converter.annotation.ArrayToCollection;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.FontFamilyItems;
@@ -67,7 +67,7 @@ public class FontSettings {
 	@NumberFormat(type = double.class, format = "#0.##", message = "Line width should be in %s format")
 	private double lineWidth = 1.2;
 
-	@List
+	@SelectionList
 	@GroupId("font")
 	@Caption(value = "Family:", verticalAlignment = VerticalAlignment.Top)
 	@FontFamilyItems
@@ -78,7 +78,7 @@ public class FontSettings {
 	@Caption(value = "Size:", verticalAlignment = VerticalAlignment.Top)
 	private int size = 12;
 
-	@ButtonGroup
+	@CheckBoxGroup
 	@GroupId("font")
 	@Caption(value = "Style:", verticalAlignment = VerticalAlignment.Top)
 	@EnumerationItems

@@ -31,7 +31,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.control.SelectionType;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
@@ -39,10 +38,8 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @ProcessorReference(ControlFieldProcessor.class)
 public @interface Tree {
 
-    boolean readOnly() default false;
-
     int visibleRows() default 0;
 
-    SelectionType selection() default SelectionType.Single;
+    boolean multiSelection() default false;
 
 }

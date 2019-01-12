@@ -31,21 +31,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.control.SelectionType;
-import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.processor.ControlFieldProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @ProcessorReference(ControlFieldProcessor.class)
-public @interface List {
-
-    boolean readOnly() default false;
+public @interface SelectionList {
 
     int visibleRows() default 0;
 
-    SelectionType selection() default SelectionType.Single;
-
-    ValueType value() default ValueType.Selection;
+    boolean multiSelection() default false;
 
 }

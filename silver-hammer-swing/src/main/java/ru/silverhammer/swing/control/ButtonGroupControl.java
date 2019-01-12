@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,238 +21,185 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.swing.control;
 
-import java.awt.GridLayout;
-import java.util.*;
-
-import javax.swing.*;
-
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.annotation.ButtonGroup;
 
-public class ButtonGroupControl extends ValidatableControl<Object, ButtonGroup, JPanel>
-		implements ICollectionControl<Object, Object, ButtonGroup>, ISelectionControl<Object, Object, ButtonGroup> {
+import javax.swing.*;
+import java.awt.*;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-	private static final long serialVersionUID = 7058197271259148125L;
+public abstract class ButtonGroupControl<A extends Annotation> extends Control<Object, A, JPanel>
+        implements ICollectionControl<Object, Object, A>, ISelectionControl<Object, Object, A> {
 
-	private final List<Object> data = new ArrayList<>(); 
-	private final Map<Object, AbstractButton> buttons = new HashMap<>();
-	private boolean multiSelection = true;
+    protected final List<Object> data = new ArrayList<>();
+    private final Map<Object, AbstractButton> buttons = new HashMap<>();
 
-	public ButtonGroupControl() {
-		super(false);
-		setNormalBackground(createButton().getBackground());
-	}
-	
-	@Override
-	protected JPanel createComponent() {
-		return new JPanel(new GridLayout(0, 1, 0, 0));
-	}
+    protected ButtonGroupControl() {
+        super(false);
+        setNormalBackground(createButton().getBackground());
+    }
 
-	@Override
-	public Object getSingleSelection() {
-		for (Object item : data) {
-			AbstractButton btn = getButton(item);
-			if (btn.isSelected()) {
-				return item;
-			}
-		}
-		return null;
-	}
+    protected abstract AbstractButton createButton();
 
-	@Override
-	public Object[] getSelection() {
-		List<Object> result = new ArrayList<>();
-		for (Object item : data) {
-			AbstractButton btn = getButton(item);
-			if (btn.isSelected()) {
-				result.add(item);
-			}
-		}
-		return result.toArray(new Object[result.size()]);
-	}
+    protected abstract AbstractButton createButton(Object item);
 
-	@Override
-	public void select(Object value) {
-		AbstractButton button = getButton(value);
-		if (button != null && !button.isSelected()) {
-			button.setSelected(true);
-			fireValueChanged();
-		}
-	}
+    @Override
+    protected final JPanel createComponent() {
+        return new JPanel(new GridLayout(0, 1, 0, 0));
+    }
 
-	@Override
-	public void deselect(Object value) {
-		AbstractButton button = getButton(value);
-		if (button != null && button.isSelected()) {
-			button.setSelected(false);
-			fireValueChanged();
-		}
-	}
+    @Override
+    public final void init(A annotation) {}
 
-	@Override
-	public void setValidationMessage(String message) {
-		for (AbstractButton c : buttons.values()) {
-			setValidationMessage(c, message);
-		}
-	}
+    @Override
+    public int getSelectionCount() {
+        List<Object> result = new ArrayList<>();
+        for (Object item : data) {
+            AbstractButton btn = getButton(item);
+            if (btn.isSelected()) {
+                result.add(item);
+            }
+        }
+        return result.size();
+    }
 
-	private AbstractButton createButton() {
-		if (!multiSelection) {
-			return new JRadioButton();
-		} else {
-			return new JCheckBox();
-		}
-	}
+    @Override
+    public Object getSelectedItem(int i) {
+        List<Object> result = new ArrayList<>();
+        for (Object item : data) {
+            AbstractButton btn = getButton(item);
+            if (btn.isSelected()) {
+                result.add(item);
+            }
+        }
+        return result.get(i);
+    }
 
-	private AbstractButton createButton(Object item) {
-		AbstractButton button = createButton();
-		button.setText(item.toString());
-		button.addActionListener(l -> fireValueChanged());
-		if (!multiSelection) {
-			button.addActionListener(l -> clearSelection(button));
-		}
-		return button;
-	}
+    @Override
+    public void clearSelection() {
+        for (Object item : data) {
+            AbstractButton btn = getButton(item);
+            if (btn.isSelected()) {
+                btn.setSelected(false);
+            }
+        }
+    }
 
-	private void clearSelection(AbstractButton button) {
-		for (Object item : data) {
-			AbstractButton btn = getButton(item);
-			btn.setSelected(Objects.equals(button, btn));
-		}
-	}
-	
-	private AbstractButton getButton(Object item) {
-		return buttons.get(item);
-	}
-	
-	@Override
-	public Object getValue() {
-		if (!multiSelection) {
-			for (Object item : data) {
-				AbstractButton btn = getButton(item);
-				if (btn.isSelected()) {
-					return item;
-				}
-			}
-		} else {
-			List<Object> result = new ArrayList<>();
-			for (Object o : data) {
-				AbstractButton button = getButton(o);
-				if (button.isSelected()) {
-					result.add(o);
-				}
-			}
-			return result;
-		}
-		return null;
-	}
+    @Override
+    public void select(Object value) {
+        AbstractButton button = getButton(value);
+        if (button != null && !button.isSelected()) {
+            button.setSelected(true);
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	public void setValue(Object value) {
-		if (!multiSelection) {
-			AbstractButton button = getButton(value);
-			if (button != null) {
-				button.setSelected(true);
-				fireValueChanged();
-			}
-		} else if (value instanceof Collection) {
-			for (Object o : data) {
-				AbstractButton button = getButton(o);
-				button.setSelected(((Collection<?>) value).contains(o));
-			}
-			fireValueChanged();
-		}
-	}
+    @Override
+    public void deselect(Object value) {
+        AbstractButton button = getButton(value);
+        if (button != null && button.isSelected()) {
+            button.setSelected(false);
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	public void setItem(int i, Object item) {
-		if (item != null) {
-			Object oldItem = data.get(i);
-			AbstractButton button = buttons.get(oldItem);
-			button.setText(item.toString());
-			data.set(i, item);
-			buttons.remove(oldItem);
-			buttons.put(item, button);
-			if (button.isSelected()) {
-				fireValueChanged();
-			}
-		}
-	}
+    @Override
+    public void setValidationMessage(String message) {
+        for (AbstractButton c : buttons.values()) {
+            setValidationMessage(c, message);
+        }
+    }
 
-	@Override
-	public void clearItems() {
-		getComponent().removeAll();
-		buttons.clear();
-		data.clear();
-		fireValueChanged();
-	}
+    protected AbstractButton getButton(Object item) {
+        return buttons.get(item);
+    }
 
-	@Override
-	public void addItem(Object item) {
-		if (item != null) {
-			AbstractButton button = createButton(item);
-			buttons.put(item, button);
-			data.add(item);
-			getComponent().add(button);
-		}
-	}
+    @Override
+    public void setItem(int i, Object item) {
+        if (item != null) {
+            Object oldItem = data.get(i);
+            AbstractButton button = buttons.get(oldItem);
+            button.setText(item.toString());
+            data.set(i, item);
+            buttons.remove(oldItem);
+            buttons.put(item, button);
+            if (button.isSelected()) {
+                fireValueChanged();
+            }
+        }
+    }
 
-	@Override
-	public void removeItem(Object item) {
-		AbstractButton button = getButton(item);
-		if (button != null) {
-			getComponent().remove(button);
-			buttons.remove(item);
-			data.remove(item);
-			if (button.isSelected()) {
-				fireValueChanged();
-			}
-		}
-	}
+    @Override
+    public void clearItems() {
+        getComponent().removeAll();
+        buttons.clear();
+        data.clear();
+        fireValueChanged();
+    }
 
-	@Override
-	public void addItem(int i, Object item) {
-		if (item != null) {
-			data.add(i, item);
-			rebuild();
-		}
-	}
+    @Override
+    public void addItem(Object item) {
+        if (item != null) {
+            AbstractButton button = createButton(item);
+            buttons.put(item, button);
+            data.add(item);
+            getComponent().add(button);
+        }
+    }
 
-	@Override
-	public void removeItem(int i) {
-		data.remove(i);
-		rebuild();
-	}
+    @Override
+    public void removeItem(Object item) {
+        AbstractButton button = getButton(item);
+        if (button != null) {
+            getComponent().remove(button);
+            buttons.remove(item);
+            data.remove(item);
+            if (button.isSelected()) {
+                fireValueChanged();
+            }
+        }
+    }
 
-	@Override
-	public int getItemCount() {
-		return data.size();
-	}
+    @Override
+    public void addItem(int i, Object item) {
+        if (item != null) {
+            data.add(i, item);
+            rebuild();
+        }
+    }
 
-	@Override
-	public Object getItem(int i) {
-		return data.get(i);
-	}
-	
-	private void rebuild() {
-		getComponent().removeAll();
-		for (Object o : data) {
-			AbstractButton button = createButton(o);
-			getComponent().add(button);
-			button.setSelected(buttons.get(o) != null && buttons.get(o).isSelected());
-			buttons.put(o, button);
-		}
-		fireValueChanged();
-	}
+    @Override
+    public void removeItem(int i) {
+        data.remove(i);
+        rebuild();
+    }
 
-	@Override
-	public void init(ButtonGroup annotation) {
-		setEnabled(!annotation.readOnly());
-		multiSelection = annotation.multiSelection();
-	}
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return data.get(i);
+    }
+
+    private void rebuild() {
+        getComponent().removeAll();
+        for (Object o : data) {
+            AbstractButton button = createButton(o);
+            getComponent().add(button);
+            button.setSelected(buttons.get(o) != null && buttons.get(o).isSelected());
+            buttons.put(o, button);
+        }
+        fireValueChanged();
+    }
 }

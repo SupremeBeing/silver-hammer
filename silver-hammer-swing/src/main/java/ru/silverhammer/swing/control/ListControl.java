@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,248 +21,166 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package ru.silverhammer.swing.control;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.SelectionType;
-import ru.silverhammer.core.control.ValueType;
-import ru.silverhammer.core.control.annotation.List;
+
+import javax.swing.*;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 // TODO: disable internal first key navigation
-public class ListControl extends ValidatableControl<Object, List, JList<Object>>
-		implements ICollectionControl<Object, Object, List>, ISelectionControl<Object, Object, List> {
+public abstract class ListControl<A extends Annotation> extends Control<Object, A, JList<Object>>
+        implements ICollectionControl<Object, Object, A>, ISelectionControl<Object, Object, A> {
 
-	private static final long serialVersionUID = 396462498473332445L;
+    protected ListControl() {
+        super(true);
+        getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        getComponent().getSelectionModel().addListSelectionListener(e -> fireValueChanged());
+        getComponent().addKeyListener(new SearchAdapter() {
+            @Override
+            protected void search(String search) {
+                for (int i = 0; i < getModel().getSize(); i++) {
+                    Object item = getModel().getElementAt(i);
+                    if (item != null && item.toString().contains(search)) {
+                        getComponent().setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+        });
+    }
 
-	private ValueType valueType = ValueType.Selection;
-	
-	public ListControl() {
-		super(true);
-		getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getComponent().getSelectionModel().addListSelectionListener(e -> fireValueChanged());
-		getComponent().addKeyListener(new SearchAdapter() {
-			@Override
-			protected void search(String search) {
-				for (int i = 0; i < getModel().getSize(); i++) {
-					Object item = getModel().getElementAt(i);
-					if (item != null && item.toString().contains(search)) {
-						getComponent().setSelectedIndex(i);
-						break;
-					}
-				}
-			}
-		});
-	}
-	
-	private DefaultListModel<Object> getModel() {
-		return (DefaultListModel<Object>) getComponent().getModel();
-	}
+    protected DefaultListModel<Object> getModel() {
+        return (DefaultListModel<Object>) getComponent().getModel();
+    }
 
-	public ValueType getValueType() {
-		return valueType;
-	}
+    public int getVisibleRowCount() {
+        return getComponent().getVisibleRowCount();
+    }
 
-	public void setValueType(ValueType mode) {
-		this.valueType = mode;
-	}
+    public void setVisibleRowCount(int count) {
+        getComponent().setVisibleRowCount(count);
+    }
 
-	@Override
-	public Object getValue() {
-		if (getValueType() == ValueType.Content) {
-			Collection<Object> value = new ArrayList<>();
-			for (int i = 0; i < getModel().getSize(); i++) {
-				value.add(getModel().getElementAt(i));
-			}
-			return value;
-		} else if (getValueType() == ValueType.Selection) {
-			if (getSelectionType() == SelectionType.Single) {
-				return getComponent().getSelectedValue();
-			} else {
-				return getComponent().getSelectedValuesList();
-			}
-		}
-		return null;
-	}
+    public boolean isMultiSelection() {
+        int mode = getComponent().getSelectionMode();
+        if (mode == ListSelectionModel.SINGLE_SELECTION) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public void setValue(Object value) {
-		if (getValueType() == ValueType.Content) {
-			getModel().removeAllElements();
-			if (value instanceof Collection) {
-				for (Object o : (Collection<?>) value) {
-					getModel().addElement(o);
-				}
-			}
-			fireValueChanged();
-		} else if (getValueType() == ValueType.Selection) {
-			if (getSelectionType() == SelectionType.Single) {
-				getComponent().setSelectedValue(value, true);
-			} else {
-				getComponent().clearSelection();
-				if (value instanceof Collection) {
-					int count = getModel().getSize();
-					for (int i = 0; i < count; i++) {
-						Object val = getModel().get(i);
-						if (((Collection<?>) value).contains(val)) {
-							getComponent().addSelectionInterval(i, i);
-						}
-					}
-				}
-			}
-		}
-	}
+    public void setSelectionType(boolean mode) {
+        if (mode) {
+            getComponent().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        } else {
+            getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+    }
 
-	public int getVisibleRowCount() {
-		return getComponent().getVisibleRowCount();
-	}
+    @Override
+    public int getSelectionCount() {
+        Collection<Object> list = getComponent().getSelectedValuesList();
+        return list.size();
+    }
 
-	public void setVisibleRowCount(int count) {
-		getComponent().setVisibleRowCount(count);
-	}
+    @Override
+    public Object getSelectedItem(int i) {
+        List<Object> list = getComponent().getSelectedValuesList();
+        return list.get(i);
+    }
 
-	public SelectionType getSelectionType() {
-		int mode = getComponent().getSelectionMode();
-		if (mode == ListSelectionModel.SINGLE_SELECTION) {
-			return SelectionType.Single;
-		} else if (mode == ListSelectionModel.SINGLE_INTERVAL_SELECTION) {
-			return SelectionType.Interval;
-		} else if (mode == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION) {
-			return SelectionType.Multi;
-		}
-		return null;
-	}
+    @Override
+    public void clearSelection() {
+        getComponent().clearSelection();
+    }
 
-	public void setSelectionType(SelectionType mode) {
-		if (mode == SelectionType.Single) {
-			getComponent().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		} else if (mode == SelectionType.Interval) {
-			getComponent().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		} else if (mode == SelectionType.Multi) {
-			getComponent().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		}
-	}
+    @Override
+    public void select(Object value) {
+        int count = getModel().getSize();
+        for (int i = 0; i < count; i++) {
+            Object val = getModel().get(i);
+            if (Objects.equals(value, val)) {
+                getComponent().setSelectionInterval(i, i);
+                break;
+            }
+        }
+    }
 
-	@Override
-	public Object getSingleSelection() {
-		return getComponent().getSelectedValue();
-	}
+    @Override
+    public void deselect(Object value) {
+        int count = getModel().getSize();
+        for (int i = 0; i < count; i++) {
+            Object val = getModel().get(i);
+            if (Objects.equals(value, val)) {
+                getComponent().removeSelectionInterval(i, i);
+                break;
+            }
+        }
+    }
 
-	@Override
-	public Object[] getSelection() {
-		Collection<Object> list = getComponent().getSelectedValuesList();
-		return list.toArray(new Object[list.size()]);
-	}
+    @Override
+    protected JList<Object> createComponent() {
+        return new JList<>(new DefaultListModel<>());
+    }
 
-	@Override
-	public void select(Object value) {
-		int count = getModel().getSize();
-		for (int i = 0; i < count; i++) {
-			Object val = getModel().get(i);
-			if (Objects.equals(value, val)) {
-				getComponent().setSelectionInterval(i, i);
-				break;
-			}
-		}
-	}
+    @Override
+    public void addItem(Object item) {
+        if (item != null) {
+            getModel().addElement(item);
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	public void deselect(Object value) {
-		int count = getModel().getSize();
-		for (int i = 0; i < count; i++) {
-			Object val = getModel().get(i);
-			if (Objects.equals(value, val)) {
-				getComponent().removeSelectionInterval(i, i);
-				break;
-			}
-		}
-	}
+    @Override
+    public void removeItem(Object item) {
+        if (getModel().removeElement(item)) {
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	protected JList<Object> createComponent() {
-		return new JList<>(new DefaultListModel<>());
-	}
+    @Override
+    public void clearItems() {
+        getModel().removeAllElements();
+        fireValueChanged();
+    }
 
-	@Override
-	public void addItem(Object item) {
-		if (item != null) {
-			getModel().addElement(item);
-			if (valueType == ValueType.Content) {
-				fireValueChanged();
-			}
-		}
-	}
+    @Override
+    public void addItem(int i, Object item) {
+        if (item != null) {
+            getModel().add(i, item);
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	public void removeItem(Object item) {
-		if (getModel().removeElement(item) && valueType == ValueType.Content) {
-			fireValueChanged();
-		}
-	}
+    @Override
+    public void setItem(int i, Object item) {
+        if (item != null) {
+            getModel().set(i, item);
+            fireValueChanged();
+        }
+    }
 
-	@Override
-	public void clearItems() {
-		getModel().removeAllElements();
-		if (valueType == ValueType.Content) {
-			fireValueChanged();
-		}
-	}
+    @Override
+    public void removeItem(int i) {
+        getModel().remove(i);
+        fireValueChanged();
+    }
 
-	@Override
-	public void addItem(int i, Object item) {
-		if (item != null) {
-			getModel().add(i, item);
-			if (valueType == ValueType.Content) {
-				fireValueChanged();
-			}
-		}
-	}
+    @Override
+    public int getItemCount() {
+        return getModel().getSize();
+    }
 
-	@Override
-	public void setItem(int i, Object item) {
-		if (item != null) {
-			getModel().set(i, item);
-			if (valueType == ValueType.Content) {
-				fireValueChanged();
-			}
-		}
-	}
+    @Override
+    public Object getItem(int i) {
+        return getModel().get(i);
+    }
 
-	@Override
-	public void removeItem(int i) {
-		getModel().remove(i);
-		if (valueType == ValueType.Content) {
-			fireValueChanged();
-		}
-	}
-
-	@Override
-	public int getItemCount() {
-		return getModel().getSize();
-	}
-
-	@Override
-	public Object getItem(int i) {
-		return getModel().get(i);
-	}
-
-	@Override
-	public void init(List annotation) {
-		setEnabled(!annotation.readOnly());
-		if (annotation.visibleRows() > 0) {
-			setVisibleRowCount(annotation.visibleRows());
-		}
-		setSelectionType(annotation.selection());
-		setValueType(annotation.value());
-	}
 }

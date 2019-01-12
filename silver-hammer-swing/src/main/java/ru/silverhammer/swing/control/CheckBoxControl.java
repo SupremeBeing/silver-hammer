@@ -30,7 +30,7 @@ import javax.swing.JCheckBox;
 import ru.silverhammer.core.control.annotation.CheckBox;
 import ru.silverhammer.core.string.IStringProcessor;
 
-public class CheckBoxControl extends ValidatableControl<Boolean, CheckBox, JCheckBox> {
+public class CheckBoxControl extends Control<Boolean, CheckBox, JCheckBox> {
 
 	private static final long serialVersionUID = -7619491028898514149L;
 
@@ -67,7 +67,6 @@ public class CheckBoxControl extends ValidatableControl<Boolean, CheckBox, JChec
 
 	@Override
 	public void init(CheckBox annotation) {
-		setEnabled(!annotation.readOnly());
 		String caption = annotation.caption();
 		setCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
 	}

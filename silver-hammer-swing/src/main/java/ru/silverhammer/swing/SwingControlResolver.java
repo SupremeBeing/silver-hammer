@@ -41,13 +41,16 @@ public class SwingControlResolver extends ControlResolver {
 		bindControl(ComboBox.class, ComboBoxControl.class);
 		bindControl(ColorChooser.class, ColorChooserControl.class);
 		bindControl(TextArea.class, TextAreaControl.class);
-		bindControl(ButtonGroup.class, ButtonGroupControl.class);
+		bindControl(CheckBoxGroup.class, CheckBoxGroupControl.class);
+		bindControl(RadioButtonGroup.class, RadioButtonGroupControl.class);
 		bindControl(Password.class, PasswordControl.class);
 		bindControl(Slider.class, SliderControl.class);
 		bindControl(Label.class, LabelControl.class);
 		bindControl(Tree.class, TreeControl.class);
-		bindControl(Table.class, TableControl.class);
-		bindControl(List.class, ListControl.class);
+		bindControl(SelectionTable.class, SelectionTableControl.class);
+		bindControl(ContentTable.class, ContentTableControl.class);
+		bindControl(SelectionList.class, SelectionListControl.class);
+		bindControl(ContentList.class, ContentListControl.class);
 
 		bindDecorator(ButtonBar.class, ButtonBarDecorator.class);
 		bindDecorator(FileChooser.class, FileChooserDecorator.class);

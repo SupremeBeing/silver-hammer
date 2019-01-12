@@ -29,17 +29,14 @@ import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.Description;
 import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.Location;
-import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.ValueType;
 import ru.silverhammer.core.control.annotation.*;
 import ru.silverhammer.core.converter.annotation.ArrayToCollection;
 import ru.silverhammer.core.converter.annotation.FileToString;
 import ru.silverhammer.core.converter.annotation.ValueToItems;
 import ru.silverhammer.core.decorator.annotation.FileChooser;
-import ru.silverhammer.core.initializer.annotation.ControlEvent;
 import ru.silverhammer.core.initializer.annotation.EnumerationItems;
+import ru.silverhammer.core.initializer.annotation.ReadOnly;
 import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.GeneratableField;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
@@ -72,7 +69,6 @@ public class User {
 	private char[] password;
 
 	@Text
-	@ControlEvent("setEmail")
 	@GroupId("user")
 	@Caption("user.email")
 	@StringFormat(format = EMAIL, message = "Invalid e-mail")
@@ -102,7 +98,8 @@ public class User {
 	@MinSize(value = 1, message = "Please specify city")
 	private String city = "Saint Petersburg";	
 
-	@Text(readOnly = true)
+	@Text
+	@ReadOnly(true)
 	@GroupId("user")
 	@Caption("user.avatar")
 	@FileChooser(approveCaption = "Select image", filters = {"JPG | jpg, jpeg", "PNG | png"})
@@ -122,7 +119,7 @@ public class User {
 	@Description("<html>A free-form description of the user.<br/>Can contain multiple lines.</html>")
 	private String description;
 
-	@ButtonGroup
+	@CheckBoxGroup
 	@GroupId("langs")
 	@StringItems({"English", "Russian", "Spanish", "German", "Italian"})
 	@MinSize(value = 1, message = "Select at least one language")
@@ -134,7 +131,7 @@ public class User {
 		}
 	};
 
-	@Table(annotationCaptions = UserGroup.class, visibleRows = 3, value = ValueType.Content)
+	@ContentTable(annotationCaptions = UserGroup.class, visibleRows = 3)
 	@GroupId("groups")
 	@ValueToItems(UserGroup.class)
 	@ArrayToCollection(UserGroup.class)
@@ -152,17 +149,4 @@ public class User {
 			new Achievement("Failed to close the application ten times in a row."),
 			new Achievement("Made a mistake in a word \"pneumonoultramicroscopicsilicovolcanoconiosis\".")
 	};
-
-	@SuppressWarnings("unused")
-	private void setEmail(UiMetadata metadata) {
-		if (metadata != null) {
-			IControl<String, ?> emailControl = metadata.findControl(this, "email");
-			IControl<String, ?> nameControl = metadata.findControl(this, "name");
-			String email = emailControl.getValue();
-			String name = nameControl.getValue();
-			if (email != null && (name == null || name.length() == 0 || email.startsWith(name))) {
-				nameControl.setValue(email);
-			}
-		}
-	}
 }

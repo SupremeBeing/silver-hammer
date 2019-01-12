@@ -62,7 +62,6 @@ public class TextAreaControl extends BaseTextControl<String, TextArea, JTextArea
 
 	@Override
 	public void init(TextArea annotation) {
-		setEnabled(!annotation.readOnly());
 		setEditable(annotation.editable());
 		if (annotation.visibleRows() > 0) {
 			setVisibleRowCount(annotation.visibleRows());

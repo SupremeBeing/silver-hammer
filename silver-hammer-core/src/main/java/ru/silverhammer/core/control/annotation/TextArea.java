@@ -38,8 +38,6 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @ProcessorReference(ControlFieldProcessor.class)
 public @interface TextArea {
 
-    boolean readOnly() default false;
-
     boolean editable() default true;
 
     int visibleRows() default 0;

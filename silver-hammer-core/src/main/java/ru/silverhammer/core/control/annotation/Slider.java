@@ -38,8 +38,6 @@ import ru.silverhammer.core.processor.ControlFieldProcessor;
 @ProcessorReference(ControlFieldProcessor.class)
 public @interface Slider {
 
-    boolean readOnly() default false;
-
     int min();
 
     int max();
