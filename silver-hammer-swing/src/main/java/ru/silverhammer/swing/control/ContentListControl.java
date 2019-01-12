@@ -59,5 +59,6 @@ public class ContentListControl extends ListControl<ContentList> {
 		if (annotation.visibleRows() > 0) {
 			setVisibleRowCount(annotation.visibleRows());
 		}
+		setSelectionType(annotation.multiSelection());
 	}
 }

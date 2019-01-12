@@ -65,5 +65,6 @@ public class SelectionListControl extends ListControl<SelectionList> {
 		if (annotation.visibleRows() > 0) {
 			setVisibleRowCount(annotation.visibleRows());
 		}
+		setSelectionType(annotation.multiSelection());
 	}
 }
