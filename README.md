@@ -36,4 +36,4 @@ dialog.setTitle("Person");
 dialog.setVisible(true);
 ```
 
-For detailed examples please refer to `silver-hammer-swing-demo` module.
+For detailed examples please refer to `silver-hammer-demo` and `silver-hammer-swing-demo` modules.
