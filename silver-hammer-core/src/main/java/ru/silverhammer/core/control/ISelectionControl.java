@@ -25,18 +25,12 @@
  */
 package ru.silverhammer.core.control;
 
+import ru.silverhammer.core.collection.ICollection;
+
 import java.lang.annotation.Annotation;
 
 public interface ISelectionControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
 
-    int getSelectionCount();
-
-    Item getSelectedItem(int i);
-
-    void select(Item item);
-
-    void deselect(Item item);
-
-    void clearSelection();
+    ICollection<Item> getSelection();
 
 }

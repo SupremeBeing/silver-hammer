@@ -27,20 +27,20 @@ package ru.silverhammer.core.initializer;
 
 import java.io.File;
 
-import ru.silverhammer.core.control.IHierarchyControl;
+import ru.silverhammer.core.control.ITreeControl;
 import ru.silverhammer.core.initializer.annotation.FileTreeItems;
 import ru.silverhammer.reflection.IFieldReflection;
 
-public class FileTreeItemsInitializer implements IInitializer<IHierarchyControl<File, ?, ?>, FileTreeItems> {
+public class FileTreeItemsInitializer implements IInitializer<ITreeControl<File, ?, ?>, FileTreeItems> {
 
 	@Override
-	public void init(IHierarchyControl<File, ?, ?> control, FileTreeItems annotation, Object data, IFieldReflection field) {
+	public void init(ITreeControl<File, ?, ?> control, FileTreeItems annotation, Object data, IFieldReflection field) {
 		File file = new File(annotation.value());
 		populate(control, null, file);
 	}
 	
-	private void populate(IHierarchyControl<File, ?, ?> control, File parent, File file) {
-		control.addItem(parent, file);
+	private void populate(ITreeControl<File, ?, ?> control, File parent, File file) {
+		control.getTree().add(parent, file);
 		if (file.isDirectory()) {
 			File[] files = file.listFiles();
 			if (files != null) {

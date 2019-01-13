@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,30 +21,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.control;
+package ru.silverhammer.core.collection;
 
-import java.lang.annotation.Annotation;
+public interface ITree<Item> {
 
-public interface IHierarchyControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
+    void add(Item parent, Item item);
 
-	void addItem(Item parent, Item item);
+    void remove(Item parent, int i);
 
-	void addItem(Item parent, int i, Item item);
-	
-	void setItem(Item parent, int i, Item item);
+    Item get(Item parent, int i);
 
-	void removeItem(Item item);
+    int getCount(Item parent);
 
-	void removeItem(Item parent, int i);
+    void clear();
 
-	Item getItem(Item parent, int i);
-	
-	int getItemCount(Item parent);
-	
-	void clearItems();
-
-	Item getParent(Item item);
+    // TODO: ambiguous if items are not unique
+    Item getParent(Item item);
 
 }

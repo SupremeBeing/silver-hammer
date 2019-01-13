@@ -87,10 +87,10 @@ public class Environment {
 	@InitializerMethod
 	private void initializeTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
-		table.addItem(new Object[] {"maven.test.skip", true});
-		table.addItem(new Object[] {"JDK version", "1.8.0"});
-		table.addItem(new Object[] {"timeout.interval", 100});
-		table.addItem(new Object[] {"Current date", new Date()});
+		table.getCollection().add(new Object[] {"maven.test.skip", true});
+		table.getCollection().add(new Object[] {"JDK version", "1.8.0"});
+		table.getCollection().add(new Object[] {"timeout.interval", 100});
+		table.getCollection().add(new Object[] {"Current date", new Date()});
 	}
 
 	@SuppressWarnings("unused")
@@ -103,8 +103,8 @@ public class Environment {
 	}
 	
 	private boolean hasProperty(ICollectionControl<Object[], Object, ?> table, String key) {
-		for (int i = 0; i < table.getItemCount(); i++) {
-			Object[] row = table.getItem(i);
+		for (int i = 0; i < table.getCollection().getCount(); i++) {
+			Object[] row = table.getCollection().get(i);
 			if (row.length > 0 && Objects.equals(row[0], key)) {
 				return true;
 			}
@@ -118,16 +118,22 @@ public class Environment {
 		KeyValue val = new KeyValue();
 		MetadataCollector collector = new MetadataCollector(resolver);
 		if (builder.showDialog("Add property", collector.collect(val))) {
-			table.addItem(new Object[] {val.key, val.value});
+			table.getCollection().add(new Object[] {val.key, val.value});
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private void deletePressed(UiMetadata metadata) {
 		ISelectionControl<Object[], ?, ?> sc = metadata.findControl(this, "properties");
-		if (sc.getSelectionCount() > 0) {
+		if (sc.getSelection().getCount() > 0) {
 			ICollectionControl<Object[], ?, ?> cc = metadata.findControl(this, "properties");
-			cc.removeItem(sc.getSelectedItem(0));
+			Object[] selected = sc.getSelection().get(0);
+			for (int i = 0; i < cc.getCollection().getCount(); i++) {
+				if (Objects.equals(cc.getCollection().get(i), selected)) {
+					cc.getCollection().remove(i);
+					break;
+				}
+			}
 		}
 	}
 
@@ -135,7 +141,7 @@ public class Environment {
 	private boolean updateDelete(UiMetadata metadata) {
 		if (metadata != null) {
 			ISelectionControl<?, ?, ?> control = metadata.findControl(this, "properties");
-			return control.getSelectionCount() > 0;
+			return control.getSelection().getCount() > 0;
 		}
 		return false;
 	}

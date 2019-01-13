@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.collection.ICollection;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
 
@@ -85,102 +86,90 @@ public abstract class ListControl<A extends Annotation> extends Control<Object, 
     }
 
     @Override
-    public int getSelectionCount() {
-        Collection<Object> list = getComponent().getSelectedValuesList();
-        return list.size();
-    }
-
-    @Override
-    public Object getSelectedItem(int i) {
-        List<Object> list = getComponent().getSelectedValuesList();
-        return list.get(i);
-    }
-
-    @Override
-    public void clearSelection() {
-        getComponent().clearSelection();
-    }
-
-    @Override
-    public void select(Object value) {
-        int count = getModel().getSize();
-        for (int i = 0; i < count; i++) {
-            Object val = getModel().get(i);
-            if (Objects.equals(value, val)) {
-                getComponent().setSelectionInterval(i, i);
-                break;
+    public ICollection<Object> getCollection() {
+        return new ICollection<Object>() {
+            @Override
+            public void add(Object item) {
+                if (item != null) {
+                    getModel().addElement(item);
+                    fireValueChanged();
+                }
             }
-        }
+
+            @Override
+            public void remove(int i) {
+                getModel().remove(i);
+                fireValueChanged();
+            }
+
+            @Override
+            public int getCount() {
+                return getModel().getSize();
+            }
+
+            @Override
+            public Object get(int i) {
+                return getModel().get(i);
+            }
+
+            @Override
+            public void clear() {
+                getModel().removeAllElements();
+                fireValueChanged();
+            }
+        };
     }
 
     @Override
-    public void deselect(Object value) {
-        int count = getModel().getSize();
-        for (int i = 0; i < count; i++) {
-            Object val = getModel().get(i);
-            if (Objects.equals(value, val)) {
-                getComponent().removeSelectionInterval(i, i);
-                break;
+    public ICollection<Object> getSelection() {
+        return new ICollection<Object>() {
+            @Override
+            public void add(Object item) {
+                int count = getModel().getSize();
+                for (int i = 0; i < count; i++) {
+                    Object val = getModel().get(i);
+                    if (Objects.equals(item, val)) {
+                        getComponent().setSelectionInterval(i, i);
+                        break;
+                    }
+                }
             }
-        }
+
+            @Override
+            public void remove(int i) {
+                int count = getModel().getSize();
+                Object selected = get(i);
+                for (int j = 0; j < count; j++) {
+                    Object val = getModel().get(i);
+                    if (Objects.equals(selected, val)) {
+                        getComponent().removeSelectionInterval(j, j);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public int getCount() {
+                Collection<Object> list = getComponent().getSelectedValuesList();
+                return list.size();
+            }
+
+            @Override
+            public Object get(int i) {
+                List<Object> list = getComponent().getSelectedValuesList();
+                return list.get(i);
+            }
+
+            @Override
+            public void clear() {
+                getComponent().clearSelection();
+            }
+        };
     }
 
     @Override
     protected JList<Object> createComponent() {
         return new JList<>(new DefaultListModel<>());
-    }
-
-    @Override
-    public void addItem(Object item) {
-        if (item != null) {
-            getModel().addElement(item);
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void removeItem(Object item) {
-        if (getModel().removeElement(item)) {
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void clearItems() {
-        getModel().removeAllElements();
-        fireValueChanged();
-    }
-
-    @Override
-    public void addItem(int i, Object item) {
-        if (item != null) {
-            getModel().add(i, item);
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void setItem(int i, Object item) {
-        if (item != null) {
-            getModel().set(i, item);
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void removeItem(int i) {
-        getModel().remove(i);
-        fireValueChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return getModel().getSize();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return getModel().get(i);
     }
 
 }

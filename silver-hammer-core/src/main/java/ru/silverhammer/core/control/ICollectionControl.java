@@ -25,24 +25,12 @@
  */
 package ru.silverhammer.core.control;
 
+import ru.silverhammer.core.collection.ICollection;
+
 import java.lang.annotation.Annotation;
 
 public interface ICollectionControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
-	
-	void addItem(Item item);
-	
-	void addItem(int i, Item item);
-	
-	void setItem(int i, Item item);
-	
-	void removeItem(Item item);
 
-	void removeItem(int i);
-	
-	int getItemCount();
-	
-	Item getItem(int i);
-
-	void clearItems();
+	ICollection<Item> getCollection();
 
 }

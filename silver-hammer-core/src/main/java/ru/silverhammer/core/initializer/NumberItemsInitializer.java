@@ -34,7 +34,7 @@ public class NumberItemsInitializer implements IInitializer<ICollectionControl<N
 	@Override
 	public void init(ICollectionControl<Number, ?, ?> control, NumberItems annotation, Object data, IFieldReflection field) {
 		for (double s : annotation.value()) {
-			control.addItem(s);
+			control.getCollection().add(s);
 		}
 	}
 }

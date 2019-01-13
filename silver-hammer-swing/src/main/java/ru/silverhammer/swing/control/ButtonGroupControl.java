@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.collection.ICollection;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
 
@@ -60,55 +61,99 @@ public abstract class ButtonGroupControl<A extends Annotation> extends Control<O
     public final void init(A annotation) {}
 
     @Override
-    public int getSelectionCount() {
-        List<Object> result = new ArrayList<>();
-        for (Object item : data) {
-            AbstractButton btn = getButton(item);
-            if (btn.isSelected()) {
-                result.add(item);
+    public ICollection<Object> getCollection() {
+        return new ICollection<Object>() {
+            @Override
+            public void add(Object item) {
+                if (item != null) {
+                    AbstractButton button = createButton(item);
+                    buttons.put(item, button);
+                    data.add(item);
+                    getComponent().add(button);
+                }
             }
-        }
-        return result.size();
-    }
 
-    @Override
-    public Object getSelectedItem(int i) {
-        List<Object> result = new ArrayList<>();
-        for (Object item : data) {
-            AbstractButton btn = getButton(item);
-            if (btn.isSelected()) {
-                result.add(item);
+            @Override
+            public void remove(int i) {
+                data.remove(i);
+                rebuild();
             }
-        }
-        return result.get(i);
-    }
 
-    @Override
-    public void clearSelection() {
-        for (Object item : data) {
-            AbstractButton btn = getButton(item);
-            if (btn.isSelected()) {
-                btn.setSelected(false);
+            @Override
+            public int getCount() {
+                return data.size();
             }
-        }
+
+            @Override
+            public Object get(int i) {
+                return data.get(i);
+            }
+
+            @Override
+            public void clear() {
+                getComponent().removeAll();
+                buttons.clear();
+                data.clear();
+                fireValueChanged();
+            }
+        };
     }
 
     @Override
-    public void select(Object value) {
-        AbstractButton button = getButton(value);
-        if (button != null && !button.isSelected()) {
-            button.setSelected(true);
-            fireValueChanged();
-        }
-    }
+    public ICollection<Object> getSelection() {
+        return new ICollection<Object>() {
+            @Override
+            public void add(Object item) {
+                AbstractButton button = getButton(item);
+                if (button != null && !button.isSelected()) {
+                    button.setSelected(true);
+                    fireValueChanged();
+                }
+            }
 
-    @Override
-    public void deselect(Object value) {
-        AbstractButton button = getButton(value);
-        if (button != null && button.isSelected()) {
-            button.setSelected(false);
-            fireValueChanged();
-        }
+            @Override
+            public void remove(int i) {
+                AbstractButton button = getButton(get(i));
+                if (button != null && button.isSelected()) {
+                    button.setSelected(false);
+                    fireValueChanged();
+                }
+            }
+
+            @Override
+            public int getCount() {
+                List<Object> result = new ArrayList<>();
+                for (Object item : data) {
+                    AbstractButton btn = getButton(item);
+                    if (btn.isSelected()) {
+                        result.add(item);
+                    }
+                }
+                return result.size();
+            }
+
+            @Override
+            public Object get(int i) {
+                List<Object> result = new ArrayList<>();
+                for (Object item : data) {
+                    AbstractButton btn = getButton(item);
+                    if (btn.isSelected()) {
+                        result.add(item);
+                    }
+                }
+                return result.get(i);
+            }
+
+            @Override
+            public void clear() {
+                for (Object item : data) {
+                    AbstractButton btn = getButton(item);
+                    if (btn.isSelected()) {
+                        btn.setSelected(false);
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -120,76 +165,6 @@ public abstract class ButtonGroupControl<A extends Annotation> extends Control<O
 
     protected AbstractButton getButton(Object item) {
         return buttons.get(item);
-    }
-
-    @Override
-    public void setItem(int i, Object item) {
-        if (item != null) {
-            Object oldItem = data.get(i);
-            AbstractButton button = buttons.get(oldItem);
-            button.setText(item.toString());
-            data.set(i, item);
-            buttons.remove(oldItem);
-            buttons.put(item, button);
-            if (button.isSelected()) {
-                fireValueChanged();
-            }
-        }
-    }
-
-    @Override
-    public void clearItems() {
-        getComponent().removeAll();
-        buttons.clear();
-        data.clear();
-        fireValueChanged();
-    }
-
-    @Override
-    public void addItem(Object item) {
-        if (item != null) {
-            AbstractButton button = createButton(item);
-            buttons.put(item, button);
-            data.add(item);
-            getComponent().add(button);
-        }
-    }
-
-    @Override
-    public void removeItem(Object item) {
-        AbstractButton button = getButton(item);
-        if (button != null) {
-            getComponent().remove(button);
-            buttons.remove(item);
-            data.remove(item);
-            if (button.isSelected()) {
-                fireValueChanged();
-            }
-        }
-    }
-
-    @Override
-    public void addItem(int i, Object item) {
-        if (item != null) {
-            data.add(i, item);
-            rebuild();
-        }
-    }
-
-    @Override
-    public void removeItem(int i) {
-        data.remove(i);
-        rebuild();
-    }
-
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return data.get(i);
     }
 
     private void rebuild() {

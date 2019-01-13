@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,27 +21,20 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.initializer;
+package ru.silverhammer.core.collection;
 
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.reflection.IFieldReflection;
+public interface ICollection<Item> {
 
-public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, StringItems> {
+    void add(Item item);
 
-	private final IStringProcessor processor;
+    void remove(int i);
 
-	public StringItemsInitializer(IStringProcessor processor) {
-		this.processor = processor;
-	}
+    int getCount();
 
-	@Override
-	public void init(ICollectionControl<String, ?, ?> control, StringItems annotation, Object data, IFieldReflection field) {
-		for (String s : annotation.value()) {
-			control.getCollection().add(processor == null ? s : processor.getString(s));
-		}
-	}
+    Item get(int i);
+
+    void clear();
+
 }

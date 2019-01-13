@@ -37,7 +37,7 @@ public class FontFamilyItemsInitializer implements IInitializer<ICollectionContr
 	public void init(ICollectionControl<String, ?, ?> control, FontFamilyItems annotation, Object data, IFieldReflection field) {
 		// TODO: revisit this implementation
 		for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-			control.addItem(name);
+			control.getCollection().add(name);
 		}
 	}
 

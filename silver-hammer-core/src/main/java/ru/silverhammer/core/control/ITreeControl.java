@@ -23,25 +23,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.initializer;
+package ru.silverhammer.core.control;
 
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.core.collection.ITree;
 
-public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, StringItems> {
+import java.lang.annotation.Annotation;
 
-	private final IStringProcessor processor;
+public interface ITreeControl<Item, Value, A extends Annotation> extends IControl<Value, A> {
 
-	public StringItemsInitializer(IStringProcessor processor) {
-		this.processor = processor;
-	}
+	ITree<Item> getTree();
 
-	@Override
-	public void init(ICollectionControl<String, ?, ?> control, StringItems annotation, Object data, IFieldReflection field) {
-		for (String s : annotation.value()) {
-			control.getCollection().add(processor == null ? s : processor.getString(s));
-		}
-	}
 }

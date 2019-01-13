@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.core.collection.ICollection;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.ISelectionControl;
 
@@ -125,35 +126,40 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
     }
 
     @Override
-    public int getSelectionCount() {
-        return getComponent().getSelectedRows().length;
-    }
+    public ICollection<Object[]> getSelection() {
+        return new ICollection<Object[]>() {
+            @Override
+            public void add(Object[] item) {
+                int i = findRow(item);
+                if (i != -1) {
+                    getComponent().setRowSelectionInterval(i, i);
+                }
+            }
 
-    @Override
-    public Object[] getSelectedItem(int i) {
-        int index = getComponent().getSelectedRows()[i];
-        return data.get(index);
-    }
+            @Override
+            public void remove(int i) {
+                int j = findRow(get(i));
+                if (j != -1) {
+                    getComponent().removeRowSelectionInterval(j, j);
+                }
+            }
 
-    @Override
-    public void clearSelection() {
-        getComponent().clearSelection();
-    }
+            @Override
+            public int getCount() {
+                return getComponent().getSelectedRows().length;
+            }
 
-    @Override
-    public void select(Object[] value) {
-        int i = findRow(value);
-        if (i != -1) {
-            getComponent().setRowSelectionInterval(i, i);
-        }
-    }
+            @Override
+            public Object[] get(int i) {
+                int index = getComponent().getSelectedRows()[i];
+                return data.get(index);
+            }
 
-    @Override
-    public void deselect(Object[] value) {
-        int i = findRow(value);
-        if (i != -1) {
-            getComponent().removeRowSelectionInterval(i, i);
-        }
+            @Override
+            public void clear() {
+                getComponent().clearSelection();
+            }
+        };
     }
 
     public void addCaption(String caption) {
@@ -201,22 +207,41 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
     }
 
     @Override
-    public void addItem(Object[] item) {
-        if (item != null) {
-            data.add(item);
-            getModel().fireTableDataChanged();
-            fireValueChanged();
-        }
-    }
+    public ICollection<Object[]> getCollection() {
+        return new ICollection<Object[]>() {
+            @Override
+            public void add(Object[] item) {
+                if (item != null) {
+                    data.add(item);
+                    getModel().fireTableDataChanged();
+                    fireValueChanged();
+                }
+            }
 
-    @Override
-    public void removeItem(Object[] item) {
-        int i = findRow(item);
-        if (i != -1) {
-            data.remove(i);
-            getModel().fireTableDataChanged();
-            fireValueChanged();
-        }
+            @Override
+            public void remove(int i) {
+                data.remove(i);
+                getModel().fireTableDataChanged();
+                fireValueChanged();
+            }
+
+            @Override
+            public int getCount() {
+                return data.size();
+            }
+
+            @Override
+            public Object[] get(int i) {
+                return data.get(i);
+            }
+
+            @Override
+            public void clear() {
+                data.clear();
+                getModel().fireTableDataChanged();
+                fireValueChanged();
+            }
+        };
     }
 
     protected int findRow(Object[] value) {
@@ -227,47 +252,4 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
         }
         return -1;
     }
-
-    @Override
-    public void clearItems() {
-        data.clear();
-        getModel().fireTableDataChanged();
-        fireValueChanged();
-    }
-
-    @Override
-    public void addItem(int i, Object[] item) {
-        if (item != null) {
-            data.add(i, item);
-            getModel().fireTableDataChanged();
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void setItem(int i, Object[] item) {
-        if (item != null) {
-            data.set(i, item);
-            getModel().fireTableDataChanged();
-            fireValueChanged();
-        }
-    }
-
-    @Override
-    public void removeItem(int i) {
-        data.remove(i);
-        getModel().fireTableDataChanged();
-        fireValueChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
-    @Override
-    public Object[] getItem(int i) {
-        return data.get(i);
-    }
-
 }

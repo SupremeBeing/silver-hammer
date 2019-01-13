@@ -38,12 +38,13 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import ru.silverhammer.core.control.IHierarchyControl;
+import ru.silverhammer.core.collection.ITree;
+import ru.silverhammer.core.control.ITreeControl;
 import ru.silverhammer.core.control.annotation.Tree;
 
 // TODO: consider adding isLeaf
 // TODO: disable internal first key navigation
-public class TreeControl extends Control<Object, Tree, JTree> implements IHierarchyControl<Object, Object, Tree> {
+public class TreeControl extends Control<Object, Tree, JTree> implements ITreeControl<Object, Object, Tree> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 
@@ -198,86 +199,61 @@ public class TreeControl extends Control<Object, Tree, JTree> implements IHierar
 	}
 
 	@Override
-	public void addItem(Object parent, Object item) {
-		DefaultMutableTreeNode parentNode = getNode(parent);
-		if (parentNode != null) {
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
-			parentNode.add(node);
-			nodes.put(item, node);
-			getModel().nodeStructureChanged(parentNode);
-		}
-	}
-
-	@Override
-	public void removeItem(Object item) {
-		DefaultMutableTreeNode node = nodes.get(item);
-		if (node != null) {
-			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
-			parent.remove(node);
-			nodes.remove(item);
-			getModel().nodeStructureChanged(parent);
-		}
-	}
-
-	@Override
-	public void addItem(Object parent, int i, Object item) {
-		if (item != null) {
-			DefaultMutableTreeNode parentNode = getNode(parent);
-			if (parentNode != null) {
-				DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
-				parentNode.insert(node, i);
-				nodes.put(item, node);
-				getModel().nodeStructureChanged(parentNode);
+	public ITree<Object> getTree() {
+		return new ITree<Object>() {
+			@Override
+			public void add(Object parent, Object item) {
+				DefaultMutableTreeNode parentNode = getNode(parent);
+				if (parentNode != null) {
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
+					parentNode.add(node);
+					nodes.put(item, node);
+					getModel().nodeStructureChanged(parentNode);
+				}
 			}
-		}
-	}
 
-	@Override
-	public void setItem(Object parent, int i, Object item) {
-		if (item != null) {
-			DefaultMutableTreeNode parentNode = getNode(parent);
-			if (parentNode != null) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) parentNode.getChildAt(i);
-				node.setUserObject(item);
-				getModel().nodeStructureChanged(parentNode);
+			@Override
+			public void remove(Object parent, int i) {
+				DefaultMutableTreeNode parentNode = getNode(parent);
+				if (parentNode != null) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) parentNode.getChildAt(i);
+					parentNode.remove(node);
+					nodes.remove(node.getUserObject());
+					getModel().nodeStructureChanged(parentNode);
+				}
 			}
-		}
-	}
 
-	@Override
-	public void removeItem(Object parent, int i) {
-		DefaultMutableTreeNode parentNode = getNode(parent);
-		if (parentNode != null) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) parentNode.getChildAt(i);
-			parentNode.remove(node);
-			nodes.remove(node.getUserObject());
-			getModel().nodeStructureChanged(parentNode);
-		}
-	}
+			@Override
+			public Object get(Object parent, int i) {
+				DefaultMutableTreeNode parentNode = getNode(parent);
+				if (parentNode != null) {
+					return ((DefaultMutableTreeNode) parentNode.getChildAt(i)).getUserObject();
+				}
+				return null;
+			}
 
-	@Override
-	public Object getItem(Object parent, int i) {
-		DefaultMutableTreeNode parentNode = getNode(parent);
-		if (parentNode != null) {
-			return ((DefaultMutableTreeNode) parentNode.getChildAt(i)).getUserObject();
-		}
-		return null;
-	}
+			@Override
+			public int getCount(Object parent) {
+				DefaultMutableTreeNode parentNode = getNode(parent);
+				if (parentNode != null) {
+					return parentNode.getChildCount();
+				}
+				return -1;
+			}
 
-	@Override
-	public int getItemCount(Object parent) {
-		DefaultMutableTreeNode parentNode = getNode(parent);
-		if (parentNode != null) {
-			return parentNode.getChildCount();
-		}
-		return -1;
-	}
+			@Override
+			public void clear() {
+				nodes.clear();
+				root.removeAllChildren();
+				getModel().nodeStructureChanged(root);
+			}
 
-	@Override
-	public void clearItems() {
-		nodes.clear();
-		root.removeAllChildren();
-		getModel().nodeStructureChanged(root);
+			@Override
+			public Object getParent(Object item) {
+				DefaultMutableTreeNode childNode = nodes.get(item);
+				return ((DefaultMutableTreeNode) childNode.getParent()).getUserObject();
+			}
+		};
 	}
 
 	public void expand(Object value) {
@@ -290,12 +266,6 @@ public class TreeControl extends Control<Object, Tree, JTree> implements IHierar
 		DefaultMutableTreeNode node = getNode(value);
 		TreeNode[] path = getModel().getPathToRoot(node);
 		getComponent().collapsePath(new TreePath(path));
-	}
-
-	@Override
-	public Object getParent(Object child) {
-		DefaultMutableTreeNode childNode = nodes.get(child);
-		return ((DefaultMutableTreeNode) childNode.getParent()).getUserObject();
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class EnumerationItemsInitializer implements IInitializer<ICollectionCont
 			cl = annotation.value();
 		}
 		for (Object e : cl.getEnumConstants()) {
-			control.addItem(e);
+			control.getCollection().add(e);
 		}
 	}
 }

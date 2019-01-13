@@ -30,6 +30,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JComboBox;
 
+import ru.silverhammer.core.collection.ICollection;
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.control.annotation.ComboBox;
 
@@ -123,48 +124,35 @@ public class ComboBoxControl extends Control<Object, ComboBox, JComboBox<Object>
 	}
 
 	@Override
-	public void addItem(Object item) {
-		if (item != null) {
-			getComponent().addItem(item);
-		}
-	}
+	public ICollection<Object> getCollection() {
+		return new ICollection<Object>() {
+			@Override
+			public void add(Object item) {
+				if (item != null) {
+					getComponent().addItem(item);
+				}
+			}
 
-	@Override
-	public void removeItem(Object item) {
-		getComponent().removeItem(item);
-	}
+			@Override
+			public void remove(int i) {
+				getComponent().removeItemAt(i);
+			}
 
-	@Override
-	public void clearItems() {
-		getComponent().removeAllItems();
-	}
+			@Override
+			public int getCount() {
+				return getComponent().getItemCount();
+			}
 
-	@Override
-	public void addItem(int i, Object item) {
-		if (item != null) {
-			getComponent().insertItemAt(item, i);
-		}
-	}
+			@Override
+			public Object get(int i) {
+				return getComponent().getItemAt(i);
+			}
 
-	@Override
-	public void setItem(int i, Object item) {
-		removeItem(i);
-		addItem(i, item);
-	}
-
-	@Override
-	public void removeItem(int i) {
-		getComponent().removeItemAt(i);
-	}
-
-	@Override
-	public int getItemCount() {
-		return getComponent().getItemCount();
-	}
-
-	@Override
-	public Object getItem(int i) {
-		return getComponent().getItemAt(i);
+			@Override
+			public void clear() {
+				getComponent().removeAllItems();
+			}
+		};
 	}
 
 	@Override
