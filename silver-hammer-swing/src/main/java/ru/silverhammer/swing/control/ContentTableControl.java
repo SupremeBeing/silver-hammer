@@ -72,12 +72,12 @@ public class ContentTableControl extends TableControl<ContentTable> {
 			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
 				if (controlResolver.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
-					addCaption(c == null ? fr.getName() : (stringProcessor == null ? c.value() : stringProcessor.getString(c.value())));
+					getCaptions().add(c == null ? fr.getName() : (stringProcessor == null ? c.value() : stringProcessor.getString(c.value())));
 				}
 			}
 		} else if (annotation.captions().length > 0) {
 			for (String caption : annotation.captions()) {
-				addCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
+				getCaptions().add(stringProcessor == null ? caption : stringProcessor.getString(caption));
 			}
 		}
 	}

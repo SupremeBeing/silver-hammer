@@ -162,43 +162,36 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
         };
     }
 
-    public void addCaption(String caption) {
-        captions.add(caption);
-        getModel().fireTableStructureChanged();
-    }
+    public ICollection<String> getCaptions() {
+        return new ICollection<String>() {
+            @Override
+            public void add(String caption) {
+                captions.add(caption);
+                getModel().fireTableStructureChanged();
+            }
 
-    public void removeCaption(String caption) {
-        if (captions.remove(caption)) {
-            getModel().fireTableStructureChanged();
-        }
-    }
+            @Override
+            public void remove(int i) {
+                captions.remove(i);
+                getModel().fireTableStructureChanged();
+            }
 
-    public void addCaption(int i, String caption) {
-        captions.add(i, caption);
-        getModel().fireTableStructureChanged();
-    }
+            @Override
+            public int getCount() {
+                return captions.size();
+            }
 
-    public void setCaption(int i, String caption) {
-        captions.set(i, caption);
-        getModel().fireTableStructureChanged();
-    }
+            @Override
+            public String get(int i) {
+                return captions.get(i);
+            }
 
-    public void removeCaption(int i) {
-        captions.remove(i);
-        getModel().fireTableStructureChanged();
-    }
-
-    public int getCaptionCount() {
-        return captions.size();
-    }
-
-    public String getCaption(int i) {
-        return captions.get(i);
-    }
-
-    public void clearCaptions() {
-        captions.clear();
-        getModel().fireTableStructureChanged();
+            @Override
+            public void clear() {
+                captions.clear();
+                getModel().fireTableStructureChanged();
+            }
+        };
     }
 
     @Override
