@@ -31,9 +31,11 @@ public class Person {
 ### Execution
 ```java
 Person person = new Person();
-GenerationDialog dialog = new GenerationDialog(null, person);
-dialog.setTitle("Person");
-dialog.setVisible(true);
+
+MetadataCollector collector = new MetadataCollector(new SwingControlResolver());
+UiMetadata metadata = collector.collect(person);
+SwingUiBuilder builder = new SwingUiBuilder();
+builder.showDialog("Person", metadata);
 ```
 
 For detailed examples please refer to `silver-hammer-demo` and `silver-hammer-swing-demo` modules.
