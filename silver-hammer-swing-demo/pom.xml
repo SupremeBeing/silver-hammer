@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>silver-hammer</artifactId>
 		<groupId>ru.silverhammer</groupId>
-		<version>1.0.4-SNAPSHOT</version>
+		<version>1.0.4</version>
 	</parent>
 
 	<artifactId>silver-hammer-swing-demo</artifactId>
@@ -17,17 +17,17 @@
 		<dependency>
             <groupId>ru.silverhammer</groupId>
             <artifactId>silver-hammer-core</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>1.0.4</version>
 		</dependency>
 		<dependency>
             <groupId>ru.silverhammer</groupId>
             <artifactId>silver-hammer-swing</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>ru.silverhammer</groupId>
 			<artifactId>silver-hammer-demo</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>1.0.4</version>
 		</dependency>
 	</dependencies>
 	
