@@ -22,9 +22,8 @@
 		<module>silver-hammer-reflection</module>
 		<module>silver-hammer-injection</module>
 		<module>silver-hammer-core</module>
-		<module>silver-hammer-demo</module>
 		<module>silver-hammer-swing</module>
-		<module>silver-hammer-swing-demo</module>
+		<module>silver-hammer-demo</module>
 	</modules>
 	
 	<dependencies>
