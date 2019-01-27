@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,19 +21,38 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.injection;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Collection;
+import java.util.List;
 
-import ru.silverhammer.core.processor.ProcessorReference;
-import ru.silverhammer.core.processor.ControlProcessor;
+public class InjectMe {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlProcessor.class)
-public @interface ColorChooser {}
+    private String message;
+    private final int number;
+    private Collection<String> collection;
+
+    public InjectMe(Number number, List<String> list) {
+        this.number = number.intValue();
+        collection = list;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public Collection<String> getCollection() {
+        return collection;
+    }
+
+    public void setValues(String message, Collection<String> collection) {
+        this.message = message;
+        this.collection = collection;
+    }
+}

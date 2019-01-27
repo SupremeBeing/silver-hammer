@@ -26,8 +26,7 @@
 package ru.silverhammer.core.metadata;
 
 import ru.silverhammer.core.FieldProcessor;
-import ru.silverhammer.core.processor.IProcessor;
-import ru.silverhammer.core.processor.Processor;
+import ru.silverhammer.core.processor.AnnotationProcessor;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.string.IStringProcessor;
 import ru.silverhammer.core.string.SimpleStringProcessor;
@@ -39,7 +38,7 @@ public final class MetadataCollector {
 	private final IStringProcessor stringProcessor;
 	private final IInjector injector;
 	private final FieldProcessor fieldProcessor;
-	private final IProcessor<?, ?> processor;
+	private final AnnotationProcessor processor;
 
 	public MetadataCollector(IControlResolver controlResolver) {
 		this(controlResolver, new SimpleStringProcessor(), new Injector());
@@ -49,7 +48,7 @@ public final class MetadataCollector {
 		this.stringProcessor = stringProcessor;
 		this.injector = injector;
 		fieldProcessor = new FieldProcessor(injector);
-		processor = new Processor<>(injector);
+		processor = new AnnotationProcessor(injector);
 
 		injector.bind(IStringProcessor.class, stringProcessor);
 		injector.bind(IControlResolver.class, controlResolver);
@@ -61,7 +60,7 @@ public final class MetadataCollector {
 		UiMetadata metadata = new UiMetadata(injector, fieldProcessor, stringProcessor);
 		for (Object o : data) {
 			if (o != null) {
-				processor.process(metadata, o, null, null);
+				processor.process(metadata, o);
 			}
 		}
 

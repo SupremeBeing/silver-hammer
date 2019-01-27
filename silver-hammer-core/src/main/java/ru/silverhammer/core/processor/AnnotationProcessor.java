@@ -23,17 +23,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.processor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.reflection.*;
+import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
-import ru.silverhammer.core.processor.ProcessorReference;
-import ru.silverhammer.core.processor.ControlProcessor;
+public class AnnotationProcessor {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlProcessor.class)
-public @interface ColorChooser {}
+	private final IInjector injector;
+	
+	public AnnotationProcessor(IInjector injector) {
+		this.injector = injector;
+	}
+
+	public void process(UiMetadata metadata, Object data) {
+		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
+		for (ClassReflection<?> cl : cr.getHierarchy()) {
+			processAnnotations(metadata, data, cl);
+		}
+		for (IMethodReflection method : cr.getMethods()) {
+			processAnnotations(metadata, data, method);
+		}
+		for (IFieldReflection field : cr.getFields()) {
+			processAnnotations(metadata, data, field);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processAnnotations(UiMetadata metadata, Object data, IReflection reflection) {
+		for (MarkedAnnotation<ProcessorReference> marked : reflection.getMarkedAnnotations(ProcessorReference.class)) {
+			IProcessor processor = injector.instantiate(marked.getMarker().value());
+			processor.process(metadata, data, reflection, marked.getAnnotation());
+		}
+	}
+}

@@ -29,7 +29,7 @@ import ru.silverhammer.core.GroupId;
 import ru.silverhammer.core.control.annotation.CheckBoxGroup;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.GeneratableField;
+import ru.silverhammer.core.processor.annotation.Generatable;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 
 @Category(caption = "Settings", mnemonic = 's', groups = {
@@ -43,7 +43,7 @@ public class Settings {
 	@StringItems({"Java", "C#", "C++", "Python", "JavaScript", "PHP"})
 	private String language = "Java";
 
-	@GeneratableField
+	@Generatable
 	private FontSettings fontSettings = new FontSettings();
 	
 }

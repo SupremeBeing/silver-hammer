@@ -23,17 +23,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.processor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Array;
 
-import ru.silverhammer.core.processor.ProcessorReference;
-import ru.silverhammer.core.processor.ControlProcessor;
+import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.processor.annotation.Generatable;
+import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.reflection.IFieldReflection;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlProcessor.class)
-public @interface ColorChooser {}
+// TODO: consider ignoring structure information or creating separate structure for each instance
+public class GeneratableProcessor extends AnnotationProcessor implements IProcessor<IFieldReflection, Generatable> {
+
+	public GeneratableProcessor(IInjector injector) {
+		super(injector);
+	}
+
+	@Override
+	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, Generatable annotation) {
+		Object val = reflection.getValue(data);
+		if (reflection.getType().isArray()) {
+			int length = Array.getLength(val);
+			for (int i = 0; i < length; i++) {
+				process(metadata, Array.get(val, i));
+			}
+		} else if (Iterable.class.isAssignableFrom(reflection.getType())) {
+			for (Object o : (Iterable<?>) val) {
+				process(metadata, o);
+			}
+		} else {
+			process(metadata, val);
+		}
+	}
+}

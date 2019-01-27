@@ -38,7 +38,7 @@ import ru.silverhammer.core.initializer.annotation.EnumerationItems;
 import ru.silverhammer.core.initializer.annotation.ReadOnly;
 import ru.silverhammer.core.initializer.annotation.StringItems;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.GeneratableField;
+import ru.silverhammer.core.processor.annotation.Generatable;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 import ru.silverhammer.core.validator.annotation.*;
 import ru.silverhammer.demo.user.UserGroup.Type;
@@ -143,7 +143,7 @@ public class User {
 	@CheckBox(caption = "user.visibility")
 	private boolean isPublic = true;
 	
-	@GeneratableField
+	@Generatable
 	private Achievement[] achievements = new Achievement[] {
 			new Achievement("Registered and filled in the profile with deceitful information."),
 			new Achievement("Failed to close the application ten times in a row."),

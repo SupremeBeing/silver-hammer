@@ -25,8 +25,8 @@
  */
 package ru.silverhammer.core.control.annotation;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
+import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.core.processor.ControlProcessor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,5 +35,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlFieldProcessor.class)
+@ProcessorReference(ControlProcessor.class)
 public @interface CheckBoxGroup {}

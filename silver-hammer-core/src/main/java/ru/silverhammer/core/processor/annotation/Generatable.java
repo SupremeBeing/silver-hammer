@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.processor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,9 +31,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ru.silverhammer.core.processor.ProcessorReference;
-import ru.silverhammer.core.processor.ControlProcessor;
+import ru.silverhammer.core.processor.GeneratableProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlProcessor.class)
-public @interface ColorChooser {}
+@ProcessorReference(GeneratableProcessor.class)
+public @interface Generatable {}

@@ -31,18 +31,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.StructureClassProcessor;
+import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.core.processor.StructureProcessor;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(StructureClassProcessor.class)
+@ProcessorReference(StructureProcessor.class)
 public @interface Groups {
 
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Repeatable(Groups.class)
-	@ProcessorReference(StructureClassProcessor.class)
+	@ProcessorReference(StructureProcessor.class)
 	@interface Group {
 
 		String value();

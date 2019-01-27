@@ -31,19 +31,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.StructureClassProcessor;
+import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.core.processor.StructureProcessor;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(StructureClassProcessor.class)
+@ProcessorReference(StructureProcessor.class)
 public @interface Categories {
 
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Repeatable(Categories.class)
-	@ProcessorReference(StructureClassProcessor.class)
+	@ProcessorReference(StructureProcessor.class)
 	@interface Category {
 
 		String caption();

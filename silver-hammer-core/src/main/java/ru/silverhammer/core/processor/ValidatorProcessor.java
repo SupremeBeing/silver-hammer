@@ -23,17 +23,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package ru.silverhammer.core.control.annotation;
+package ru.silverhammer.core.processor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ru.silverhammer.core.metadata.MethodAttributes;
+import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.core.processor.annotation.Validator;
+import ru.silverhammer.reflection.IMethodReflection;
 
-import ru.silverhammer.core.processor.ProcessorReference;
-import ru.silverhammer.core.processor.ControlProcessor;
+public class ValidatorProcessor implements IProcessor<IMethodReflection, Validator> {
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlProcessor.class)
-public @interface ColorChooser {}
+	@Override
+	public void process(UiMetadata metadata, Object data, IMethodReflection reflection, Validator annotation) {
+		metadata.addValidator(new MethodAttributes(data, reflection));
+	}
+}

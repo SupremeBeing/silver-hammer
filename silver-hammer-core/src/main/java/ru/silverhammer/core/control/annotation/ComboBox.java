@@ -30,12 +30,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.ProcessorReference;
-import ru.silverhammer.core.processor.ControlFieldProcessor;
+import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.core.processor.ControlProcessor;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(ControlFieldProcessor.class)
+@ProcessorReference(ControlProcessor.class)
 public @interface ComboBox {
 
     boolean editable() default true;

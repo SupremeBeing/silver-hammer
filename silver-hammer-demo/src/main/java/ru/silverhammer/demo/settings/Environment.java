@@ -39,8 +39,8 @@ import ru.silverhammer.core.metadata.MetadataCollector;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.core.processor.annotation.InitializerMethod;
-import ru.silverhammer.core.processor.annotation.ValidatorMethod;
+import ru.silverhammer.core.processor.annotation.Initializer;
+import ru.silverhammer.core.processor.annotation.Validator;
 import ru.silverhammer.core.resolver.IControlResolver;
 import ru.silverhammer.core.validator.annotation.MinSize;
 
@@ -84,7 +84,7 @@ public class Environment {
 	private File root;
 
 	@SuppressWarnings("unused")
-	@InitializerMethod
+	@Initializer
 	private void initializeTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		table.getCollection().add(new Object[] {"maven.test.skip", true});
@@ -94,7 +94,7 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	@ValidatorMethod
+	@Validator
 	private void validateTable(UiMetadata metadata) {
 		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
 		if (table.isControlValid() && !hasProperty(table, "required.key")) {

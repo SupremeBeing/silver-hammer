@@ -19,8 +19,7 @@
 	</properties>
 
 	<modules>
-		<module>silver-hammer-reflection</module>
-		<module>silver-hammer-injection</module>
+		<module>silver-hammer-common</module>
 		<module>silver-hammer-core</module>
 		<module>silver-hammer-swing</module>
 		<module>silver-hammer-demo</module>
