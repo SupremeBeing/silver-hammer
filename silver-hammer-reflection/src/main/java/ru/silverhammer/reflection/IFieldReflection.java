@@ -27,7 +27,7 @@ package ru.silverhammer.reflection;
 
 import java.util.List;
 
-public interface IFieldReflection extends IReflection {
+public interface IFieldReflection extends IMemberReflection {
 
     boolean isStatic();
 

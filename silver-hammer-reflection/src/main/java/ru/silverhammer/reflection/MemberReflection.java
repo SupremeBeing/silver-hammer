@@ -30,19 +30,13 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 
-abstract class MemberReflection<T extends AccessibleObject & Member> extends AnnotatedReflection<T> {
+abstract class MemberReflection<T extends AccessibleObject & Member> extends AnnotatedReflection<T> implements IMemberReflection {
 	
-	public enum AccessType {
-		Public,
-		Protected,
-		Private,
-		Default
-	}
-
-	protected MemberReflection(T member) {
+	MemberReflection(T member) {
 		super(member);
 	}
-	
+
+	@Override
 	public AccessType getAccessType() {
 		if (Modifier.isPublic(getElement().getModifiers())) {
 			return AccessType.Public;
@@ -60,7 +54,7 @@ abstract class MemberReflection<T extends AccessibleObject & Member> extends Ann
 		return getElement().getName();
 	}
 	
-	protected <R> R forceAccess(Supplier<R> supplier) {
+	<R> R forceAccess(Supplier<R> supplier) {
 		boolean accessible = getElement().isAccessible();
 		if (!accessible) {
 			getElement().setAccessible(true);

@@ -108,8 +108,8 @@ public class Injector implements IInjector {
 
 	@Override
 	public <T> T instantiate(Class<T> type) {
-		IConstructorReflection<T> least = new ClassReflection<>(type).findDefaultConstructor();
-		return least == null ? null : invoke(least);
+		IConstructorReflection<T> ctor = new ClassReflection<>(type).findDefaultConstructor();
+		return ctor == null ? null : invoke(ctor);
 	}
 
 	private <T> T invoke(IConstructorReflection<T> ctor) {

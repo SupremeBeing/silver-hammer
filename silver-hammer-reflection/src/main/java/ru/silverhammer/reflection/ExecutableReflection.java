@@ -32,7 +32,7 @@ import java.util.List;
 
 abstract class ExecutableReflection<T extends Executable, R> extends MemberReflection<T> implements IExecutableReflection<R> {
 
-	protected ExecutableReflection(T executable) {
+	ExecutableReflection(T executable) {
 		super(executable);
 	}
 

@@ -27,7 +27,7 @@ package ru.silverhammer.reflection;
 
 import java.util.List;
 
-public interface IExecutableReflection<T> extends IReflection {
+public interface IExecutableReflection<T> extends IMemberReflection {
 
     List<IParameterReflection> getParameters();
 

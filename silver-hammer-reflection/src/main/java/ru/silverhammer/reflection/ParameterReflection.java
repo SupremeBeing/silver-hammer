@@ -30,7 +30,7 @@ import java.lang.reflect.Parameter;
 
 class ParameterReflection extends AnnotatedReflection<Parameter> implements IParameterReflection {
 
-	protected ParameterReflection(Parameter element) {
+	ParameterReflection(Parameter element) {
 		super(element);
 	}
 

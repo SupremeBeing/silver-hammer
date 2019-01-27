@@ -34,11 +34,16 @@ class ArrayConstructorReflection<T> extends VirtualReflection implements IConstr
 
     private final Class<?> arrayType;
 
-    protected ArrayConstructorReflection(Class<?> arrayType) {
+    ArrayConstructorReflection(Class<?> arrayType) {
         if (arrayType == null || !arrayType.isArray()) {
             throw new IllegalArgumentException();
         }
         this.arrayType = arrayType;
+    }
+
+    @Override
+    public AccessType getAccessType() {
+        return AccessType.Public;
     }
 
     @Override

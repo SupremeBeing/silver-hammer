@@ -34,7 +34,7 @@ import java.util.List;
 
 class FieldReflection extends MemberReflection<Field> implements IFieldReflection {
 	
-	protected FieldReflection(Field field) {
+	FieldReflection(Field field) {
 		super(field);
 	}
 

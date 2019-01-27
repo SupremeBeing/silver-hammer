@@ -31,7 +31,7 @@ import java.lang.reflect.Modifier;
 
 class MethodReflection extends ExecutableReflection<Method, Object> implements IMethodReflection {
 
-	protected MethodReflection(Method method) {
+	MethodReflection(Method method) {
 		super(method);
 	}
 

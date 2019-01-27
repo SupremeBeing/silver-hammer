@@ -34,28 +34,28 @@ abstract class AnnotatedReflection<T extends AnnotatedElement> implements IRefle
 	
 	private final T element;
 	
-	protected AnnotatedReflection(T element) {
+	AnnotatedReflection(T element) {
 		if (element == null) {
 			throw new IllegalArgumentException();
 		}
 		this.element = element;
 	}
 	
-	protected T getElement() {
+	T getElement() {
 		return element;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AnnotatedReflection) {
-			return element.equals(((AnnotatedReflection<?>) obj).getElement());
+			return element.equals(((AnnotatedReflection<?>) obj).element);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return getElement().hashCode();
+		return element.hashCode();
 	}
 
 	@Override

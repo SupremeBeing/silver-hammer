@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 
 class ConstructorReflection<T> extends ExecutableReflection<Constructor<T>, T> implements IConstructorReflection<T> {
 
-	protected ConstructorReflection(Constructor<T> constructor) {
+	ConstructorReflection(Constructor<T> constructor) {
 		super(constructor);
 	}
 
