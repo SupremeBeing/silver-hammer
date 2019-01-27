@@ -28,12 +28,19 @@ package ru.silverhammer.core.processor;
 import ru.silverhammer.core.metadata.MethodAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Validator;
+import ru.silverhammer.processor.IProcessor;
 import ru.silverhammer.reflection.IMethodReflection;
 
 public class ValidatorProcessor implements IProcessor<IMethodReflection, Validator> {
 
+	private final UiMetadata metadata;
+
+	public ValidatorProcessor(UiMetadata metadata) {
+		this.metadata = metadata;
+	}
+
 	@Override
-	public void process(UiMetadata metadata, Object data, IMethodReflection reflection, Validator annotation) {
+	public void process(Object data, IMethodReflection reflection, Validator annotation) {
 		metadata.addValidator(new MethodAttributes(data, reflection));
 	}
 }

@@ -36,24 +36,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.decorator.IDecorator;
 import ru.silverhammer.core.decorator.annotation.FileChooser;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.swing.control.Control;
 
 // TODO: consider implementing button control
 public class FileChooserDecorator implements IDecorator<IControl<String, ?>, FileChooser> {
 
-	private final IStringProcessor processor;
+	private final IStringConverter converter;
 
 	private IControl<String, ?> control;
 	private JButton button;
 
-	public FileChooserDecorator(IStringProcessor processor) {
-		this.processor = processor;
+	public FileChooserDecorator(IStringConverter converter) {
+		this.converter = converter;
 	}
 
 	@Override
 	public void init(FileChooser annotation, Object data) {
-		button = new JButton(processor.getString(annotation.buttonCaption()));
+		button = new JButton(converter.getString(annotation.buttonCaption()));
 		button.setMargin(new Insets(0, 5, 0, 5));
 		button.addActionListener(e -> showDialog(annotation));
 	}
@@ -97,7 +97,7 @@ public class FileChooserDecorator implements IDecorator<IControl<String, ?>, Fil
 			dlg.setCurrentDirectory(new File(annotation.initialDirectory()));
 		}
 
-		String approveCaption = processor.getString(annotation.approveCaption());
+		String approveCaption = converter.getString(annotation.approveCaption());
 		if (dlg.showDialog(((Control<?, ?, ?>) control), approveCaption) == JFileChooser.APPROVE_OPTION) {
 			String file = dlg.getSelectedFile().getPath();
 			if (dlg.getFileFilter() instanceof FileNameExtensionFilter) {

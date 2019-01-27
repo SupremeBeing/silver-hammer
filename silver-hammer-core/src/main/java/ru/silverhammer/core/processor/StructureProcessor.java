@@ -35,20 +35,23 @@ import ru.silverhammer.core.processor.annotation.Categories;
 import ru.silverhammer.core.processor.annotation.Groups;
 import ru.silverhammer.core.processor.annotation.Categories.Category;
 import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
+import ru.silverhammer.processor.IProcessor;
 import ru.silverhammer.reflection.ClassReflection;
 
 // TODO: consider adding groups based on their occurrence in class fields
 public class StructureProcessor implements IProcessor<ClassReflection<?>, Annotation> {
 
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
+	private final UiMetadata metadata;
 	
-	public StructureProcessor(IStringProcessor stringProcessor) {
-		this.stringProcessor = stringProcessor;
+	public StructureProcessor(IStringConverter converter, UiMetadata metadata) {
+		this.converter = converter;
+		this.metadata = metadata;
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, ClassReflection<?> reflection, Annotation annotation) {
+	public void process(Object data, ClassReflection<?> reflection, Annotation annotation) {
 		if (annotation instanceof Groups) {
 			Groups groups = (Groups) annotation;
 			for (Group group : groups.value()) {
@@ -78,9 +81,9 @@ public class StructureProcessor implements IProcessor<ClassReflection<?>, Annota
 
 	private CategoryAttributes createCategoryAttributes(Category category) {
 		CategoryAttributes result = new CategoryAttributes(category.hashCode());
-		result.setCaption(stringProcessor.getString(category.caption()));
+		result.setCaption(converter.getString(category.caption()));
 		if (category.description().trim().length() > 0) {
-			result.setDescription(stringProcessor.getString(category.description()));
+			result.setDescription(converter.getString(category.description()));
 		}
 		result.setIconPath(category.icon());
 		result.setMnemonic(category.mnemonic());
@@ -92,7 +95,7 @@ public class StructureProcessor implements IProcessor<ClassReflection<?>, Annota
 
 	private GroupAttributes createGroupAttributes(Group group) {
 		GroupAttributes result = new GroupAttributes(group.value());
-		result.setCaption(group.caption().trim().length() > 0 ? stringProcessor.getString(group.caption()) : null);
+		result.setCaption(group.caption().trim().length() > 0 ? converter.getString(group.caption()) : null);
 		return result;
 	}
 }

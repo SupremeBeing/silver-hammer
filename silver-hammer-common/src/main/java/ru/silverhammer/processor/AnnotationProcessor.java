@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,14 +21,43 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.string;
+package ru.silverhammer.processor;
 
-public class SimpleStringProcessor implements IStringProcessor {
+import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.reflection.ClassReflection;
+import ru.silverhammer.reflection.IFieldReflection;
+import ru.silverhammer.reflection.IMethodReflection;
+import ru.silverhammer.reflection.IReflection;
+import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
-	@Override
-	public String getString(String str) {
-		return str;
+public class AnnotationProcessor {
+
+	private final IInjector injector;
+	
+	public AnnotationProcessor(IInjector injector) {
+		this.injector = injector;
+	}
+
+	public void process(Object data) {
+		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
+		for (ClassReflection<?> cl : cr.getHierarchy()) {
+			processAnnotations(data, cl);
+		}
+		for (IMethodReflection method : cr.getMethods()) {
+			processAnnotations(data, method);
+		}
+		for (IFieldReflection field : cr.getFields()) {
+			processAnnotations(data, field);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processAnnotations(Object data, IReflection reflection) {
+		for (MarkedAnnotation<ProcessorReference> marked : reflection.getMarkedAnnotations(ProcessorReference.class)) {
+			IProcessor processor = injector.instantiate(marked.getMarker().value());
+			processor.process(data, reflection, marked.getAnnotation());
+		}
 	}
 }

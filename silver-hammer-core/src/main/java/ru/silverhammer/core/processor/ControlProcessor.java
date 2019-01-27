@@ -41,28 +41,31 @@ import ru.silverhammer.core.metadata.ControlAttributes;
 import ru.silverhammer.core.metadata.GroupAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.processor.IProcessor;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
 public class ControlProcessor implements IProcessor<IFieldReflection, Annotation> {
 
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 	private final IInjector injector;
 	private final IControlResolver controlResolver;
 	private final FieldProcessor fieldProcessor;
+	private final UiMetadata metadata;
 	
-	public ControlProcessor(IInjector injector, IStringProcessor stringProcessor, IControlResolver controlResolver, FieldProcessor fieldProcessor) {
+	public ControlProcessor(IInjector injector, IStringConverter converter, IControlResolver controlResolver, FieldProcessor fieldProcessor, UiMetadata metadata) {
 		this.injector = injector;
-		this.stringProcessor = stringProcessor;
+		this.converter = converter;
 		this.controlResolver = controlResolver;
 		this.fieldProcessor = fieldProcessor;
+		this.metadata = metadata;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, Annotation annotation) {
+	public void process(Object data, IFieldReflection reflection, Annotation annotation) {
 		Class<? extends IControl<?, ?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
 			IControl control = injector.instantiate(controlClass);
@@ -112,13 +115,13 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 		Caption caption = field.getAnnotation(Caption.class);
 		Description description = field.getAnnotation(Description.class);
 		if (caption != null) {
-			result.setCaption(stringProcessor.getString(caption.value()));
+			result.setCaption(converter.getString(caption.value()));
 			result.setCaptionLocation(caption.location());
 			result.setHorizontalAlignment(caption.horizontalAlignment());
 			result.setVerticalAlignment(caption.verticalAlignment());
 		}
 		if (description != null) {
-			result.setDescription(stringProcessor.getString(description.value()));
+			result.setDescription(converter.getString(description.value()));
 		}
 		return result;
 	}

@@ -26,45 +26,46 @@
 package ru.silverhammer.core.metadata;
 
 import ru.silverhammer.core.FieldProcessor;
-import ru.silverhammer.core.processor.AnnotationProcessor;
+import ru.silverhammer.processor.AnnotationProcessor;
 import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.core.string.IStringProcessor;
-import ru.silverhammer.core.string.SimpleStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
+import ru.silverhammer.conversion.SameStringConverter;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.injection.Injector;
 
 public final class MetadataCollector {
 	
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 	private final IInjector injector;
 	private final FieldProcessor fieldProcessor;
 	private final AnnotationProcessor processor;
 
 	public MetadataCollector(IControlResolver controlResolver) {
-		this(controlResolver, new SimpleStringProcessor(), new Injector());
+		this(controlResolver, new SameStringConverter(), new Injector());
 	}
 	
-	public MetadataCollector(IControlResolver controlResolver, IStringProcessor stringProcessor, IInjector injector) {
-		this.stringProcessor = stringProcessor;
+	public MetadataCollector(IControlResolver controlResolver, IStringConverter converter, IInjector injector) {
+		this.converter = converter;
 		this.injector = injector;
 		fieldProcessor = new FieldProcessor(injector);
 		processor = new AnnotationProcessor(injector);
 
-		injector.bind(IStringProcessor.class, stringProcessor);
+		injector.bind(IStringConverter.class, converter);
 		injector.bind(IControlResolver.class, controlResolver);
 		injector.bind(FieldProcessor.class, fieldProcessor);
 	}
 
 	// TODO: consider adding error log
 	public UiMetadata collect(Object... data) {
-		UiMetadata metadata = new UiMetadata(injector, fieldProcessor, stringProcessor);
+		UiMetadata metadata = new UiMetadata(injector, fieldProcessor, converter);
+		injector.bind(UiMetadata.class, metadata);
+
 		for (Object o : data) {
 			if (o != null) {
-				processor.process(metadata, o);
+				processor.process(o);
 			}
 		}
 
-		injector.bind(UiMetadata.class, metadata);
 		metadata.initialize();
 		return metadata;
 	}

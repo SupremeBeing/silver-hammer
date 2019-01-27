@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,9 +21,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.string;
+package ru.silverhammer.conversion;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
-public class MultilingualStringProcessor implements IStringProcessor {
+public class MultilingualStringConverter implements IStringConverter {
 
 	private static final class UTF8Control extends Control {
 		
@@ -62,7 +62,9 @@ public class MultilingualStringProcessor implements IStringProcessor {
 			}
 			if (stream != null) {
 				try {
-					bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8)); // only this line has changed
+					// Only this line has changed. The same can be achieved by setting
+					// "java.util.PropertyResourceBundle.encoding" to "UTF-8"
+					bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
 				} finally {
 					stream.close();
 				}
@@ -73,7 +75,7 @@ public class MultilingualStringProcessor implements IStringProcessor {
 
 	private final ResourceBundle bundle;
 	
-	public MultilingualStringProcessor(String bundleFileName) {
+	public MultilingualStringConverter(String bundleFileName) {
 		this.bundle = ResourceBundle.getBundle(bundleFileName, new UTF8Control());
 	}
 

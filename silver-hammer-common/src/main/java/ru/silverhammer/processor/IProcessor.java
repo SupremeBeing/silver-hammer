@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Dmitriy Shchekotin
+ * Copyright (c) 2019, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,41 +21,16 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
-package ru.silverhammer.core.processor;
+package ru.silverhammer.processor;
 
-import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.reflection.*;
-import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
+import java.lang.annotation.Annotation;
 
-public class AnnotationProcessor {
+import ru.silverhammer.reflection.IReflection;
 
-	private final IInjector injector;
+public interface IProcessor<R extends IReflection, A extends Annotation> {
+
+	void process(Object data, R reflection, A annotation);
 	
-	public AnnotationProcessor(IInjector injector) {
-		this.injector = injector;
-	}
-
-	public void process(UiMetadata metadata, Object data) {
-		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
-		for (ClassReflection<?> cl : cr.getHierarchy()) {
-			processAnnotations(metadata, data, cl);
-		}
-		for (IMethodReflection method : cr.getMethods()) {
-			processAnnotations(metadata, data, method);
-		}
-		for (IFieldReflection field : cr.getFields()) {
-			processAnnotations(metadata, data, field);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void processAnnotations(UiMetadata metadata, Object data, IReflection reflection) {
-		for (MarkedAnnotation<ProcessorReference> marked : reflection.getMarkedAnnotations(ProcessorReference.class)) {
-			IProcessor processor = injector.instantiate(marked.getMarker().value());
-			processor.process(metadata, data, reflection, marked.getAnnotation());
-		}
-	}
 }

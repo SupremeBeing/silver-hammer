@@ -27,21 +27,21 @@ package ru.silverhammer.core.initializer;
 
 import ru.silverhammer.core.control.ICollectionControl;
 import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class StringItemsInitializer implements IInitializer<ICollectionControl<String, ?, ?>, StringItems> {
 
-	private final IStringProcessor processor;
+	private final IStringConverter converter;
 
-	public StringItemsInitializer(IStringProcessor processor) {
-		this.processor = processor;
+	public StringItemsInitializer(IStringConverter converter) {
+		this.converter = converter;
 	}
 
 	@Override
 	public void init(ICollectionControl<String, ?, ?> control, StringItems annotation, Object data, IFieldReflection field) {
 		for (String s : annotation.value()) {
-			control.getCollection().add(processor == null ? s : processor.getString(s));
+			control.getCollection().add(converter.getString(s));
 		}
 	}
 }

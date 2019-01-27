@@ -28,17 +28,17 @@ package ru.silverhammer.swing.control;
 import javax.swing.JCheckBox;
 
 import ru.silverhammer.core.control.annotation.CheckBox;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 
 public class CheckBoxControl extends Control<Boolean, CheckBox, JCheckBox> {
 
 	private static final long serialVersionUID = -7619491028898514149L;
 
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 
-	public CheckBoxControl(IStringProcessor stringProcessor) {
+	public CheckBoxControl(IStringConverter converter) {
 		super(false);
-		this.stringProcessor = stringProcessor;
+		this.converter = converter;
 		getComponent().getModel().addItemListener(l -> fireValueChanged()); 
 	}
 
@@ -68,6 +68,6 @@ public class CheckBoxControl extends Control<Boolean, CheckBox, JCheckBox> {
 	@Override
 	public void init(CheckBox annotation) {
 		String caption = annotation.caption();
-		setCaption(stringProcessor == null ? caption : stringProcessor.getString(caption));
+		setCaption(converter.getString(caption));
 	}
 }

@@ -28,7 +28,7 @@ package ru.silverhammer.swing.control;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.control.annotation.ContentTable;
 import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
@@ -38,11 +38,11 @@ public class ContentTableControl extends TableControl<ContentTable> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 	private final IControlResolver controlResolver;
 
-	public ContentTableControl(IStringProcessor stringProcessor, IControlResolver controlResolver) {
-		this.stringProcessor = stringProcessor;
+	public ContentTableControl(IStringConverter converter, IControlResolver controlResolver) {
+		this.converter = converter;
 		this.controlResolver = controlResolver;
 	}
 	
@@ -72,12 +72,12 @@ public class ContentTableControl extends TableControl<ContentTable> {
 			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
 				if (controlResolver.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
-					getCaptions().add(c == null ? fr.getName() : (stringProcessor == null ? c.value() : stringProcessor.getString(c.value())));
+					getCaptions().add(c == null ? fr.getName() : converter.getString(c.value()));
 				}
 			}
 		} else if (annotation.captions().length > 0) {
 			for (String caption : annotation.captions()) {
-				getCaptions().add(stringProcessor == null ? caption : stringProcessor.getString(caption));
+				getCaptions().add(converter.getString(caption));
 			}
 		}
 	}

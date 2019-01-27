@@ -32,7 +32,7 @@ import java.util.List;
 import ru.silverhammer.core.Caption;
 import ru.silverhammer.core.control.annotation.SelectionTable;
 import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
@@ -40,12 +40,12 @@ public class SelectionTableControl extends TableControl<SelectionTable> {
 
 	private static final long serialVersionUID = -3692427066762483919L;
 
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 	private final IControlResolver controlResolver;
 
-	public SelectionTableControl(IStringProcessor stringProcessor, IControlResolver controlResolver) {
+	public SelectionTableControl(IStringConverter converter, IControlResolver controlResolver) {
 		super();
-		this.stringProcessor = stringProcessor;
+		this.converter = converter;
 		this.controlResolver = controlResolver;
 	}
 	
@@ -93,12 +93,12 @@ public class SelectionTableControl extends TableControl<SelectionTable> {
 			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
 				if (controlResolver.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
-					getCaptions().add(c == null ? fr.getName() : (stringProcessor == null ? c.value() : stringProcessor.getString(c.value())));
+					getCaptions().add(c == null ? fr.getName() : converter.getString(c.value()));
 				}
 			}
 		} else if (annotation.captions().length > 0) {
 			for (String caption : annotation.captions()) {
-				getCaptions().add(stringProcessor == null ? caption : stringProcessor.getString(caption));
+				getCaptions().add(converter.getString(caption));
 			}
 		}
 	}

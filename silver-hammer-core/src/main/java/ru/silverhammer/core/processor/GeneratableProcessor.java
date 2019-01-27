@@ -27,9 +27,10 @@ package ru.silverhammer.core.processor;
 
 import java.lang.reflect.Array;
 
-import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Generatable;
 import ru.silverhammer.injection.IInjector;
+import ru.silverhammer.processor.AnnotationProcessor;
+import ru.silverhammer.processor.IProcessor;
 import ru.silverhammer.reflection.IFieldReflection;
 
 // TODO: consider ignoring structure information or creating separate structure for each instance
@@ -40,19 +41,19 @@ public class GeneratableProcessor extends AnnotationProcessor implements IProces
 	}
 
 	@Override
-	public void process(UiMetadata metadata, Object data, IFieldReflection reflection, Generatable annotation) {
+	public void process(Object data, IFieldReflection reflection, Generatable annotation) {
 		Object val = reflection.getValue(data);
 		if (reflection.getType().isArray()) {
 			int length = Array.getLength(val);
 			for (int i = 0; i < length; i++) {
-				process(metadata, Array.get(val, i));
+				process(Array.get(val, i));
 			}
 		} else if (Iterable.class.isAssignableFrom(reflection.getType())) {
 			for (Object o : (Iterable<?>) val) {
-				process(metadata, o);
+				process(o);
 			}
 		} else {
-			process(metadata, val);
+			process(val);
 		}
 	}
 }

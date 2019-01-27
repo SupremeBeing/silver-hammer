@@ -42,7 +42,7 @@ import ru.silverhammer.core.control.IControl;
 import ru.silverhammer.core.decorator.IDecorator;
 import ru.silverhammer.core.decorator.annotation.ButtonBar;
 import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IMethodReflection;
@@ -50,7 +50,7 @@ import ru.silverhammer.swing.control.Control;
 
 public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar> {
 
-	private final IStringProcessor processor;
+	private final IStringConverter converter;
 	private final IInjector injector;
 
 	private IControl<?, ?> control;
@@ -59,8 +59,8 @@ public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar>
 	private Object data;
 	private final Map<Button, JButton> buttons = new HashMap<>();
 	
-	public ButtonBarDecorator(IStringProcessor processor, IInjector injector) {
-		this.processor = processor;
+	public ButtonBarDecorator(IStringConverter converter, IInjector injector) {
+		this.converter = converter;
 		this.injector = injector;
 	}
 
@@ -79,7 +79,7 @@ public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar>
 		}
 		int i = 0;
 		for (Button b : annotation.value()) {
-			String caption = processor.getString(b.caption());
+			String caption = converter.getString(b.caption());
 			JButton button = new JButton();
 			if (b.icon().length() > 0) {
 				URL url = getClass().getResource(b.icon());

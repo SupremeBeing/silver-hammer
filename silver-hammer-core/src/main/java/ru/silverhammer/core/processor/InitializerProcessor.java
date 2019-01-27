@@ -28,12 +28,19 @@ package ru.silverhammer.core.processor;
 import ru.silverhammer.core.metadata.MethodAttributes;
 import ru.silverhammer.core.metadata.UiMetadata;
 import ru.silverhammer.core.processor.annotation.Initializer;
+import ru.silverhammer.processor.IProcessor;
 import ru.silverhammer.reflection.IMethodReflection;
 
 public class InitializerProcessor implements IProcessor<IMethodReflection, Initializer> {
 
+	private final UiMetadata metadata;
+
+	public InitializerProcessor(UiMetadata metadata) {
+		this.metadata = metadata;
+	}
+
 	@Override
-	public void process(UiMetadata metadata, Object data, IMethodReflection reflection, Initializer annotation) {
+	public void process(Object data, IMethodReflection reflection, Initializer annotation) {
 		metadata.addInitializer(new MethodAttributes(data, reflection));
 	}
 }

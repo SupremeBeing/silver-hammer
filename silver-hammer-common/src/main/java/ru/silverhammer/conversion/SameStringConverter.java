@@ -23,17 +23,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.core.processor;
+package ru.silverhammer.conversion;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class SameStringConverter implements IStringConverter {
 
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProcessorReference {
-	
-	Class<? extends IProcessor<?, ?>> value();
-
+	@Override
+	public String getString(String str) {
+		return str;
+	}
 }

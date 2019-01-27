@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 import ru.silverhammer.core.FieldProcessor;
 import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.string.IStringProcessor;
+import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.reflection.*;
 
@@ -41,17 +41,17 @@ public class UiMetadata {
 
 	private final IInjector injector;
 	private final FieldProcessor fieldProcessor;
-	private final IStringProcessor stringProcessor;
+	private final IStringConverter converter;
 	
 	private final List<CategoryAttributes> categories = new ArrayList<>();
 	private final List<GroupAttributes> groups = new ArrayList<>();
 	private final List<MethodAttributes> initializers = new ArrayList<>();
 	private final List<MethodAttributes> validators = new ArrayList<>();
 
-	UiMetadata(IInjector injector, FieldProcessor fieldProcessor, IStringProcessor stringProcessor) {
+	UiMetadata(IInjector injector, FieldProcessor fieldProcessor, IStringConverter converter) {
 		this.injector = injector;
 		this.fieldProcessor = fieldProcessor;
-		this.stringProcessor = stringProcessor;
+		this.converter = converter;
 	}
 
 	public void addInitializer(MethodAttributes attributes) {
@@ -260,7 +260,7 @@ public class UiMetadata {
 				}
 			}
 			if (message != null) {
-				return String.format(stringProcessor.getString(message), params.toArray(new Object[params.size()]));
+				return String.format(converter.getString(message), params.toArray(new Object[params.size()]));
 			}
 		}
 		return null;

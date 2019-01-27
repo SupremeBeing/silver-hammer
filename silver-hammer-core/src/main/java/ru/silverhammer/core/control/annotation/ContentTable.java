@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.core.control.annotation;
 
-import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.processor.ProcessorReference;
 import ru.silverhammer.core.processor.ControlProcessor;
 
 import java.lang.annotation.ElementType;

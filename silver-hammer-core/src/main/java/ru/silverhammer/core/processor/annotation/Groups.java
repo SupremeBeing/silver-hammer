@@ -31,7 +31,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ru.silverhammer.core.processor.ProcessorReference;
+import ru.silverhammer.processor.ProcessorReference;
 import ru.silverhammer.core.processor.StructureProcessor;
 
 @Target(ElementType.TYPE)
