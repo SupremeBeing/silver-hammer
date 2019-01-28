@@ -41,20 +41,26 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import ru.silverhammer.core.HorizontalAlignment;
-import ru.silverhammer.core.IUiBuilder;
-import ru.silverhammer.core.Location;
-import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.core.metadata.CategoryAttributes;
-import ru.silverhammer.core.metadata.ControlAttributes;
-import ru.silverhammer.core.metadata.GroupAttributes;
-import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.HorizontalAlignment;
+import ru.silverhammer.Location;
+import ru.silverhammer.VerticalAlignment;
+import ru.silverhammer.model.CategoryModel;
+import ru.silverhammer.model.ControlModel;
+import ru.silverhammer.model.GroupModel;
+import ru.silverhammer.model.UiModel;
 import ru.silverhammer.swing.dialog.GenerationDialog;
+import ru.silverhammer.view.IUiView;
 
-public class SwingUiBuilder implements IUiBuilder<Container> {
+public class SwingUiBuilder implements IUiView {
+
+	private final String title;
 
 	private int borderSize = 10;
 	private int controlSpacing = 3;
+
+	public SwingUiBuilder(String title) {
+		this.title = title;
+	}
 
 	public int getBorderSize() {
 		return borderSize;
@@ -71,13 +77,13 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 	public void setControlSpacing(int controlSpacing) {
 		this.controlSpacing = controlSpacing;
 	}
-	
+
 	@Override
-	public Container buildUi(UiMetadata metadata) {
-		if (metadata.hasCategories()) {
+	public boolean showUi(UiModel model) {
+		if (!model.getCategories().isEmpty()) {
 			JTabbedPane result = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-			for (CategoryAttributes ca : metadata.getCategories()) {
-				if (!ca.isEmpty()) {
+			for (CategoryModel ca : model.getCategories()) {
+				if (!ca.getGroups().isEmpty()) {
 					JPanel panel = createPanel();
 					URL url = getClass().getResource(ca.getIconPath());
 					Icon icon = url == null ? null : new ImageIcon(url); 
@@ -86,27 +92,33 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 						int i = result.getTabCount() - 1;
 						result.setMnemonicAt(i, Character.toUpperCase(ca.getMnemonic()));
 					}
-					createGroups(ca, panel);
+					createGroups(ca.getGroups(), panel);
 				}
 			}
-			return result;
+			GenerationDialog dialog = new GenerationDialog(null, result, model);
+			dialog.setTitle(title);
+			dialog.setVisible(true);
+			return dialog.isAccepted();
 		} else {
 			JPanel result = createPanel();
-			createGroups(metadata.getGroups(), result);
-			return result;
+			createGroups(model.getGroups(), result);
+			GenerationDialog dialog = new GenerationDialog(null, result, model);
+			dialog.setTitle(title);
+			dialog.setVisible(true);
+			return dialog.isAccepted();
 		}
 	}
 
-	private void createGroups(Iterable<GroupAttributes> groups, Container groupsContainer) {
-		for (GroupAttributes ga : groups) {
-			if (!ga.isEmpty()) {
+	private void createGroups(Iterable<GroupModel> groups, Container groupsContainer) {
+		for (GroupModel ga : groups) {
+			if (!ga.getControls().isEmpty()) {
 				JPanel groupPanel = new JPanel(new GridBagLayout());
 				if (ga.getCaption() != null && ga.getCaption().trim().length() > 0) {
 					Border border = BorderFactory.createEtchedBorder();
 					groupPanel.setBorder(BorderFactory.createTitledBorder(border, ga.getCaption()));
 				}
 				groupsContainer.add(groupPanel, createGroupConstraints());
-				for (ControlAttributes ca : ga) {
+				for (ControlModel ca : ga.getControls()) {
 					placeControl(groupPanel, ca);
 				}
 			}
@@ -122,7 +134,7 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 		return result;
 	}
 	
-	private void placeControl(Container parent, ControlAttributes attributes) {
+	private void placeControl(Container parent, ControlModel attributes) {
 		Component c = (Component) attributes.getControl();
 		if (attributes.getCaption() != null) {
 			JLabel label = new JLabel(attributes.getCaption());
@@ -199,13 +211,5 @@ public class SwingUiBuilder implements IUiBuilder<Container> {
 		gbc.gridwidth = 1;
 		gbc.weightx = 1;
 		return gbc;
-	}
-
-	@Override
-	public boolean showDialog(String title, UiMetadata metadata) {
-		GenerationDialog dialog = new GenerationDialog(null, this, metadata);
-		dialog.setTitle(title);
-		dialog.setVisible(true);
-		return dialog.isAccepted();
 	}
 }

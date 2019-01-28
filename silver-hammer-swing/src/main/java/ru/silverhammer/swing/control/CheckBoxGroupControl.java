@@ -29,7 +29,7 @@ import java.util.*;
 
 import javax.swing.*;
 
-import ru.silverhammer.core.control.annotation.CheckBoxGroup;
+import ru.silverhammer.control.CheckBoxGroup;
 
 public class CheckBoxGroupControl extends ButtonGroupControl<CheckBoxGroup> {
 

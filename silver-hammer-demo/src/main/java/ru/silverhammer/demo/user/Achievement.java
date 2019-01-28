@@ -25,14 +25,9 @@
  */
 package ru.silverhammer.demo.user;
 
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.control.annotation.Label;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.processor.GroupId;
+import ru.silverhammer.control.Label;
 
-@Category(caption = "Achievements", mnemonic = 'a', groups = {
-		@Group("list")
-})
 public class Achievement {
 
 	@Label

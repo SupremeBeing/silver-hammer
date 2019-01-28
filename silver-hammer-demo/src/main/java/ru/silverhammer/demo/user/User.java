@@ -25,23 +25,23 @@
  */
 package ru.silverhammer.demo.user;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.Description;
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.Location;
-import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.converter.annotation.ArrayToCollection;
-import ru.silverhammer.core.converter.annotation.FileToString;
-import ru.silverhammer.core.converter.annotation.ValueToItems;
-import ru.silverhammer.core.decorator.annotation.FileChooser;
-import ru.silverhammer.core.initializer.annotation.EnumerationItems;
-import ru.silverhammer.core.initializer.annotation.ReadOnly;
-import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Generatable;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.core.validator.annotation.*;
+import ru.silverhammer.control.*;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.processor.Description;
+import ru.silverhammer.processor.GroupId;
+import ru.silverhammer.Location;
+import ru.silverhammer.converter.ArrayToCollection;
+import ru.silverhammer.converter.FileToString;
+import ru.silverhammer.converter.ValueToItems;
+import ru.silverhammer.decorator.annotation.FileChooser;
+import ru.silverhammer.initializer.EnumerationItems;
+import ru.silverhammer.initializer.ReadOnly;
+import ru.silverhammer.initializer.StringItems;
+import ru.silverhammer.processor.Categories.Category;
+import ru.silverhammer.processor.Generatable;
+import ru.silverhammer.processor.Groups.Group;
 import ru.silverhammer.demo.user.UserGroup.Type;
+import ru.silverhammer.validator.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +52,9 @@ import java.util.Date;
 		@Group("user"),
 		@Group(value = "langs", caption = "user.langs"),
 		@Group(value = "groups", caption = "user.groups")
+})
+@Category(caption = "Achievements", mnemonic = 'a', groups = {
+		@Group("list")
 })
 public class User {
 

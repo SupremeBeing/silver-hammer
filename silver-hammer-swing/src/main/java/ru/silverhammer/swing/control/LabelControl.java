@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.control.annotation.Label;
+import ru.silverhammer.control.Label;
 
 import javax.swing.JLabel;
 

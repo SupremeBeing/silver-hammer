@@ -25,12 +25,12 @@
  */
 package ru.silverhammer.demo.settings;
 
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.control.annotation.CheckBoxGroup;
-import ru.silverhammer.core.initializer.annotation.StringItems;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Generatable;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
+import ru.silverhammer.processor.GroupId;
+import ru.silverhammer.control.CheckBoxGroup;
+import ru.silverhammer.initializer.StringItems;
+import ru.silverhammer.processor.Categories.Category;
+import ru.silverhammer.processor.Generatable;
+import ru.silverhammer.processor.Groups.Group;
 
 @Category(caption = "Settings", mnemonic = 's', groups = {
 		@Group(value = "lang", caption = "Programming language"),

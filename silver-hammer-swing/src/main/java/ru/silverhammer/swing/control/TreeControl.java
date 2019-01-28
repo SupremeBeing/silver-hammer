@@ -38,13 +38,13 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import ru.silverhammer.core.collection.ITree;
-import ru.silverhammer.core.control.ITreeControl;
-import ru.silverhammer.core.control.annotation.Tree;
+import ru.silverhammer.control.ITree;
+import ru.silverhammer.control.ITreeControl;
+import ru.silverhammer.control.Tree;
 
 // TODO: consider adding isLeaf
 // TODO: disable internal first key navigation
-public class TreeControl extends Control<Object, Tree, JTree> implements ITreeControl<Object, Object, Tree> {
+public class TreeControl extends Control<Object, Tree, JTree> implements ITreeControl<Object, Tree, Object> {
 
 	private static final long serialVersionUID = 3020411970292415116L;
 

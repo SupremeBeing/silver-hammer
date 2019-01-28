@@ -33,9 +33,9 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.decorator.IDecorator;
-import ru.silverhammer.core.decorator.annotation.FileChooser;
+import ru.silverhammer.control.IControl;
+import ru.silverhammer.decorator.IDecorator;
+import ru.silverhammer.decorator.annotation.FileChooser;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.swing.control.Control;
 

@@ -28,33 +28,32 @@ package ru.silverhammer.swing.dialog;
 import java.awt.Container;
 import java.awt.Window;
 
-import ru.silverhammer.core.IUiBuilder;
-import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.IValueListener;
-import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.model.UiModel;
+import ru.silverhammer.control.IControl;
+import ru.silverhammer.control.IValueListener;
 
 public class GenerationDialog extends StandardDialog implements IValueListener {
 
 	private static final long serialVersionUID = 414732643695055693L;
 
-	private final UiMetadata metadata;
+	private final UiModel model;
 
-	public GenerationDialog(Window owner, IUiBuilder<Container> builder, UiMetadata metadata) {
+	public GenerationDialog(Window owner, Container container, UiModel model) {
 		super(owner);
-		this.metadata = metadata;
-		setCanAccept(metadata.isValid());
-		metadata.visitControlAttributes(ca -> ca.getControl().addValueListener(this));
-		setContent(builder.buildUi(metadata));
+		this.model = model;
+		setCanAccept(model.isValid());
+		model.visitControlModels(ca -> ca.getControl().addValueListener(this));
+		setContent(container);
 		setLocationRelativeTo(owner);
 	}
 	
 	@Override
 	public void changed(IControl<?, ?> control) {
-		setCanAccept(metadata.isValid());
+		setCanAccept(model.isValid());
 	}
 	
 	@Override
 	protected void accepted() {
-		metadata.commit();
+		model.commit();
 	}
 }

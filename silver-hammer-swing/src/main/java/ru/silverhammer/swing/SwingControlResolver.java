@@ -25,10 +25,10 @@
  */
 package ru.silverhammer.swing;
 
-import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.decorator.annotation.ButtonBar;
-import ru.silverhammer.core.decorator.annotation.FileChooser;
-import ru.silverhammer.core.resolver.ControlResolver;
+import ru.silverhammer.control.*;
+import ru.silverhammer.decorator.annotation.ButtonBar;
+import ru.silverhammer.decorator.annotation.FileChooser;
+import ru.silverhammer.resolver.ControlResolver;
 import ru.silverhammer.swing.control.*;
 import ru.silverhammer.swing.decorator.ButtonBarDecorator;
 import ru.silverhammer.swing.decorator.FileChooserDecorator;

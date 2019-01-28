@@ -25,19 +25,19 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.collection.ICollection;
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.control.ICollectionControl;
+import ru.silverhammer.control.ISelectionControl;
 
 import javax.swing.*;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 // TODO: disable internal first key navigation
 public abstract class ListControl<A extends Annotation> extends Control<Object, A, JList<Object>>
-        implements ICollectionControl<Object, Object, A>, ISelectionControl<Object, Object, A> {
+        implements ICollectionControl<Object, A, Object>, ISelectionControl<Object, A, Object> {
 
     protected ListControl() {
         super(true);
@@ -86,24 +86,27 @@ public abstract class ListControl<A extends Annotation> extends Control<Object, 
     }
 
     @Override
-    public ICollection<Object> getCollection() {
-        return new ICollection<Object>() {
+    public List<Object> getCollection() {
+        return new ArrayList<Object>() {
             @Override
-            public void add(Object item) {
+            public boolean add(Object item) {
                 if (item != null) {
                     getModel().addElement(item);
                     fireValueChanged();
+                    return true;
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object remove(int i) {
                 getModel().remove(i);
                 fireValueChanged();
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 return getModel().getSize();
             }
 
@@ -121,22 +124,23 @@ public abstract class ListControl<A extends Annotation> extends Control<Object, 
     }
 
     @Override
-    public ICollection<Object> getSelection() {
-        return new ICollection<Object>() {
+    public List<Object> getSelection() {
+        return new ArrayList<Object>() {
             @Override
-            public void add(Object item) {
+            public boolean add(Object item) {
                 int count = getModel().getSize();
                 for (int i = 0; i < count; i++) {
                     Object val = getModel().get(i);
                     if (Objects.equals(item, val)) {
                         getComponent().setSelectionInterval(i, i);
-                        break;
+                        return true;
                     }
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object remove(int i) {
                 int count = getModel().getSize();
                 Object selected = get(i);
                 for (int j = 0; j < count; j++) {
@@ -146,10 +150,11 @@ public abstract class ListControl<A extends Annotation> extends Control<Object, 
                         break;
                     }
                 }
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 Collection<Object> list = getComponent().getSelectedValuesList();
                 return list.size();
             }

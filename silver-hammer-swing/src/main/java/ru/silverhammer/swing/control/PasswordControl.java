@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.control.annotation.Password;
+import ru.silverhammer.control.Password;
 
 import javax.swing.JPasswordField;
 

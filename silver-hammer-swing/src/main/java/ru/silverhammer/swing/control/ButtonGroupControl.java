@@ -25,9 +25,8 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.collection.ICollection;
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.control.ICollectionControl;
+import ru.silverhammer.control.ISelectionControl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ButtonGroupControl<A extends Annotation> extends Control<Object, A, JPanel>
-        implements ICollectionControl<Object, Object, A>, ISelectionControl<Object, Object, A> {
+        implements ICollectionControl<Object, A, Object>, ISelectionControl<Object, A, Object> {
 
     protected final List<Object> data = new ArrayList<>();
     private final Map<Object, AbstractButton> buttons = new HashMap<>();
@@ -61,26 +60,29 @@ public abstract class ButtonGroupControl<A extends Annotation> extends Control<O
     public final void init(A annotation) {}
 
     @Override
-    public ICollection<Object> getCollection() {
-        return new ICollection<Object>() {
+    public List<Object> getCollection() {
+        return new ArrayList<Object>() {
             @Override
-            public void add(Object item) {
+            public boolean add(Object item) {
                 if (item != null) {
                     AbstractButton button = createButton(item);
                     buttons.put(item, button);
                     data.add(item);
                     getComponent().add(button);
+                    return true;
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object remove(int i) {
                 data.remove(i);
                 rebuild();
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 return data.size();
             }
 
@@ -100,28 +102,31 @@ public abstract class ButtonGroupControl<A extends Annotation> extends Control<O
     }
 
     @Override
-    public ICollection<Object> getSelection() {
-        return new ICollection<Object>() {
+    public List<Object> getSelection() {
+        return new ArrayList<Object>() {
             @Override
-            public void add(Object item) {
+            public boolean add(Object item) {
                 AbstractButton button = getButton(item);
                 if (button != null && !button.isSelected()) {
                     button.setSelected(true);
                     fireValueChanged();
+                    return true;
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object remove(int i) {
                 AbstractButton button = getButton(get(i));
                 if (button != null && button.isSelected()) {
                     button.setSelected(false);
                     fireValueChanged();
                 }
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 List<Object> result = new ArrayList<>();
                 for (Object item : data) {
                     AbstractButton btn = getButton(item);

@@ -25,8 +25,8 @@
  */
 package ru.silverhammer.demo.user;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.control.annotation.Text;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.control.Text;
 
 public class UserGroup {
 	

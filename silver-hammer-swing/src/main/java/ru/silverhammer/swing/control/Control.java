@@ -34,8 +34,8 @@ import java.util.Collection;
 
 import javax.swing.*;
 
-import ru.silverhammer.core.control.IControl;
-import ru.silverhammer.core.control.IValueListener;
+import ru.silverhammer.control.IControl;
+import ru.silverhammer.control.IValueListener;
 
 // TODO: consider adding control renderers
 public abstract class Control<Value, A extends Annotation, C extends JComponent> extends JPanel implements IControl<Value, A> {

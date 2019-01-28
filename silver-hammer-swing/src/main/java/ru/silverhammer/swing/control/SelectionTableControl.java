@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.control.annotation.SelectionTable;
-import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.control.SelectionTable;
+import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;

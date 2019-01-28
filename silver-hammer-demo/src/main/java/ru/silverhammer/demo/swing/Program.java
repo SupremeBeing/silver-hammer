@@ -25,15 +25,12 @@
  */
 package ru.silverhammer.demo.swing;
 
-import ru.silverhammer.core.IUiBuilder;
-import ru.silverhammer.core.metadata.MetadataCollector;
-import ru.silverhammer.core.metadata.UiMetadata;
+import ru.silverhammer.processor.Processor;
 import ru.silverhammer.conversion.MultilingualStringConverter;
 import ru.silverhammer.demo.settings.Environment;
 import ru.silverhammer.demo.settings.Settings;
 import ru.silverhammer.demo.user.User;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.injection.Injector;
+import ru.silverhammer.model.UiModel;
 import ru.silverhammer.swing.SwingControlResolver;
 import ru.silverhammer.swing.SwingUiBuilder;
 
@@ -44,13 +41,10 @@ public class Program {
 		Settings settings = new Settings();
 		User user = new User();
 
-		IInjector injector = new Injector();
-		MetadataCollector collector = new MetadataCollector(new SwingControlResolver(), new MultilingualStringConverter("messages"), injector);
-		UiMetadata metadata = collector.collect(user, env, settings);
-		SwingUiBuilder builder = new SwingUiBuilder();
-		injector.bind(IUiBuilder.class, builder);
-
-		builder.showDialog("Silver Hammer Demo", metadata);
+		Processor processor = new Processor(new SwingControlResolver(), new MultilingualStringConverter("messages"));
+		UiModel metadata = processor.process(user, env, settings);
+		SwingUiBuilder builder = new SwingUiBuilder("Silver Hammer Demo");
+		builder.showUi(metadata);
 	}
 
 }

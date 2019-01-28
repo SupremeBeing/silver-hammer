@@ -27,7 +27,7 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JTextField;
 
-import ru.silverhammer.core.control.annotation.Text;
+import ru.silverhammer.control.Text;
 
 // TODO: add pattern for formatted input
 public class TextControl extends BaseTextControl<String, Text, JTextField> {

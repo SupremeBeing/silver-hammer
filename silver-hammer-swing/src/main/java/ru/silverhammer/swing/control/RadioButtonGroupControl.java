@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.control.annotation.RadioButtonGroup;
+import ru.silverhammer.control.RadioButtonGroup;
 
 import javax.swing.*;
 import java.util.*;

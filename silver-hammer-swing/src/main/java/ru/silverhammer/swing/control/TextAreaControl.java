@@ -27,7 +27,7 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JTextArea;
 
-import ru.silverhammer.core.control.annotation.TextArea;
+import ru.silverhammer.control.TextArea;
 
 public class TextAreaControl extends BaseTextControl<String, TextArea, JTextArea> {
 

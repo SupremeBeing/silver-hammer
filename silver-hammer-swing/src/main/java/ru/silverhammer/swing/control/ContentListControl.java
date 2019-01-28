@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.control.annotation.ContentList;
+import ru.silverhammer.control.ContentList;
 
 import java.util.ArrayList;
 import java.util.Collection;

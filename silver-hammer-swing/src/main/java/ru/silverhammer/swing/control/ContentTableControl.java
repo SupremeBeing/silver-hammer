@@ -25,9 +25,9 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.control.annotation.ContentTable;
-import ru.silverhammer.core.resolver.IControlResolver;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.control.ContentTable;
+import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;

@@ -25,7 +25,7 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.control.annotation.ColorChooser;
+import ru.silverhammer.control.ColorChooser;
 
 import java.awt.Color;
 import java.awt.Graphics;

@@ -25,16 +25,15 @@
  */
 package ru.silverhammer.demo.settings;
 
-import ru.silverhammer.core.Caption;
-import ru.silverhammer.core.GroupId;
-import ru.silverhammer.core.Location;
-import ru.silverhammer.core.VerticalAlignment;
-import ru.silverhammer.core.control.annotation.*;
-import ru.silverhammer.core.control.annotation.SelectionList;
-import ru.silverhammer.core.converter.annotation.ArrayToCollection;
-import ru.silverhammer.core.initializer.annotation.EnumerationItems;
-import ru.silverhammer.core.initializer.annotation.FontFamilyItems;
-import ru.silverhammer.core.validator.annotation.NumberFormat;
+import ru.silverhammer.control.*;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.processor.GroupId;
+import ru.silverhammer.Location;
+import ru.silverhammer.VerticalAlignment;
+import ru.silverhammer.converter.ArrayToCollection;
+import ru.silverhammer.initializer.EnumerationItems;
+import ru.silverhammer.initializer.FontFamilyItems;
+import ru.silverhammer.validator.NumberFormat;
 
 import java.awt.*;
 

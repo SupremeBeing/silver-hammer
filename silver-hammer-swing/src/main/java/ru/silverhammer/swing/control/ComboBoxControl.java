@@ -27,15 +27,16 @@ package ru.silverhammer.swing.control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
-import ru.silverhammer.core.collection.ICollection;
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.annotation.ComboBox;
+import ru.silverhammer.control.ICollectionControl;
+import ru.silverhammer.control.ComboBox;
 
 // TODO: disable internal first key navigation
-public class ComboBoxControl extends Control<Object, ComboBox, JComboBox<Object>> implements ICollectionControl<Object, Object, ComboBox> {
+public class ComboBoxControl extends Control<Object, ComboBox, JComboBox<Object>> implements ICollectionControl<Object, ComboBox, Object> {
 
 	private static final long serialVersionUID = 1465641213860936391L;
 
@@ -124,22 +125,25 @@ public class ComboBoxControl extends Control<Object, ComboBox, JComboBox<Object>
 	}
 
 	@Override
-	public ICollection<Object> getCollection() {
-		return new ICollection<Object>() {
+	public List<Object> getCollection() {
+		return new ArrayList<Object>() {
 			@Override
-			public void add(Object item) {
+			public boolean add(Object item) {
 				if (item != null) {
 					getComponent().addItem(item);
+					return true;
 				}
+				return false;
 			}
 
 			@Override
-			public void remove(int i) {
+			public Object remove(int i) {
 				getComponent().removeItemAt(i);
+				return null;
 			}
 
 			@Override
-			public int getCount() {
+			public int size() {
 				return getComponent().getItemCount();
 			}
 

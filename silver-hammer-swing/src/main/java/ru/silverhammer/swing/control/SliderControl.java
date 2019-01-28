@@ -27,7 +27,7 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JSlider;
 
-import ru.silverhammer.core.control.annotation.Slider;
+import ru.silverhammer.control.Slider;
 
 public class SliderControl extends Control<Integer, Slider, JSlider> {
 

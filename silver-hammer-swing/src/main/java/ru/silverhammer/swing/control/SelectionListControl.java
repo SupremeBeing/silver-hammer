@@ -27,7 +27,7 @@ package ru.silverhammer.swing.control;
 
 import java.util.Collection;
 
-import ru.silverhammer.core.control.annotation.SelectionList;
+import ru.silverhammer.control.SelectionList;
 
 public class SelectionListControl extends ListControl<SelectionList> {
 

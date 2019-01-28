@@ -27,7 +27,7 @@ package ru.silverhammer.swing.control;
 
 import javax.swing.JCheckBox;
 
-import ru.silverhammer.core.control.annotation.CheckBox;
+import ru.silverhammer.control.CheckBox;
 import ru.silverhammer.conversion.IStringConverter;
 
 public class CheckBoxControl extends Control<Boolean, CheckBox, JCheckBox> {

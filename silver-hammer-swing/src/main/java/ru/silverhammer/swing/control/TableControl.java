@@ -25,9 +25,8 @@
  */
 package ru.silverhammer.swing.control;
 
-import ru.silverhammer.core.collection.ICollection;
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
+import ru.silverhammer.control.ICollectionControl;
+import ru.silverhammer.control.ISelectionControl;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -38,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class TableControl<A extends Annotation> extends Control<Object, A, JTable>
-        implements ICollectionControl<Object[], Object, A>, ISelectionControl<Object[], Object, A> {
+        implements ICollectionControl<Object, A, Object[]>, ISelectionControl<Object, A, Object[]> {
 
     protected class TableModel extends AbstractTableModel {
 
@@ -126,26 +125,29 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
     }
 
     @Override
-    public ICollection<Object[]> getSelection() {
-        return new ICollection<Object[]>() {
+    public List<Object[]> getSelection() {
+        return new ArrayList<Object[]>() {
             @Override
-            public void add(Object[] item) {
+            public boolean add(Object[] item) {
                 int i = findRow(item);
                 if (i != -1) {
                     getComponent().setRowSelectionInterval(i, i);
+                    return true;
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object[] remove(int i) {
                 int j = findRow(get(i));
                 if (j != -1) {
                     getComponent().removeRowSelectionInterval(j, j);
                 }
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 return getComponent().getSelectedRows().length;
             }
 
@@ -162,22 +164,24 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
         };
     }
 
-    public ICollection<String> getCaptions() {
-        return new ICollection<String>() {
+    public List<String> getCaptions() {
+        return new ArrayList<String>() {
             @Override
-            public void add(String caption) {
+            public boolean add(String caption) {
                 captions.add(caption);
                 getModel().fireTableStructureChanged();
+                return true;
             }
 
             @Override
-            public void remove(int i) {
+            public String remove(int i) {
                 captions.remove(i);
                 getModel().fireTableStructureChanged();
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 return captions.size();
             }
 
@@ -200,26 +204,29 @@ public abstract class TableControl<A extends Annotation> extends Control<Object,
     }
 
     @Override
-    public ICollection<Object[]> getCollection() {
-        return new ICollection<Object[]>() {
+    public List<Object[]> getCollection() {
+        return new ArrayList<Object[]>() {
             @Override
-            public void add(Object[] item) {
+            public boolean add(Object[] item) {
                 if (item != null) {
                     data.add(item);
                     getModel().fireTableDataChanged();
                     fireValueChanged();
+                    return true;
                 }
+                return false;
             }
 
             @Override
-            public void remove(int i) {
+            public Object[] remove(int i) {
                 data.remove(i);
                 getModel().fireTableDataChanged();
                 fireValueChanged();
+                return null;
             }
 
             @Override
-            public int getCount() {
+            public int size() {
                 return data.size();
             }
 

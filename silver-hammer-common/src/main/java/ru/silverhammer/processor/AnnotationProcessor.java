@@ -41,14 +41,14 @@ public class AnnotationProcessor {
 	}
 
 	public void process(Object data) {
-		ClassReflection<?> cr = new ClassReflection<>(data.getClass());
-		for (ClassReflection<?> cl : cr.getHierarchy()) {
+		ClassReflection<?> reflection = new ClassReflection<>(data.getClass());
+		for (ClassReflection<?> cl : reflection.getHierarchy()) {
 			processAnnotations(data, cl);
 		}
-		for (IMethodReflection method : cr.getMethods()) {
+		for (IMethodReflection method : reflection.getMethods()) {
 			processAnnotations(data, method);
 		}
-		for (IFieldReflection field : cr.getFields()) {
+		for (IFieldReflection field : reflection.getFields()) {
 			processAnnotations(data, field);
 		}
 	}

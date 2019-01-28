@@ -25,24 +25,28 @@
  */
 package ru.silverhammer.demo.settings;
 
-import ru.silverhammer.core.*;
-import ru.silverhammer.core.control.ICollectionControl;
-import ru.silverhammer.core.control.ISelectionControl;
-import ru.silverhammer.core.control.annotation.ContentTable;
-import ru.silverhammer.core.control.annotation.Text;
-import ru.silverhammer.core.control.annotation.Tree;
-import ru.silverhammer.core.converter.annotation.MapToCollection;
-import ru.silverhammer.core.decorator.annotation.ButtonBar;
-import ru.silverhammer.core.decorator.annotation.ButtonBar.Button;
-import ru.silverhammer.core.initializer.annotation.FileTreeItems;
-import ru.silverhammer.core.metadata.MetadataCollector;
-import ru.silverhammer.core.metadata.UiMetadata;
-import ru.silverhammer.core.processor.annotation.Categories.Category;
-import ru.silverhammer.core.processor.annotation.Groups.Group;
-import ru.silverhammer.core.processor.annotation.Initializer;
-import ru.silverhammer.core.processor.annotation.Validator;
-import ru.silverhammer.core.resolver.IControlResolver;
-import ru.silverhammer.core.validator.annotation.MinSize;
+import ru.silverhammer.Location;
+import ru.silverhammer.VerticalAlignment;
+import ru.silverhammer.model.UiModel;
+import ru.silverhammer.control.ICollectionControl;
+import ru.silverhammer.control.ISelectionControl;
+import ru.silverhammer.control.ContentTable;
+import ru.silverhammer.control.Text;
+import ru.silverhammer.control.Tree;
+import ru.silverhammer.converter.MapToCollection;
+import ru.silverhammer.decorator.annotation.ButtonBar;
+import ru.silverhammer.decorator.annotation.ButtonBar.Button;
+import ru.silverhammer.initializer.FileTreeItems;
+import ru.silverhammer.processor.Processor;
+import ru.silverhammer.processor.Caption;
+import ru.silverhammer.processor.Categories.Category;
+import ru.silverhammer.processor.GroupId;
+import ru.silverhammer.processor.Groups.Group;
+import ru.silverhammer.processor.Initializer;
+import ru.silverhammer.processor.Validator;
+import ru.silverhammer.resolver.IControlResolver;
+import ru.silverhammer.swing.SwingUiBuilder;
+import ru.silverhammer.validator.MinSize;
 
 import java.io.File;
 import java.util.Date;
@@ -85,8 +89,8 @@ public class Environment {
 
 	@SuppressWarnings("unused")
 	@Initializer
-	private void initializeTable(UiMetadata metadata) {
-		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
+	private void initializeTable(UiModel metadata) {
+		ICollectionControl<Object, ?, Object[]> table = metadata.findControl(this, "properties");
 		table.getCollection().add(new Object[] {"maven.test.skip", true});
 		table.getCollection().add(new Object[] {"JDK version", "1.8.0"});
 		table.getCollection().add(new Object[] {"timeout.interval", 100});
@@ -95,15 +99,15 @@ public class Environment {
 
 	@SuppressWarnings("unused")
 	@Validator
-	private void validateTable(UiMetadata metadata) {
-		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
+	private void validateTable(UiModel metadata) {
+		ICollectionControl<Object, ?, Object[]> table = metadata.findControl(this, "properties");
 		if (table.isControlValid() && !hasProperty(table, "required.key")) {
 			table.setValidationMessage("Missing required property \"required.key\"");
 		}
 	}
 	
-	private boolean hasProperty(ICollectionControl<Object[], Object, ?> table, String key) {
-		for (int i = 0; i < table.getCollection().getCount(); i++) {
+	private boolean hasProperty(ICollectionControl<Object, ?, Object[]> table, String key) {
+		for (int i = 0; i < table.getCollection().size(); i++) {
 			Object[] row = table.getCollection().get(i);
 			if (row.length > 0 && Objects.equals(row[0], key)) {
 				return true;
@@ -113,22 +117,23 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private void addPressed(UiMetadata metadata, IUiBuilder<?> builder, IControlResolver resolver) {
-		ICollectionControl<Object[], Object, ?> table = metadata.findControl(this, "properties");
+	private void addPressed(UiModel metadata, IControlResolver resolver) {
+		ICollectionControl<Object, ?, Object[]> table = metadata.findControl(this, "properties");
 		KeyValue val = new KeyValue();
-		MetadataCollector collector = new MetadataCollector(resolver);
-		if (builder.showDialog("Add property", collector.collect(val))) {
+		Processor processor = new Processor(resolver);
+		SwingUiBuilder builder = new SwingUiBuilder("Add property");
+		if (builder.showUi(processor.process(val))) {
 			table.getCollection().add(new Object[] {val.key, val.value});
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void deletePressed(UiMetadata metadata) {
-		ISelectionControl<Object[], ?, ?> sc = metadata.findControl(this, "properties");
-		if (sc.getSelection().getCount() > 0) {
-			ICollectionControl<Object[], ?, ?> cc = metadata.findControl(this, "properties");
+	private void deletePressed(UiModel metadata) {
+		ISelectionControl<?, ?, Object[]> sc = metadata.findControl(this, "properties");
+		if (sc.getSelection().size() > 0) {
+			ICollectionControl<?, ?, Object[]> cc = metadata.findControl(this, "properties");
 			Object[] selected = sc.getSelection().get(0);
-			for (int i = 0; i < cc.getCollection().getCount(); i++) {
+			for (int i = 0; i < cc.getCollection().size(); i++) {
 				if (Objects.equals(cc.getCollection().get(i), selected)) {
 					cc.getCollection().remove(i);
 					break;
@@ -138,10 +143,10 @@ public class Environment {
 	}
 
 	@SuppressWarnings("unused")
-	private boolean updateDelete(UiMetadata metadata) {
+	private boolean updateDelete(UiModel metadata) {
 		if (metadata != null) {
 			ISelectionControl<?, ?, ?> control = metadata.findControl(this, "properties");
-			return control.getSelection().getCount() > 0;
+			return control.getSelection().size() > 0;
 		}
 		return false;
 	}
