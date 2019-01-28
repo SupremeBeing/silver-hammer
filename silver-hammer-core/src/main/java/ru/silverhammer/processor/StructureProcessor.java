@@ -49,13 +49,13 @@ public class StructureProcessor implements IProcessor<ClassReflection<?>, Annota
 	@Override
 	public void process(Object data, ClassReflection<?> reflection, Annotation annotation) {
 		if (annotation instanceof Structure) {
-			Structure categories = (Structure) annotation;
-			for (Category category : categories.value()) {
+			Structure structure = (Structure) annotation;
+			for (Category category : structure.value()) {
 				process(data, reflection, category);
 			}
 		} else if (annotation instanceof Category) {
 			Category category = (Category) annotation;
-			CategoryModel categoryModel = model.findCategoryModel(category.caption());
+			CategoryModel categoryModel = model.findCategoryModel(converter.getString(category.caption()));
 			if (categoryModel == null) {
 				categoryModel = createCategoryModel(category);
 				model.getCategories().add(categoryModel);
