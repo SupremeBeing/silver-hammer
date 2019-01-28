@@ -30,11 +30,13 @@ public class Person {
 
 ### Execution
 ```java
+
 Person person = new Person();
 Processor processor = new Processor(new SwingControlResolver());
 UiModel metadata = processor.process(person);
 SwingUiBuilder builder = new SwingUiBuilder("Silver Hammer Demo");
 builder.showUi(metadata);
+
 ```
 
 For detailed examples please refer to `silver-hammer-demo` module.
