@@ -80,12 +80,12 @@ public class SwingUiBuilder implements IUiView {
 
 	@Override
 	public boolean showUi(UiModel model) {
-		if (!model.getCategories().isEmpty()) {
+		if (model.getCategories().size() > 1) {
 			JTabbedPane result = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 			for (CategoryModel ca : model.getCategories()) {
 				if (!ca.getGroups().isEmpty()) {
 					JPanel panel = createPanel();
-					URL url = getClass().getResource(ca.getIconPath());
+					URL url = ca.getIconPath() == null ? null : getClass().getResource(ca.getIconPath());
 					Icon icon = url == null ? null : new ImageIcon(url); 
 					result.addTab(ca.getCaption(), icon, panel, ca.getDescription());
 					if (ca.getMnemonic() != 0) {
@@ -99,14 +99,15 @@ public class SwingUiBuilder implements IUiView {
 			dialog.setTitle(title);
 			dialog.setVisible(true);
 			return dialog.isAccepted();
-		} else {
+		} else if (model.getCategories().size() == 1) {
 			JPanel result = createPanel();
-			createGroups(model.getGroups(), result);
+			createGroups(model.getCategories().get(0).getGroups(), result);
 			GenerationDialog dialog = new GenerationDialog(null, result, model);
 			dialog.setTitle(title);
 			dialog.setVisible(true);
 			return dialog.isAccepted();
 		}
+		return false;
 	}
 
 	private void createGroups(Iterable<GroupModel> groups, Container groupsContainer) {

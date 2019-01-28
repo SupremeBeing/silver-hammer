@@ -23,25 +23,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.decorator.annotation;
+package ru.silverhammer.processor;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FileChooser {
+@ProcessorReference(StructureProcessor.class)
+public @interface Structure {
 
-    String[] filters() default {};
+	@Target(ElementType.TYPE)
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Group {
 
-    String initialDirectory() default "";
+		String value();
 
-    boolean allowDirectories() default false;
+		String caption() default "";
 
-    String approveCaption();
+	}
 
-    String buttonCaption() default "...";
+	@Target(ElementType.TYPE)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Repeatable(Structure.class)
+	@ProcessorReference(StructureProcessor.class)
+	@interface Category {
 
+		String caption();
+
+		String description() default "";
+
+		String icon() default "";
+		
+		char mnemonic() default 0;
+
+		Group[] groups();
+		
+	}
+
+	Category[] value();
+	
 }

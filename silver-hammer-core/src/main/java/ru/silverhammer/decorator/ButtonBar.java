@@ -23,31 +23,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.processor;
+package ru.silverhammer.decorator;
+
+import ru.silverhammer.HorizontalAlignment;
+import ru.silverhammer.Location;
+import ru.silverhammer.VerticalAlignment;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ProcessorReference(GroupsProcessor.class)
-public @interface Groups {
+public @interface ButtonBar {
 
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.RUNTIME)
-	@Repeatable(Groups.class)
-	@ProcessorReference(GroupsProcessor.class)
-	@interface Group {
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Button {
 
-		String value();
-		
-		String caption() default "";
-		
-	}
+        String caption();
 
-	Group[] value();
-	
+        String icon() default "";
+
+        String pressedMethod();
+
+        String enabledMethod() default "";
+    }
+
+    Button[] value();
+
+    Location location() default Location.Bottom;
+
+    HorizontalAlignment horizontalAlignment() default HorizontalAlignment.Right;
+
+    VerticalAlignment verticalAlignment() default VerticalAlignment.Top;
+
 }

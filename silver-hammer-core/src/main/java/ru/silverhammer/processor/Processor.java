@@ -49,13 +49,11 @@ public final class Processor {
 	// TODO: consider adding error log
 	public UiModel process(Object... data) {
 		IInjector injector = new Injector();
-		FieldProcessor fieldProcessor = new FieldProcessor(injector);
 		AnnotationProcessor processor = new AnnotationProcessor(injector);
-		UiModel model = new UiModel(injector, fieldProcessor, converter);
+		UiModel model = new UiModel(injector, converter);
 
 		injector.bind(IStringConverter.class, converter);
 		injector.bind(IControlResolver.class, controlResolver);
-		injector.bind(FieldProcessor.class, fieldProcessor);
 		injector.bind(UiModel.class, model);
 
 		for (Object o : data) {

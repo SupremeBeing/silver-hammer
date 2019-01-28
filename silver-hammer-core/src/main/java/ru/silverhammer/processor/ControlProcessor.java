@@ -27,9 +27,9 @@ package ru.silverhammer.processor;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Objects;
 
 import ru.silverhammer.initializer.InitializerReference;
+import ru.silverhammer.model.CategoryModel;
 import ru.silverhammer.model.ControlModel;
 import ru.silverhammer.model.GroupModel;
 import ru.silverhammer.model.UiModel;
@@ -47,14 +47,12 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 	private final IStringConverter converter;
 	private final IInjector injector;
 	private final IControlResolver controlResolver;
-	private final FieldProcessor fieldProcessor;
 	private final UiModel model;
 	
-	public ControlProcessor(IInjector injector, IStringConverter converter, IControlResolver controlResolver, FieldProcessor fieldProcessor, UiModel model) {
+	public ControlProcessor(IInjector injector, IStringConverter converter, IControlResolver controlResolver, UiModel model) {
 		this.injector = injector;
 		this.converter = converter;
 		this.controlResolver = controlResolver;
-		this.fieldProcessor = fieldProcessor;
 		this.model = model;
 	}
 
@@ -91,20 +89,19 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 			initializer.init(control, ma.getAnnotation(), data, field);
 		}
 		Object value = field.getValue(data);
-		value = fieldProcessor.getControlValue(value, field);
+		value = model.getControlValue(value, field);
 		((IControl<Object, ?>) control).setValue(value);
 	}
 
 	private void addControlAttributes(GroupId gi, ControlModel controlModel) {
 		String groupId = gi == null ? null : gi.value();
-		GroupModel groupModel = model.findGroupModel(g -> Objects.equals(g.getId(), groupId));
+		GroupModel groupModel = model.findGroupModel(groupId);
 		if (groupModel == null) {
 			groupModel = new GroupModel(groupId);
 			if (model.getCategories().isEmpty()) {
-				model.getGroups().add(groupModel);
-			} else {
-				model.getCategories().get(0).getGroups().add(groupModel);
+				model.getCategories().add(new CategoryModel()); // TODO: revisit
 			}
+			model.getCategories().get(0).getGroups().add(groupModel);
 		}
 		groupModel.getControls().add(controlModel);
 	}

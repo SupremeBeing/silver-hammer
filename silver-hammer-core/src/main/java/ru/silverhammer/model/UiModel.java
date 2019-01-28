@@ -26,42 +26,40 @@
 package ru.silverhammer.model;
 
 import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.processor.FieldProcessor;
+import ru.silverhammer.converter.ConverterReference;
+import ru.silverhammer.converter.IConverter;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.control.IControl;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
+import ru.silverhammer.reflection.IReflection;
+import ru.silverhammer.validator.IValidator;
+import ru.silverhammer.validator.ValidatorReference;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class UiModel {
 
     private final List<CategoryModel> categories = new ArrayList<>();
-    private final List<GroupModel> groups = new ArrayList<>();
     private final List<MethodModel> initializers = new ArrayList<>();
     private final List<MethodModel> validators = new ArrayList<>();
 
     private final IInjector injector;
-    private final FieldProcessor fieldProcessor;
     private final IStringConverter converter;
 
-    public UiModel(IInjector injector, FieldProcessor fieldProcessor, IStringConverter converter) {
+    public UiModel(IInjector injector, IStringConverter converter) {
         this.injector = injector;
-        this.fieldProcessor = fieldProcessor;
         this.converter = converter;
     }
 
     public List<CategoryModel> getCategories() {
         return categories;
-    }
-
-    public List<GroupModel> getGroups() {
-        return groups;
     }
 
     public List<MethodModel> getInitializers() {
@@ -72,17 +70,21 @@ public class UiModel {
         return validators;
     }
 
-    public GroupModel findGroupModel(Predicate<GroupModel> predicate) {
+    public GroupModel findGroupModel(String groupId) {
         for (CategoryModel c : categories) {
-            for (GroupModel ga : c.getGroups()) {
-                if (predicate.test(ga)) {
-                    return ga;
+            for (GroupModel g : c.getGroups()) {
+                if (Objects.equals(g.getId(), groupId)) {
+                    return g;
                 }
             }
         }
-        for (GroupModel ga : groups) {
-            if (predicate.test(ga)) {
-                return ga;
+        return null;
+    }
+
+    public CategoryModel findCategoryModel(String caption) {
+        for (CategoryModel c : categories) {
+            if (Objects.equals(c.getCaption(), caption)) {
+                return c;
             }
         }
         return null;
@@ -96,11 +98,6 @@ public class UiModel {
                 }
             }
         }
-        for (GroupModel ga : groups) {
-            for (ControlModel ca : ga.getControls()) {
-                consumer.accept(ca);
-            }
-        }
     }
 
     public ControlModel findControlModel(Predicate<ControlModel> predicate) {
@@ -110,13 +107,6 @@ public class UiModel {
                     if (predicate.test(ca)) {
                         return ca;
                     }
-                }
-            }
-        }
-        for (GroupModel ga : groups) {
-            for (ControlModel ca : ga.getControls()) {
-                if (predicate.test(ca)) {
-                    return ca;
                 }
             }
         }
@@ -144,7 +134,7 @@ public class UiModel {
 	}
 
 	private void commit(Object data, IFieldReflection field, IControl<?, ?> control) {
-		Object value = fieldProcessor.getFieldValue(control.getValue(), field);
+		Object value = getFieldValue(control.getValue(), field);
 		field.setValue(data, value);
 	}
 
@@ -169,12 +159,33 @@ public class UiModel {
 	// TODO: consider exposing full data validation method
 	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
 		Object value = control.getValue();
-		Annotation invalidAnnotation = fieldProcessor.validateValue(value, field);
+		Annotation invalidAnnotation = validateValue(value, field);
 		String msg = getValidationMessage(invalidAnnotation);
 		control.setValidationMessage(msg);
 	}
 
-	private void validateMethods() {
+    private Annotation validateValue(Object value, IFieldReflection field) {
+        for (Annotation annotation : field.getAnnotations()) {
+            for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
+                if (metaAnnotation instanceof ConverterReference) {
+                    ConverterReference cr = (ConverterReference) metaAnnotation;
+                    @SuppressWarnings("unchecked")
+                    IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(cr.value());
+                    value = converter.convertBackward(value, annotation);
+                } else if (metaAnnotation instanceof ValidatorReference) {
+                    ValidatorReference vr = (ValidatorReference) metaAnnotation;
+                    @SuppressWarnings("unchecked")
+                    IValidator<Annotation> validator = (IValidator<Annotation>) injector.instantiate(vr.value());
+                    if (!validator.validate(value, annotation)) {
+                        return annotation;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void validateMethods() {
 		for (MethodModel ma : validators) {
 			injector.invoke(ma.getData(), ma.getMethodReflection());
 		}
@@ -203,5 +214,26 @@ public class UiModel {
             }
         }
         return null;
+    }
+
+    public Object getControlValue(Object value, IFieldReflection field) {
+        List<IReflection.MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
+        for (int i = marked.size() - 1; i >= 0; i--) {
+            IReflection.MarkedAnnotation<ConverterReference> ma = marked.get(i);
+            @SuppressWarnings("unchecked")
+            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+            value = converter.convertForward(value, ma.getAnnotation());
+        }
+        return value;
+    }
+
+    public Object getFieldValue(Object value, IFieldReflection field) {
+        List<IReflection.MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
+        for (IReflection.MarkedAnnotation<ConverterReference> ma : marked) {
+            @SuppressWarnings("unchecked")
+            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+            value = converter.convertBackward(value, ma.getAnnotation());
+        }
+        return value;
     }
 }

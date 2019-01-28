@@ -26,8 +26,8 @@
 package ru.silverhammer.swing;
 
 import ru.silverhammer.control.*;
-import ru.silverhammer.decorator.annotation.ButtonBar;
-import ru.silverhammer.decorator.annotation.FileChooser;
+import ru.silverhammer.decorator.ButtonBar;
+import ru.silverhammer.decorator.FileChooser;
 import ru.silverhammer.resolver.ControlResolver;
 import ru.silverhammer.swing.control.*;
 import ru.silverhammer.swing.decorator.ButtonBarDecorator;

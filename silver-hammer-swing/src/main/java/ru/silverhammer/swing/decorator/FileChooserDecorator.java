@@ -35,7 +35,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ru.silverhammer.control.IControl;
 import ru.silverhammer.decorator.IDecorator;
-import ru.silverhammer.decorator.annotation.FileChooser;
+import ru.silverhammer.decorator.FileChooser;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.swing.control.Control;
 

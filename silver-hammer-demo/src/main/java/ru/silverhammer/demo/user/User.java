@@ -33,13 +33,13 @@ import ru.silverhammer.Location;
 import ru.silverhammer.converter.ArrayToCollection;
 import ru.silverhammer.converter.FileToString;
 import ru.silverhammer.converter.ValueToItems;
-import ru.silverhammer.decorator.annotation.FileChooser;
+import ru.silverhammer.decorator.FileChooser;
 import ru.silverhammer.initializer.EnumerationItems;
 import ru.silverhammer.initializer.ReadOnly;
 import ru.silverhammer.initializer.StringItems;
-import ru.silverhammer.processor.Categories.Category;
+import ru.silverhammer.processor.Structure.Category;
 import ru.silverhammer.processor.Generatable;
-import ru.silverhammer.processor.Groups.Group;
+import ru.silverhammer.processor.Structure.Group;
 import ru.silverhammer.demo.user.UserGroup.Type;
 import ru.silverhammer.validator.*;
 

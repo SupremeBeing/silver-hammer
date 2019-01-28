@@ -29,18 +29,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ru.silverhammer.processor.FieldProcessor;
+import ru.silverhammer.model.UiModel;
 import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class ValueToItemsConverter implements IConverter<Object, Object, ValueToItems> {
 
-	private final FieldProcessor fieldProcessor;
+	private final UiModel model;
 	private final IControlResolver controlResolver;
 
-	public ValueToItemsConverter(FieldProcessor fieldProcessor, IControlResolver controlResolver) {
-		this.fieldProcessor = fieldProcessor;
+	public ValueToItemsConverter(UiModel model, IControlResolver controlResolver) {
+		this.model = model;
 		this.controlResolver = controlResolver;
 	}
 
@@ -67,7 +67,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		for (int i = 0; i < fields.size(); i++) {
 			IFieldReflection field = fields.get(i);
 			Object value = field.getValue(o);
-			item[i] = annotation.annotatedOnly() ? fieldProcessor.getControlValue(value, field) : value;
+			item[i] = annotation.annotatedOnly() ? model.getControlValue(value, field) : value;
 		}
 		return item;
 	}
@@ -98,7 +98,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 			IFieldReflection field = fields.get(i);
 			Object value = item[i];
 			if (annotation.annotatedOnly()) {
-				value = fieldProcessor.getFieldValue(value, field);
+				value = model.getFieldValue(value, field);
 			}
 			field.setValue(result, value);
 		}

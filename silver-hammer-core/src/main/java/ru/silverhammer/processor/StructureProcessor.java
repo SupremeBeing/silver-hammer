@@ -28,35 +28,43 @@ package ru.silverhammer.processor;
 import java.lang.annotation.Annotation;
 
 import ru.silverhammer.model.CategoryModel;
+import ru.silverhammer.model.GroupModel;
 import ru.silverhammer.model.UiModel;
-import ru.silverhammer.processor.Categories.Category;
-import ru.silverhammer.processor.Groups.Group;
+import ru.silverhammer.processor.Structure.Category;
+import ru.silverhammer.processor.Structure.Group;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 
-public class CategoriesProcessor extends GroupsProcessor {
+// TODO: consider adding groups based on their occurrence in class fields
+public class StructureProcessor implements IProcessor<ClassReflection<?>, Annotation>  {
 
-	public CategoriesProcessor(IStringConverter converter, UiModel model) {
-		super(converter, model);
+	private final IStringConverter converter;
+	private final UiModel model;
+
+	public StructureProcessor(IStringConverter converter, UiModel model) {
+		this.converter = converter;
+		this.model = model;
 	}
 
 	@Override
 	public void process(Object data, ClassReflection<?> reflection, Annotation annotation) {
-		if (annotation instanceof Categories) {
-			Categories categories = (Categories) annotation;
+		if (annotation instanceof Structure) {
+			Structure categories = (Structure) annotation;
 			for (Category category : categories.value()) {
 				process(data, reflection, category);
 			}
 		} else if (annotation instanceof Category) {
 			Category category = (Category) annotation;
-			CategoryModel categoryModel = createCategoryModel(category);
-			model.getCategories().add(categoryModel);
-			if (!model.getGroups().isEmpty()) {
-				categoryModel.getGroups().addAll(model.getGroups());
-				model.getGroups().clear();
+			CategoryModel categoryModel = model.findCategoryModel(category.caption());
+			if (categoryModel == null) {
+				categoryModel = createCategoryModel(category);
+				model.getCategories().add(categoryModel);
 			}
 			for (Group g : category.groups()) {
-				categoryModel.getGroups().add(createGroupModel(g));
+				if (model.findGroupModel(g.value()) == null) {
+					GroupModel groupModel = createGroupModel(g);
+					categoryModel.getGroups().add(groupModel);
+				}
 			}
 		}
 	}
@@ -71,4 +79,11 @@ public class CategoriesProcessor extends GroupsProcessor {
 		result.setMnemonic(category.mnemonic());
 		return result;
 	}
+
+	private GroupModel createGroupModel(Group group) {
+		GroupModel result = new GroupModel(group.value());
+		result.setCaption(group.caption().trim().length() > 0 ? converter.getString(group.caption()) : null);
+		return result;
+	}
+
 }

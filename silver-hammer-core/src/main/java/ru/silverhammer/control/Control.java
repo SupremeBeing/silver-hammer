@@ -44,6 +44,7 @@ public abstract class Control<Value, A extends Annotation> implements IControl<V
     @Override
     public void setValue(Value value) {
         this.value = value;
+        fireValueChanged();
     }
 
     @Override
@@ -81,5 +82,11 @@ public abstract class Control<Value, A extends Annotation> implements IControl<V
     @Override
     public String getValidationMessage() {
         return validationMessage;
+    }
+
+    protected void fireValueChanged() {
+        for (IValueListener listener : listeners) {
+            listener.changed(this);
+        }
     }
 }

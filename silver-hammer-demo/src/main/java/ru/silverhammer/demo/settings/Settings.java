@@ -28,9 +28,9 @@ package ru.silverhammer.demo.settings;
 import ru.silverhammer.processor.GroupId;
 import ru.silverhammer.control.CheckBoxGroup;
 import ru.silverhammer.initializer.StringItems;
-import ru.silverhammer.processor.Categories.Category;
+import ru.silverhammer.processor.Structure.Category;
 import ru.silverhammer.processor.Generatable;
-import ru.silverhammer.processor.Groups.Group;
+import ru.silverhammer.processor.Structure.Group;
 
 @Category(caption = "Settings", mnemonic = 's', groups = {
 		@Group(value = "lang", caption = "Programming language"),

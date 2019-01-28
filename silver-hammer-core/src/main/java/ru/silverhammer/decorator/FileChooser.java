@@ -23,11 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.decorator.annotation;
-
-import ru.silverhammer.HorizontalAlignment;
-import ru.silverhammer.Location;
-import ru.silverhammer.VerticalAlignment;
+package ru.silverhammer.decorator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,27 +32,16 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ButtonBar {
+public @interface FileChooser {
 
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Button {
+    String[] filters() default {};
 
-        String caption();
+    String initialDirectory() default "";
 
-        String icon() default "";
+    boolean allowDirectories() default false;
 
-        String pressedMethod();
+    String approveCaption();
 
-        String enabledMethod() default "";
-    }
-
-    Button[] value();
-
-    Location location() default Location.Bottom;
-
-    HorizontalAlignment horizontalAlignment() default HorizontalAlignment.Right;
-
-    VerticalAlignment verticalAlignment() default VerticalAlignment.Top;
+    String buttonCaption() default "...";
 
 }
