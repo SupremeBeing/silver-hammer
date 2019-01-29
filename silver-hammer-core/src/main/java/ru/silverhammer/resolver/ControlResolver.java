@@ -31,7 +31,6 @@ import java.util.Map;
 
 import ru.silverhammer.control.IControl;
 import ru.silverhammer.decorator.IDecorator;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlResolver implements IControlResolver {
 	
@@ -60,16 +59,5 @@ public class ControlResolver implements IControlResolver {
 		if (annotationClass != null && decoratorClass != null) {
 			decoratorMapping.put(annotationClass, decoratorClass);
 		}
-	}
-
-	@Override
-	public boolean hasControlAnnotation(IFieldReflection fieldReflection) {
-		for (Annotation annotation : fieldReflection.getAnnotations()) {
-			Class<? extends IControl<?, ?>> controlClass = getControlClass(annotation.annotationType());
-			if (controlClass != null) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

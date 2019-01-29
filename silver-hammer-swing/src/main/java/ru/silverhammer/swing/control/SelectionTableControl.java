@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ru.silverhammer.model.UiModel;
 import ru.silverhammer.processor.Caption;
 import ru.silverhammer.control.SelectionTable;
-import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
@@ -41,12 +41,12 @@ public class SelectionTableControl extends TableControl<SelectionTable> {
 	private static final long serialVersionUID = -3692427066762483919L;
 
 	private final IStringConverter converter;
-	private final IControlResolver controlResolver;
+	private final UiModel model;
 
-	public SelectionTableControl(IStringConverter converter, IControlResolver controlResolver) {
+	public SelectionTableControl(IStringConverter converter, UiModel model) {
 		super();
 		this.converter = converter;
-		this.controlResolver = controlResolver;
+		this.model = model;
 	}
 	
 	@Override
@@ -91,7 +91,7 @@ public class SelectionTableControl extends TableControl<SelectionTable> {
 		setSelectionType(annotation.multiSelection());
 		if (annotation.annotationCaptions() != Void.class) {
 			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
-				if (controlResolver.hasControlAnnotation(fr)) {
+				if (model.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
 					getCaptions().add(c == null ? fr.getName() : converter.getString(c.value()));
 				}

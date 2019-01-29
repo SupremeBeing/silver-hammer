@@ -25,9 +25,9 @@
  */
 package ru.silverhammer.swing.control;
 
+import ru.silverhammer.model.UiModel;
 import ru.silverhammer.processor.Caption;
 import ru.silverhammer.control.ContentTable;
-import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
@@ -39,11 +39,11 @@ public class ContentTableControl extends TableControl<ContentTable> {
 	private static final long serialVersionUID = -3692427066762483919L;
 
 	private final IStringConverter converter;
-	private final IControlResolver controlResolver;
+	private final UiModel model;
 
-	public ContentTableControl(IStringConverter converter, IControlResolver controlResolver) {
+	public ContentTableControl(IStringConverter converter, UiModel model) {
 		this.converter = converter;
-		this.controlResolver = controlResolver;
+		this.model = model;
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class ContentTableControl extends TableControl<ContentTable> {
 		setSelectionType(annotation.multiSelection());
 		if (annotation.annotationCaptions() != Void.class) {
 			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
-				if (controlResolver.hasControlAnnotation(fr)) {
+				if (model.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
 					getCaptions().add(c == null ? fr.getName() : converter.getString(c.value()));
 				}

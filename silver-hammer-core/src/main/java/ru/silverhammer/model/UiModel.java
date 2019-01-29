@@ -30,10 +30,13 @@ import ru.silverhammer.converter.ConverterReference;
 import ru.silverhammer.converter.IConverter;
 import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.control.IControl;
+import ru.silverhammer.processor.ControlProcessor;
+import ru.silverhammer.processor.ProcessorReference;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.reflection.IReflection;
+import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 import ru.silverhammer.validator.IValidator;
 import ru.silverhammer.validator.ValidatorReference;
 
@@ -235,5 +238,14 @@ public class UiModel {
             value = converter.convertBackward(value, ma.getAnnotation());
         }
         return value;
+    }
+
+    public boolean hasControlAnnotation(IFieldReflection fieldReflection) {
+        for (MarkedAnnotation<ProcessorReference> m : fieldReflection.getMarkedAnnotations(ProcessorReference.class)) {
+            if (m.getMarker().value() == ControlProcessor.class) {
+                return true;
+            }
+        }
+        return false;
     }
 }

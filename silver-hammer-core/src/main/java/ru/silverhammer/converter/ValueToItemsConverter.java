@@ -30,18 +30,15 @@ import java.util.Collection;
 import java.util.List;
 
 import ru.silverhammer.model.UiModel;
-import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.reflection.ClassReflection;
 import ru.silverhammer.reflection.IFieldReflection;
 
 public class ValueToItemsConverter implements IConverter<Object, Object, ValueToItems> {
 
 	private final UiModel model;
-	private final IControlResolver controlResolver;
 
-	public ValueToItemsConverter(UiModel model, IControlResolver controlResolver) {
+	public ValueToItemsConverter(UiModel model) {
 		this.model = model;
-		this.controlResolver = controlResolver;
 	}
 
 	@Override
@@ -109,7 +106,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		List<IFieldReflection> result = new ArrayList<>();
 		ClassReflection<?> reflection = new ClassReflection<>(cls);
 		for (IFieldReflection fr : reflection.getFields()) {
-			if (!annotation.annotatedOnly() || controlResolver.hasControlAnnotation(fr)) {
+			if (!annotation.annotatedOnly() || model.hasControlAnnotation(fr)) {
 				result.add(fr);
 			}
 		}
