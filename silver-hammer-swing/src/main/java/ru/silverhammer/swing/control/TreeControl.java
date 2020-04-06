@@ -144,10 +144,7 @@ public class TreeControl extends Control<Object, Tree, JTree> implements ITreeCo
 
 	public boolean isMultiSelection() {
 		int mode = getComponent().getSelectionModel().getSelectionMode();
-		if (mode == TreeSelectionModel.SINGLE_TREE_SELECTION) {
-			return false;
-		}
-		return true;
+		return mode != TreeSelectionModel.SINGLE_TREE_SELECTION;
 	}
 
 	public void setSelectionType(boolean multiSelection) {
@@ -174,7 +171,7 @@ public class TreeControl extends Control<Object, Tree, JTree> implements ITreeCo
 				result.add(((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 			}
 		}
-		return result.toArray(new Object[result.size()]);
+		return result.toArray(new Object[0]);
 	}
 
 	public void select(Object value) {

@@ -25,8 +25,8 @@
  */
 package ru.silverhammer.initializer;
 
+import ru.reflexio.IFieldReflection;
 import ru.silverhammer.control.ICollectionControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class NumberItemsInitializer implements IInitializer<ICollectionControl<?, ?, Number>, NumberItems> {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2020, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,12 +23,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.reflection;
+package ru.silverhammer.processor;
 
-public interface IMethodReflection extends IExecutableReflection<Object> {
+import ru.junkie.IInjector;
+import ru.reflexio.*;
 
-    boolean isStatic();
+public class AnnotationProcessor {
 
-    Object invokeOn(Object data, Object... args);
+	private final IInjector injector;
+	
+	public AnnotationProcessor(IInjector injector) {
+		this.injector = injector;
+	}
 
+	public void process(Object data) {
+		TypeReflection<?> reflection = new TypeReflection<>(data.getClass());
+		for (ITypeReflection<?> cl : reflection.getTypeHierarchy()) {
+			processAnnotations(data, cl);
+		}
+		for (IInstanceMethodReflection method : reflection.getInstanceMethods()) {
+			processAnnotations(data, method);
+		}
+		for (IInstanceFieldReflection field : reflection.getInstanceFields()) {
+			processAnnotations(data, field);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processAnnotations(Object data, IReflection reflection) {
+		for (MetaAnnotation<ProcessorReference> marked : reflection.getMetaAnnotations(ProcessorReference.class)) {
+			IProcessor processor = injector.instantiate(marked.getMetaAnnotation().value());
+			processor.process(data, reflection, marked.getAnnotation());
+		}
+	}
 }

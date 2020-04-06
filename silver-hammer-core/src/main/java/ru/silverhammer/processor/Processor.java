@@ -25,12 +25,12 @@
  */
 package ru.silverhammer.processor;
 
+import ru.junkie.IInjector;
+import ru.junkie.Injector;
+import ru.sanatio.conversion.IStringConverter;
+import ru.sanatio.conversion.SameStringConverter;
 import ru.silverhammer.model.UiModel;
 import ru.silverhammer.resolver.IControlResolver;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.conversion.SameStringConverter;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.injection.Injector;
 
 public final class Processor {
 	

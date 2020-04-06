@@ -37,7 +37,6 @@ import java.util.Map;
 @ConverterReference(MapToCollectionConverter.class)
 public @interface MapToCollection {
 
-	@SuppressWarnings("rawtypes")
 	Class<? extends Map> value() default HashMap.class;
 
 }

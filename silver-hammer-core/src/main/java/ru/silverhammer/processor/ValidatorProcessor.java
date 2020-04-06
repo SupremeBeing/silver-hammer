@@ -25,11 +25,11 @@
  */
 package ru.silverhammer.processor;
 
+import ru.reflexio.IInstanceMethodReflection;
 import ru.silverhammer.model.MethodModel;
 import ru.silverhammer.model.UiModel;
-import ru.silverhammer.reflection.IMethodReflection;
 
-public class ValidatorProcessor implements IProcessor<IMethodReflection, Validator> {
+public class ValidatorProcessor implements IProcessor<IInstanceMethodReflection, Validator> {
 
 	private final UiModel model;
 
@@ -38,7 +38,7 @@ public class ValidatorProcessor implements IProcessor<IMethodReflection, Validat
 	}
 
 	@Override
-	public void process(Object data, IMethodReflection reflection, Validator annotation) {
+	public void process(Object data, IInstanceMethodReflection reflection, Validator annotation) {
 		model.getValidators().add(new MethodModel(data, reflection));
 	}
 }

@@ -28,17 +28,17 @@ package ru.silverhammer.processor;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.reflection.IFieldReflection;
+import ru.junkie.IInjector;
+import ru.reflexio.IInstanceFieldReflection;
 
-public class GeneratableProcessor extends AnnotationProcessor implements IProcessor<IFieldReflection, Generatable> {
+public class GeneratableProcessor extends AnnotationProcessor implements IProcessor<IInstanceFieldReflection, Generatable> {
 
 	public GeneratableProcessor(IInjector injector) {
 		super(injector);
 	}
 
 	@Override
-	public void process(Object data, IFieldReflection reflection, Generatable annotation) {
+	public void process(Object data, IInstanceFieldReflection reflection, Generatable annotation) {
 		Object val = reflection.getValue(data);
 		if (reflection.getType().isArray()) {
 			int length = Array.getLength(val);

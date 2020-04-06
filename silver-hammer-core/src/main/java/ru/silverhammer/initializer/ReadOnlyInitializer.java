@@ -25,8 +25,8 @@
  */
 package ru.silverhammer.initializer;
 
+import ru.reflexio.IFieldReflection;
 import ru.silverhammer.control.IControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class ReadOnlyInitializer implements IInitializer<IControl<?, ?>, ReadOnly> {
 

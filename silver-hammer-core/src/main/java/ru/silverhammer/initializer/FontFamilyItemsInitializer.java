@@ -27,8 +27,8 @@ package ru.silverhammer.initializer;
 
 import java.awt.GraphicsEnvironment;
 
+import ru.reflexio.IFieldReflection;
 import ru.silverhammer.control.ICollectionControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class FontFamilyItemsInitializer implements IInitializer<ICollectionControl<?, ?, String>, FontFamilyItems> {
 

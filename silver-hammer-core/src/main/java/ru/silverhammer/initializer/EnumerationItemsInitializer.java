@@ -25,9 +25,9 @@
  */
 package ru.silverhammer.initializer;
 
+import ru.reflexio.IFieldReflection;
+import ru.reflexio.ITypeReflection;
 import ru.silverhammer.control.ICollectionControl;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +42,7 @@ public class EnumerationItemsInitializer implements IInitializer<ICollectionCont
 			if (fieldClass.isArray()) {
 				cl = fieldClass.getComponentType();
 			} else if (Collection.class.isAssignableFrom(fieldClass)) {
-				List<ClassReflection<?>> cls = field.getGenericClasses();
+				List<ITypeReflection<?>> cls = field.getGenericClasses();
 				cl = cls.isEmpty() ? Object.class : cls.get(0).getType();
 			} else {
 				cl = fieldClass;

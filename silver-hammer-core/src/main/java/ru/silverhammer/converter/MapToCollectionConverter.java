@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import ru.silverhammer.reflection.ClassReflection;
+import ru.reflexio.ITypeReflection;
+import ru.reflexio.TypeReflection;
 
 public class MapToCollectionConverter implements IConverter<Map<?, ?>, Collection<Object[]>, MapToCollection> {
 
@@ -50,7 +51,7 @@ public class MapToCollectionConverter implements IConverter<Map<?, ?>, Collectio
 	public Map<?, ?> convertBackward(Collection<Object[]> destination, MapToCollection annotation) {
 		if (destination != null) {
 			@SuppressWarnings("rawtypes")
-			ClassReflection<? extends Map> cr = new ClassReflection<>(annotation.value());
+			ITypeReflection<? extends Map> cr = new TypeReflection<>(annotation.value());
 			@SuppressWarnings("unchecked")
 			Map<Object, Object> result = cr.instantiate();
 			for (Object[] pair : destination) {

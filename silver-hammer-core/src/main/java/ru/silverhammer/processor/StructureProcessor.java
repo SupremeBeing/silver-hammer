@@ -27,16 +27,16 @@ package ru.silverhammer.processor;
 
 import java.lang.annotation.Annotation;
 
+import ru.reflexio.ITypeReflection;
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.model.CategoryModel;
 import ru.silverhammer.model.GroupModel;
 import ru.silverhammer.model.UiModel;
 import ru.silverhammer.processor.Structure.Category;
 import ru.silverhammer.processor.Structure.Group;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.reflection.ClassReflection;
 
 // TODO: consider adding groups based on their occurrence in class fields
-public class StructureProcessor implements IProcessor<ClassReflection<?>, Annotation>  {
+public class StructureProcessor implements IProcessor<ITypeReflection<?>, Annotation>  {
 
 	private final IStringConverter converter;
 	private final UiModel model;
@@ -47,7 +47,7 @@ public class StructureProcessor implements IProcessor<ClassReflection<?>, Annota
 	}
 
 	@Override
-	public void process(Object data, ClassReflection<?> reflection, Annotation annotation) {
+	public void process(Object data, ITypeReflection<?> reflection, Annotation annotation) {
 		if (annotation instanceof Structure) {
 			Structure structure = (Structure) annotation;
 			for (Category category : structure.value()) {

@@ -25,9 +25,9 @@
  */
 package ru.silverhammer.initializer;
 
+import ru.reflexio.IFieldReflection;
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.control.ICollectionControl;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class StringItemsInitializer implements IInitializer<ICollectionControl<?, ?, String>, StringItems> {
 

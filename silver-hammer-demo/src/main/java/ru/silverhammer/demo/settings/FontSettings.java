@@ -25,7 +25,9 @@
  */
 package ru.silverhammer.demo.settings;
 
+import ru.sanatio.validator.NumberFormat;
 import ru.silverhammer.control.*;
+import ru.silverhammer.converter.NumberToString;
 import ru.silverhammer.processor.Caption;
 import ru.silverhammer.processor.GroupId;
 import ru.silverhammer.Location;
@@ -33,7 +35,6 @@ import ru.silverhammer.VerticalAlignment;
 import ru.silverhammer.converter.ArrayToCollection;
 import ru.silverhammer.initializer.EnumerationItems;
 import ru.silverhammer.initializer.FontFamilyItems;
-import ru.silverhammer.validator.NumberFormat;
 
 import java.awt.*;
 
@@ -63,7 +64,8 @@ public class FontSettings {
 	@Text
 	@GroupId("font")
 	@Caption("Line width:")
-	@NumberFormat(type = double.class, format = "#0.##", message = "Line width should be in %s format")
+	@NumberFormat(format = "#0.##", message = "Line width should be in %s format")
+	@NumberToString(type = double.class, format = "#0.##")
 	private double lineWidth = 1.2;
 
 	@SelectionList

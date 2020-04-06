@@ -35,6 +35,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import ru.junkie.IInjector;
+import ru.reflexio.IInstanceMethodReflection;
+import ru.reflexio.TypeReflection;
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.HorizontalAlignment;
 import ru.silverhammer.Location;
 import ru.silverhammer.VerticalAlignment;
@@ -42,10 +46,6 @@ import ru.silverhammer.control.IControl;
 import ru.silverhammer.decorator.IDecorator;
 import ru.silverhammer.decorator.ButtonBar;
 import ru.silverhammer.decorator.ButtonBar.Button;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IMethodReflection;
 import ru.silverhammer.swing.control.Control;
 
 public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar> {
@@ -92,7 +92,7 @@ public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar>
 				button.setText(caption);
 			}
 			button.addActionListener(e -> {
-				IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.pressedMethod());
+				IInstanceMethodReflection method = new TypeReflection<>(data.getClass()).findInstanceMethod(b.pressedMethod());
 				injector.invoke(data, method);
 			});
 			if (annotation.location() == Location.Bottom || annotation.location() == Location.Top) {
@@ -138,7 +138,7 @@ public class ButtonBarDecorator implements IDecorator<IControl<?, ?>, ButtonBar>
 		for (Button b : annotation.value()) {
 			if (b.enabledMethod().length() > 0) {
 				control.addValueListener(c -> {
-					IMethodReflection method = new ClassReflection<>(data.getClass()).findMethod(b.enabledMethod());
+					IInstanceMethodReflection method = new TypeReflection<>(data.getClass()).findInstanceMethod(b.enabledMethod());
 					Object result = injector.invoke(data, method);
 					boolean enabled = result instanceof Boolean ? (Boolean) result : true;
 					buttons.get(b).setEnabled(enabled);

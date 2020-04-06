@@ -42,7 +42,6 @@ public @interface ValueToItems {
 	
 	boolean annotatedOnly() default false;
 
-	@SuppressWarnings("rawtypes")
 	Class<? extends Collection> collection() default ArrayList.class;
 
 }

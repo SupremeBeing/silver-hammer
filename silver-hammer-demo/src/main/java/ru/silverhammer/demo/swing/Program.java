@@ -25,8 +25,8 @@
  */
 package ru.silverhammer.demo.swing;
 
+import ru.sanatio.conversion.MultilingualStringConverter;
 import ru.silverhammer.processor.Processor;
-import ru.silverhammer.conversion.MultilingualStringConverter;
 import ru.silverhammer.demo.settings.Environment;
 import ru.silverhammer.demo.settings.Settings;
 import ru.silverhammer.demo.user.User;

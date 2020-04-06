@@ -25,17 +25,17 @@
  */
 package ru.silverhammer.model;
 
+import ru.reflexio.IInstanceFieldReflection;
 import ru.silverhammer.HorizontalAlignment;
 import ru.silverhammer.Location;
 import ru.silverhammer.VerticalAlignment;
 import ru.silverhammer.control.IControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class ControlModel {
 
 	private final IControl<?, ?> control;
 	private final Object data;
-	private final IFieldReflection fieldReflection;
+	private final IInstanceFieldReflection fieldReflection;
 	
 	private String caption;
 	private Location captionLocation;
@@ -43,7 +43,7 @@ public class ControlModel {
 	private HorizontalAlignment horizontalAlignment;
 	private VerticalAlignment verticalAlignment;
 
-	public ControlModel(IControl<?, ?> control, Object data, IFieldReflection fieldReflection) {
+	public ControlModel(IControl<?, ?> control, Object data, IInstanceFieldReflection fieldReflection) {
 		this.control = control;
 		this.data = data;
 		this.fieldReflection = fieldReflection;
@@ -57,7 +57,7 @@ public class ControlModel {
 		return data;
 	}
 
-	public IFieldReflection getFieldReflection() {
+	public IInstanceFieldReflection getFieldReflection() {
 		return fieldReflection;
 	}
 

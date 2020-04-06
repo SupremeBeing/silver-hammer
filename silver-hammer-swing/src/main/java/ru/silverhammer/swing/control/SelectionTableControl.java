@@ -29,12 +29,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ru.reflexio.IInstanceFieldReflection;
+import ru.reflexio.TypeReflection;
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.model.UiModel;
 import ru.silverhammer.processor.Caption;
 import ru.silverhammer.control.SelectionTable;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class SelectionTableControl extends TableControl<SelectionTable> {
 
@@ -90,7 +90,7 @@ public class SelectionTableControl extends TableControl<SelectionTable> {
 		}
 		setSelectionType(annotation.multiSelection());
 		if (annotation.annotationCaptions() != Void.class) {
-			for (IFieldReflection fr : new ClassReflection<>(annotation.annotationCaptions()).getFields()) {
+			for (IInstanceFieldReflection fr : new TypeReflection<>(annotation.annotationCaptions()).getInstanceFields()) {
 				if (model.hasControlAnnotation(fr)) {
 					Caption c = fr.getAnnotation(Caption.class);
 					getCaptions().add(c == null ? fr.getName() : converter.getString(c.value()));

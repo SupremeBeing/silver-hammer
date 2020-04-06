@@ -25,7 +25,9 @@
  */
 package ru.silverhammer.demo.user;
 
+import ru.sanatio.validator.*;
 import ru.silverhammer.control.*;
+import ru.silverhammer.converter.DateToString;
 import ru.silverhammer.processor.Caption;
 import ru.silverhammer.processor.Description;
 import ru.silverhammer.processor.GroupId;
@@ -41,7 +43,6 @@ import ru.silverhammer.processor.Structure.Category;
 import ru.silverhammer.processor.Generatable;
 import ru.silverhammer.processor.Structure.Group;
 import ru.silverhammer.demo.user.UserGroup.Type;
-import ru.silverhammer.validator.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class User {
 	@GroupId("user")
 	@Caption(value = "user.birth")
 	@DateFormat(format = "dd/MM/yyyy", message = "Date of birth should be in %s format")
+	@DateToString(format = "dd/MM/yyyy")
 	@MinDate(format = "dd/MM/yyyy", value = "01/01/1800", message = "Are you a human?")
 	@MaxDate(format = "dd/MM/yyyy", value = "01/01/2019", message = "Are you from the future?")
 	@NotNullable(message = "Date of birth must be specified")
@@ -114,6 +116,7 @@ public class User {
 	@GroupId("user")
 	@Caption("user.creation")
 	@DateFormat(format = "dd/MM/yyyy", message = "Creation date should be in %s format")
+	@DateToString(format = "dd/MM/yyyy")
 	private Date date = new Date(0);
 
 	@TextArea(visibleRows = 5)

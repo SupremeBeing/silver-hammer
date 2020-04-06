@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2020, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,25 +23,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.reflection;
+package ru.silverhammer.converter;
 
-import java.lang.reflect.Executable;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-abstract class ExecutableReflection<T extends Executable, R> extends MemberReflection<T> implements IExecutableReflection<R> {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@ConverterReference(NumberToStringConverter.class)
+public @interface NumberToString {
 
-	ExecutableReflection(T executable) {
-		super(executable);
-	}
+    // TODO: consider using field type as default number type
+    Class<? extends Number> type();
 
-	@Override
-	public List<IParameterReflection> getParameters() {
-		List<IParameterReflection> result = new ArrayList<>();
-		for (Parameter param : getElement().getParameters()) {
-			result.add(new ParameterReflection(param));
-		}
-		return result;
-	}
+    String format();
+
 }

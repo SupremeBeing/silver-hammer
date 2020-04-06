@@ -27,8 +27,8 @@ package ru.silverhammer.initializer;
 
 import java.lang.annotation.Annotation;
 
+import ru.reflexio.IFieldReflection;
 import ru.silverhammer.control.IControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public interface IInitializer<Control extends IControl<?, ?>, A extends Annotation> {
 

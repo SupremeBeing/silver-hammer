@@ -29,12 +29,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import ru.silverhammer.validator.DateFormat;
-
-public class DateToStringConverter implements IConverter<Date, String, DateFormat> {
+public class DateToStringConverter implements IConverter<Date, String, DateToString> {
 
 	@Override
-	public String convertForward(Date source, DateFormat annotation) {
+	public String convertForward(Date source, DateToString annotation) {
 		if (source != null) {
 			SimpleDateFormat fmt = new SimpleDateFormat(annotation.format());
 			return fmt.format(source);
@@ -43,7 +41,7 @@ public class DateToStringConverter implements IConverter<Date, String, DateForma
 	}
 
 	@Override
-	public Date convertBackward(String destination, DateFormat annotation) {
+	public Date convertBackward(String destination, DateToString annotation) {
 		if (destination != null && destination.trim().length() > 0) {
 			SimpleDateFormat fmt = new SimpleDateFormat(annotation.format());
 			try {

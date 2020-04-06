@@ -25,14 +25,14 @@
  */
 package ru.silverhammer.model;
 
-import ru.silverhammer.reflection.IMethodReflection;
+import ru.reflexio.IInstanceMethodReflection;
 
 public class MethodModel {
 
     private final Object data;
-    private final IMethodReflection methodReflection;
+    private final IInstanceMethodReflection methodReflection;
 
-    public MethodModel(Object data, IMethodReflection methodReflection) {
+    public MethodModel(Object data, IInstanceMethodReflection methodReflection) {
         this.data = data;
         this.methodReflection = methodReflection;
     }
@@ -41,7 +41,7 @@ public class MethodModel {
         return data;
     }
 
-    public IMethodReflection getMethodReflection() {
+    public IInstanceMethodReflection getMethodReflection() {
         return methodReflection;
     }
 

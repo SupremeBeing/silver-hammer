@@ -28,6 +28,11 @@ package ru.silverhammer.processor;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import ru.junkie.IInjector;
+import ru.reflexio.IFieldReflection;
+import ru.reflexio.IInstanceFieldReflection;
+import ru.reflexio.MetaAnnotation;
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.initializer.InitializerReference;
 import ru.silverhammer.model.CategoryModel;
 import ru.silverhammer.model.ControlModel;
@@ -37,12 +42,8 @@ import ru.silverhammer.control.IControl;
 import ru.silverhammer.decorator.IDecorator;
 import ru.silverhammer.initializer.IInitializer;
 import ru.silverhammer.resolver.IControlResolver;
-import ru.silverhammer.conversion.IStringConverter;
-import ru.silverhammer.injection.IInjector;
-import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
 
-public class ControlProcessor implements IProcessor<IFieldReflection, Annotation> {
+public class ControlProcessor implements IProcessor<IInstanceFieldReflection, Annotation> {
 
 	private final IStringConverter converter;
 	private final IInjector injector;
@@ -58,7 +59,7 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void process(Object data, IFieldReflection reflection, Annotation annotation) {
+	public void process(Object data, IInstanceFieldReflection reflection, Annotation annotation) {
 		Class<? extends IControl<?, ?>> controlClass = controlResolver.getControlClass(annotation.annotationType());
 		if (controlClass != null) {
 			IControl control = injector.instantiate(controlClass);
@@ -82,10 +83,10 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initializeControl(IControl<?, ?> control, Object data, IFieldReflection field) {
-		List<MarkedAnnotation<InitializerReference>> marked = field.getMarkedAnnotations(InitializerReference.class);
-		for (MarkedAnnotation<InitializerReference> ma : marked) {
-			IInitializer<IControl<?, ?>, Annotation> initializer = (IInitializer<IControl<?, ?>, Annotation>) injector.instantiate(ma.getMarker().value());
+	private void initializeControl(IControl<?, ?> control, Object data, IInstanceFieldReflection field) {
+		List<MetaAnnotation<InitializerReference>> marked = field.getMetaAnnotations(InitializerReference.class);
+		for (MetaAnnotation<InitializerReference> ma : marked) {
+			IInitializer<IControl<?, ?>, Annotation> initializer = (IInitializer<IControl<?, ?>, Annotation>) injector.instantiate(ma.getMetaAnnotation().value());
 			initializer.init(control, ma.getAnnotation(), data, field);
 		}
 		Object value = field.getValue(data);
@@ -106,7 +107,7 @@ public class ControlProcessor implements IProcessor<IFieldReflection, Annotation
 		groupModel.getControls().add(controlModel);
 	}
 	
-	private ControlModel createControlModel(IControl<?, ?> control, Object data, IFieldReflection field) {
+	private ControlModel createControlModel(IControl<?, ?> control, Object data, IInstanceFieldReflection field) {
 		ControlModel result = new ControlModel(control, data, field);
 		Caption caption = field.getAnnotation(Caption.class);
 		Description description = field.getAnnotation(Description.class);

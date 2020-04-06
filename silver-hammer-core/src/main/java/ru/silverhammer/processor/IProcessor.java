@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Dmitriy Shchekotin
+ * Copyright (c) 2020, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,44 +23,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.reflection;
+package ru.silverhammer.processor;
 
-import java.util.Objects;
+import ru.reflexio.IReflection;
 
-class VirtualParameterReflection extends VirtualReflection implements IParameterReflection {
+import java.lang.annotation.Annotation;
 
-    private final Class<?> type;
-    private final String name;
+public interface IProcessor<R extends IReflection, A extends Annotation> {
 
-    VirtualParameterReflection(Class<?> type, String name) {
-        if (type == null || name == null) {
-            throw new IllegalArgumentException();
-        }
-        this.type = type;
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Class<?> getType() {
-        return type;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, name);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof VirtualParameterReflection) {
-            VirtualParameterReflection other = (VirtualParameterReflection) obj;
-            return Objects.equals(type, other.getType()) && Objects.equals(name, other.getName());
-        }
-        return false;
-    }
+	void process(Object data, R reflection, A annotation);
+	
 }

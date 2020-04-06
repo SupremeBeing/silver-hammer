@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Dmitriy Shchekotin
+ * Copyright (c) 2020, Dmitriy Shchekotin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package ru.silverhammer.validator;
+package ru.silverhammer.converter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -32,11 +32,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@ValidatorReference(StringFormatValidator.class)
-public @interface StringFormat {
+@ConverterReference(DateToStringConverter.class)
+public @interface DateToString {
 
-	String format();
-	
-	String message();
-	
+    String format();
+
 }

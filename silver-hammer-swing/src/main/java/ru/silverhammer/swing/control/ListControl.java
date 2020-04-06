@@ -71,10 +71,7 @@ public abstract class ListControl<A extends Annotation> extends Control<Object, 
 
     public boolean isMultiSelection() {
         int mode = getComponent().getSelectionMode();
-        if (mode == ListSelectionModel.SINGLE_SELECTION) {
-            return false;
-        }
-        return true;
+        return mode != ListSelectionModel.SINGLE_SELECTION;
     }
 
     public void setSelectionType(boolean mode) {

@@ -27,8 +27,8 @@ package ru.silverhammer.initializer;
 
 import java.io.File;
 
+import ru.reflexio.IFieldReflection;
 import ru.silverhammer.control.ITreeControl;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class FileTreeItemsInitializer implements IInitializer<ITreeControl<?, ?, File>, FileTreeItems> {
 

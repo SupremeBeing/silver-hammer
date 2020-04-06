@@ -25,20 +25,18 @@
  */
 package ru.silverhammer.model;
 
-import ru.silverhammer.conversion.IStringConverter;
+import ru.junkie.IInjector;
+import ru.reflexio.*;
+import ru.sanatio.Validation;
+import ru.sanatio.ValidationEntry;
+import ru.sanatio.conversion.IStringConverter;
+import ru.sanatio.validator.IValidator;
+import ru.sanatio.validator.ValidatorReference;
 import ru.silverhammer.converter.ConverterReference;
 import ru.silverhammer.converter.IConverter;
-import ru.silverhammer.injection.IInjector;
 import ru.silverhammer.control.IControl;
 import ru.silverhammer.processor.ControlProcessor;
 import ru.silverhammer.processor.ProcessorReference;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
-import ru.silverhammer.reflection.IMethodReflection;
-import ru.silverhammer.reflection.IReflection;
-import ru.silverhammer.reflection.IReflection.MarkedAnnotation;
-import ru.silverhammer.validator.IValidator;
-import ru.silverhammer.validator.ValidatorReference;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -55,10 +53,12 @@ public class UiModel {
 
     private final IInjector injector;
     private final IStringConverter converter;
+    private final Validation validation;
 
     public UiModel(IInjector injector, IStringConverter converter) {
         this.injector = injector;
         this.converter = converter;
+        this.validation = new Validation();
     }
 
     public List<CategoryModel> getCategories() {
@@ -118,7 +118,7 @@ public class UiModel {
 
     @SuppressWarnings("unchecked")
     public <T extends IControl<?, ?>> T findControl(Object data, Class<?> type, String fieldName) {
-        IFieldReflection field = new ClassReflection<>(type).findField(fieldName);
+        IFieldReflection field = new TypeReflection<>(type).findInstanceField(fieldName);
         if (field != null) {
             ControlModel attrs = findControlModel(ca -> ca.getFieldReflection().equals(field) && ca.getData().equals(data));
             if (attrs != null) {
@@ -136,7 +136,7 @@ public class UiModel {
 		visitControlModels(c -> commit(c.getData(), c.getFieldReflection(), c.getControl()));
 	}
 
-	private void commit(Object data, IFieldReflection field, IControl<?, ?> control) {
+	private void commit(Object data, IInstanceFieldReflection field, IControl<?, ?> control) {
 		Object value = getFieldValue(control.getValue(), field);
 		field.setValue(data, value);
 	}
@@ -162,12 +162,12 @@ public class UiModel {
 	// TODO: consider exposing full data validation method
 	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
 		Object value = control.getValue();
-		Annotation invalidAnnotation = validateValue(value, field);
-		String msg = getValidationMessage(invalidAnnotation);
+		ValidationEntry entry = validateValue(value, field);
+        String msg = entry == null ? null : entry.getValidationMessage(converter);
 		control.setValidationMessage(msg);
 	}
 
-    private Annotation validateValue(Object value, IFieldReflection field) {
+    private ValidationEntry validateValue(Object value, IFieldReflection field) {
         for (Annotation annotation : field.getAnnotations()) {
             for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
                 if (metaAnnotation instanceof ConverterReference) {
@@ -176,11 +176,9 @@ public class UiModel {
                     IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(cr.value());
                     value = converter.convertBackward(value, annotation);
                 } else if (metaAnnotation instanceof ValidatorReference) {
-                    ValidatorReference vr = (ValidatorReference) metaAnnotation;
-                    @SuppressWarnings("unchecked")
-                    IValidator<Annotation> validator = (IValidator<Annotation>) injector.instantiate(vr.value());
-                    if (!validator.validate(value, annotation)) {
-                        return annotation;
+                    ValidationEntry entry = validation.validate(value, (ValidatorReference) metaAnnotation, annotation);
+                    if (!entry.isValid()) {
+                        return entry;
                     }
                 }
             }
@@ -200,49 +198,30 @@ public class UiModel {
 		}
 	}
 
-    private String getValidationMessage(Annotation annotation) {
-        if (annotation != null) {
-            List<Object> params = new ArrayList<>();
-            String message = null;
-            for (IMethodReflection method : new ClassReflection<>(annotation.annotationType()).getMethods()) {
-                Object value = method.invokeOn(annotation);
-                if ("message".equals(method.getName())) {
-                    message = value.toString();
-                } else {
-                    params.add(value);
-                }
-            }
-            if (message != null) {
-                return String.format(converter.getString(message), params.toArray(new Object[0]));
-            }
-        }
-        return null;
-    }
-
     public Object getControlValue(Object value, IFieldReflection field) {
-        List<IReflection.MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
+        List<MetaAnnotation<ConverterReference>> marked = field.getMetaAnnotations(ConverterReference.class);
         for (int i = marked.size() - 1; i >= 0; i--) {
-            IReflection.MarkedAnnotation<ConverterReference> ma = marked.get(i);
+            MetaAnnotation<ConverterReference> ma = marked.get(i);
             @SuppressWarnings("unchecked")
-            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMetaAnnotation().value());
             value = converter.convertForward(value, ma.getAnnotation());
         }
         return value;
     }
 
     public Object getFieldValue(Object value, IFieldReflection field) {
-        List<IReflection.MarkedAnnotation<ConverterReference>> marked = field.getMarkedAnnotations(ConverterReference.class);
-        for (IReflection.MarkedAnnotation<ConverterReference> ma : marked) {
+        List<MetaAnnotation<ConverterReference>> marked = field.getMetaAnnotations(ConverterReference.class);
+        for (MetaAnnotation<ConverterReference> ma : marked) {
             @SuppressWarnings("unchecked")
-            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMarker().value());
+            IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(ma.getMetaAnnotation().value());
             value = converter.convertBackward(value, ma.getAnnotation());
         }
         return value;
     }
 
     public boolean hasControlAnnotation(IFieldReflection fieldReflection) {
-        for (MarkedAnnotation<ProcessorReference> m : fieldReflection.getMarkedAnnotations(ProcessorReference.class)) {
-            if (m.getMarker().value() == ControlProcessor.class) {
+        for (MetaAnnotation<ProcessorReference> m : fieldReflection.getMetaAnnotations(ProcessorReference.class)) {
+            if (m.getMetaAnnotation().value() == ControlProcessor.class) {
                 return true;
             }
         }

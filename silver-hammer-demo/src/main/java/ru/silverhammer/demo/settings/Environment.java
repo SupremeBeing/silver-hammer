@@ -25,6 +25,7 @@
  */
 package ru.silverhammer.demo.settings;
 
+import ru.sanatio.validator.MinSize;
 import ru.silverhammer.Location;
 import ru.silverhammer.VerticalAlignment;
 import ru.silverhammer.model.UiModel;
@@ -46,7 +47,6 @@ import ru.silverhammer.processor.Initializer;
 import ru.silverhammer.processor.Validator;
 import ru.silverhammer.resolver.IControlResolver;
 import ru.silverhammer.swing.SwingUiBuilder;
-import ru.silverhammer.validator.MinSize;
 
 import java.io.File;
 import java.util.Date;

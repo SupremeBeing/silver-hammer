@@ -30,12 +30,10 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import ru.silverhammer.validator.NumberFormat;
-
-public class NumberToStringConverter implements IConverter<Number, String, NumberFormat> {
+public class NumberToStringConverter implements IConverter<Number, String, NumberToString> {
 
 	@Override
-	public String convertForward(Number source, NumberFormat annotation) {
+	public String convertForward(Number source, NumberToString annotation) {
 		if (source != null) {
 			DecimalFormat fmt = new DecimalFormat(annotation.format());
 			return fmt.format(source);
@@ -44,7 +42,7 @@ public class NumberToStringConverter implements IConverter<Number, String, Numbe
 	}
 
 	@Override
-	public Number convertBackward(String destination, NumberFormat annotation) {
+	public Number convertBackward(String destination, NumberToString annotation) {
 		Number result = null;
 		if (destination != null && destination.trim().length() > 0) {
 			try {

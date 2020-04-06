@@ -18,13 +18,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<modules>
-		<module>silver-hammer-common</module>
 		<module>silver-hammer-core</module>
 		<module>silver-hammer-swing</module>
 		<module>silver-hammer-demo</module>
 	</modules>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

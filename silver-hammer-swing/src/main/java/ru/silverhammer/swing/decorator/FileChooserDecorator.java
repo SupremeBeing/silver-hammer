@@ -33,10 +33,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import ru.sanatio.conversion.IStringConverter;
 import ru.silverhammer.control.IControl;
 import ru.silverhammer.decorator.IDecorator;
 import ru.silverhammer.decorator.FileChooser;
-import ru.silverhammer.conversion.IStringConverter;
 import ru.silverhammer.swing.control.Control;
 
 // TODO: consider implementing button control

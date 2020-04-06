@@ -25,11 +25,11 @@
  */
 package ru.silverhammer.processor;
 
+import ru.reflexio.IInstanceMethodReflection;
 import ru.silverhammer.model.MethodModel;
 import ru.silverhammer.model.UiModel;
-import ru.silverhammer.reflection.IMethodReflection;
 
-public class InitializerProcessor implements IProcessor<IMethodReflection, Initializer> {
+public class InitializerProcessor implements IProcessor<IInstanceMethodReflection, Initializer> {
 
 	private final UiModel model;
 
@@ -38,7 +38,7 @@ public class InitializerProcessor implements IProcessor<IMethodReflection, Initi
 	}
 
 	@Override
-	public void process(Object data, IMethodReflection reflection, Initializer annotation) {
+	public void process(Object data, IInstanceMethodReflection reflection, Initializer annotation) {
 		model.getInitializers().add(new MethodModel(data, reflection));
 	}
 }

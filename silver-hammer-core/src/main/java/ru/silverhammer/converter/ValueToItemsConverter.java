@@ -29,9 +29,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ru.reflexio.IInstanceFieldReflection;
+import ru.reflexio.ITypeReflection;
+import ru.reflexio.TypeReflection;
 import ru.silverhammer.model.UiModel;
-import ru.silverhammer.reflection.ClassReflection;
-import ru.silverhammer.reflection.IFieldReflection;
 
 public class ValueToItemsConverter implements IConverter<Object, Object, ValueToItems> {
 
@@ -44,7 +45,7 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	@Override
 	public Object convertForward(Object source, ValueToItems annotation) {
 		if (source != null) {
-			List<IFieldReflection> fields = collectFields(annotation.value(), annotation);
+			List<IInstanceFieldReflection> fields = collectFields(annotation.value(), annotation);
 			// TODO: consider adding array support
 			if (source instanceof Collection) {
 				Collection<Object[]> result = new ArrayList<>();
@@ -59,10 +60,10 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		return null;
 	}
 	
-	private Object[] createItem(Object o, List<IFieldReflection> fields, ValueToItems annotation) {
+	private Object[] createItem(Object o, List<IInstanceFieldReflection> fields, ValueToItems annotation) {
 		Object[] item = new Object[fields.size()];
 		for (int i = 0; i < fields.size(); i++) {
-			IFieldReflection field = fields.get(i);
+			IInstanceFieldReflection field = fields.get(i);
 			Object value = field.getValue(o);
 			item[i] = annotation.annotatedOnly() ? model.getControlValue(value, field) : value;
 		}
@@ -73,10 +74,10 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 	@Override
 	public Object convertBackward(Object destination, ValueToItems annotation) {
 		if (destination != null) {
-			List<IFieldReflection> fields = collectFields(annotation.value(), annotation);
+			List<IInstanceFieldReflection> fields = collectFields(annotation.value(), annotation);
 			if (destination instanceof Collection) {
 				@SuppressWarnings("rawtypes")
-				ClassReflection<? extends Collection> cr = new ClassReflection<>(annotation.collection());
+				ITypeReflection<? extends Collection> cr = new TypeReflection<>(annotation.collection());
 				Collection<Object> result = cr.instantiate();
 				for (Object[] row : (Collection<Object[]>) destination) {
 					result.add(createObject(row, fields, annotation));
@@ -89,10 +90,10 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		return null;
 	}
 	
-	private Object createObject(Object[] item, List<IFieldReflection> fields, ValueToItems annotation) {
-		Object result = new ClassReflection<>(annotation.value()).instantiate();
+	private Object createObject(Object[] item, List<IInstanceFieldReflection> fields, ValueToItems annotation) {
+		Object result = new TypeReflection<>(annotation.value()).instantiate();
 		for (int i = 0; i < fields.size(); i++) {
-			IFieldReflection field = fields.get(i);
+			IInstanceFieldReflection field = fields.get(i);
 			Object value = item[i];
 			if (annotation.annotatedOnly()) {
 				value = model.getFieldValue(value, field);
@@ -102,10 +103,10 @@ public class ValueToItemsConverter implements IConverter<Object, Object, ValueTo
 		return result;
 	}
 	
-	private List<IFieldReflection> collectFields(Class<?> cls, ValueToItems annotation) {
-		List<IFieldReflection> result = new ArrayList<>();
-		ClassReflection<?> reflection = new ClassReflection<>(cls);
-		for (IFieldReflection fr : reflection.getFields()) {
+	private List<IInstanceFieldReflection> collectFields(Class<?> cls, ValueToItems annotation) {
+		List<IInstanceFieldReflection> result = new ArrayList<>();
+		ITypeReflection<?> reflection = new TypeReflection<>(cls);
+		for (IInstanceFieldReflection fr : reflection.getInstanceFields()) {
 			if (!annotation.annotatedOnly() || model.hasControlAnnotation(fr)) {
 				result.add(fr);
 			}
