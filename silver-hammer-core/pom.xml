@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>com.github.SupremeBeing</groupId>
 			<artifactId>sanatio</artifactId>
-			<version>master-SNAPSHOT</version>
+			<version>f69ab5076f186ad43f67e84ed8d43274502c71ad</version>
 		</dependency>
 	</dependencies>
 	

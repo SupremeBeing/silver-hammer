@@ -28,9 +28,8 @@ package ru.silverhammer.model;
 import ru.junkie.IInjector;
 import ru.reflexio.*;
 import ru.sanatio.Validation;
-import ru.sanatio.ValidationEntry;
+import ru.sanatio.ValidationResult;
 import ru.sanatio.conversion.IStringConverter;
-import ru.sanatio.validator.IValidator;
 import ru.sanatio.validator.ValidatorReference;
 import ru.silverhammer.converter.ConverterReference;
 import ru.silverhammer.converter.IConverter;
@@ -52,13 +51,11 @@ public class UiModel {
     private final List<MethodModel> validators = new ArrayList<>();
 
     private final IInjector injector;
-    private final IStringConverter converter;
     private final Validation validation;
 
     public UiModel(IInjector injector, IStringConverter converter) {
         this.injector = injector;
-        this.converter = converter;
-        this.validation = new Validation();
+        this.validation = new Validation(converter);
     }
 
     public List<CategoryModel> getCategories() {
@@ -162,12 +159,19 @@ public class UiModel {
 	// TODO: consider exposing full data validation method
 	private void validateControl(IControl<?, ?> control, IFieldReflection field) {
 		Object value = control.getValue();
-		ValidationEntry entry = validateValue(value, field);
-        String msg = entry == null ? null : entry.getValidationMessage(converter);
-		control.setValidationMessage(msg);
+		ValidationResult result = new ValidationResult();
+		validateValue(value, field, result);
+        StringBuilder builder = new StringBuilder();
+        for (String message : result) {
+            if (builder.length() > 0) {
+                builder.append(System.lineSeparator());
+            }
+            builder.append(message);
+        }
+		control.setValidationMessage(builder.length() == 0 ? null : builder.toString());
 	}
 
-    private ValidationEntry validateValue(Object value, IFieldReflection field) {
+    private void validateValue(Object value, IFieldReflection field, ValidationResult result) {
         for (Annotation annotation : field.getAnnotations()) {
             for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
                 if (metaAnnotation instanceof ConverterReference) {
@@ -176,14 +180,13 @@ public class UiModel {
                     IConverter<Object, Object, Annotation> converter = (IConverter<Object, Object, Annotation>) injector.instantiate(cr.value());
                     value = converter.convertBackward(value, annotation);
                 } else if (metaAnnotation instanceof ValidatorReference) {
-                    ValidationEntry entry = validation.validate(value, (ValidatorReference) metaAnnotation, annotation);
-                    if (!entry.isValid()) {
-                        return entry;
+                    validation.validate(value, (ValidatorReference) metaAnnotation, annotation, result);
+                    if (!result.isValid()) {
+                        return;
                     }
                 }
             }
         }
-        return null;
     }
 
     private void validateMethods() {
